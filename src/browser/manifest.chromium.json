@@ -2,7 +2,7 @@
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
     "author": "Michał Stankiewicz",
-    "version": "1.13.1",
+    "version": "1.14.0",
     "manifest_version": 3,
     "default_locale": "en",
     "icons": {
@@ -23,7 +23,7 @@
             "matches": [
                 "<all_urls>"
             ],
-            "js": ["content.js"],
+            "js": ["shared.js", "content.js"],
             "all_frames": true
         }
     ],
@@ -49,9 +49,5 @@
     },
     "options_ui": {
         "page": "options.html"
-    },
-    "host_permissions": [
-        "http://*/*",
-        "https://*/*"
-    ]
+    }
 }

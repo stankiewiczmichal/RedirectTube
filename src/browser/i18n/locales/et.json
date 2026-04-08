@@ -56,7 +56,8 @@
         "iframeBehavior": {
             "replace": "Asenda",
             "label": "iFrame'i käitumine",
-            "none": "Mitte midagi"
+            "none": "Mitte midagi",
+            "enhancedPreview": "Kuva iFrame'i asendajas video pisipildi taust ja pealkiri (võib luua ühenduse Google'i serveritega)"
         }
     },
     "introduction": {

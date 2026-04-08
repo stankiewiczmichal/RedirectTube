@@ -115,6 +115,15 @@
                 <option value="iframeBehaviorReplace" data-i18n="options.iframeBehavior.replace">Replace</option>
             </select>
         </div>
+        <div class="section" id="iframeEnhancedPreviewSection">
+            <div class="section-label">
+                <label for="iframeEnhancedPreview" data-i18n="options.iframeBehavior.enhancedPreview">Show thumbnail background and video title in iFrame placeholder (may connect to Google servers)</label>
+            </div>
+            <select name="iframeEnhancedPreview" id="iframeEnhancedPreview">
+                <option value="0" data-i18n="ui.no">No</option>
+                <option value="1" data-i18n="ui.yes">Yes</option>
+            </select>
+        </div>
         <br>
         <div class="section">
             <label for="extensionIcon" data-i18n="options.extensionIcon.label">Extension icon:</label>
@@ -193,6 +202,7 @@
         <hr>
         <p data-i18n="options.footer.affiliation">RedirectTube is not affiliated with FreeTube or its creators.<br>FreeTube is licensed under the <a href="https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE">AGPL-3.0 licence</a>.<br>The name "FreeTube" and FreeTube logo are the property of the <a href="https://docs.freetubeapp.io/credits/">creators of FreeTube</a>.</p>
     </footer>
+    <script src="shared.js"></script>
     <script src="i18n/translate.js"></script>
     <script src="options.js"></script>
 </body>

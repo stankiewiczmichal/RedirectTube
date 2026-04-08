@@ -1,47 +1,9 @@
 const extensionApi = typeof chrome !== "undefined" ? chrome : browser;
 
-const DEFAULT_ALLOW_PREFIXES = [
-    "/watch",
-    "/playlist",
-    "/@",
-    "/channel/",
-    "/live/",
-    "/shorts/",
-    "/podcasts",
-    "/gaming",
-    "/feed/subscriptions",
-    "/feed/library",
-    "/feed/you",
-    "/post/",
-    "/hashtag/",
-    "/results",
-    "/",
-];
-
-const DEFAULT_DENY_PREFIXES = [
-    "/signin",
-    "/logout",
-    "/login",
-    "/oops",
-    "/error",
-    "/verify",
-    "/consent",
-    "/account",
-    "/premium",
-    "/paid_memberships",
-    "/s/ads",
-    "/pagead",
-    "/embed/",
-    "/iframe_api",
-    "/api/",
-    "/t/terms",
-    "/about/",
-    "/howyoutubeworks/",
-];
-
 
 let redirecttubeAutoRedirect = "autoRedirectLinksNo";
 let redirecttubeIframeBehavior = "iframeBehaviorReplace";
+let redirecttubeIframeEnhancedPreview = false;
 let redirecttubeButtonLabel =
     localStorage.getItem("redirecttubeButtonName") || getDefaultButtonLabel();
 let isTopLevelDocument = false;
@@ -68,6 +30,8 @@ window.addEventListener("message", handleIframePromptMessage, false);
 if (isTopLevelDocument) {
     document.addEventListener("click", handleDocumentClick, true);
     syncThemePreference();
+    loadRuntimeSettings();
+    installUrlChangeTracking();
 }
 
 function normalizeIframeBehavior(value) {
@@ -88,7 +52,7 @@ function syncThemePreference() {
 
     function notifyBackground() {
         extensionApi.runtime.sendMessage({
-            message: "redirecttubeTheme",
+            message: RUNTIME_MESSAGES.redirecttubeTheme,
             isDark: mediaQuery.matches,
         });
     }
@@ -246,22 +210,31 @@ function replaceIframeWithPlaceholder(iframe) {
     if (!originalSrc) {
         return;
     }
+    const iframeTitle =
+        iframe.getAttribute("title") ||
+        iframe.title ||
+        iframe.getAttribute("aria-label") ||
+        "";
 
     iframeMetadata.set(iframe, {
         originalSrc,
     });
     iframe.dataset.redirecttubeState = "placeholder";
 
-    const placeholderUrl = buildPlaceholderUrl(originalSrc);
+    const placeholderUrl = buildPlaceholderUrl(originalSrc, iframeTitle);
     iframe.src = placeholderUrl;
 }
 
-function buildPlaceholderUrl(videoUrl) {
+function buildPlaceholderUrl(videoUrl, title = "") {
     const label = redirecttubeButtonLabel || "Watch on";
     const params = new URLSearchParams({
         video: videoUrl,
         label,
+        enhancedPreview: redirecttubeIframeEnhancedPreview ? "1" : "0",
     });
+    if (redirecttubeIframeEnhancedPreview && title) {
+        params.set("title", title);
+    }
     return `${iframePlaceholderUrl}?${params.toString()}`;
 }
 
@@ -337,44 +310,98 @@ function findIframeByContentWindow(sourceWindow) {
     return null;
 }
 
-extensionApi.runtime.onMessage.addListener((request) => {
-    const previousBehavior = redirecttubeIframeBehavior;
-
-    const normalizedBehavior = normalizeIframeBehavior(
-        request.redirecttubeIframeBehavior
-    );
-    if (normalizedBehavior) {
-        redirecttubeIframeBehavior = normalizedBehavior;
+extensionApi.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "local") {
+        return;
     }
 
-    let buttonLabelChanged = false;
-    if (request.redirecttubeButtonName) {
-        redirecttubeButtonLabel = request.redirecttubeButtonName;
-        localStorage.setItem(
-            "redirecttubeButtonName",
-            redirecttubeButtonLabel
-        );
-        buttonLabelChanged = true;
-    }
-
-    redirecttubeAutoRedirect =
-        request.redirecttubeAutoRedirect || redirecttubeAutoRedirect;
-
-    if (request.redirecttubeUrlRulesConfig) {
-        redirecttubeUrlRulesConfig = normalizeUrlRulesConfig(
-            request.redirecttubeUrlRulesConfig
-        );
-    }
-
-    const shouldRefresh =
-        !iframeSettingsReady ||
-        redirecttubeIframeBehavior !== previousBehavior ||
-        buttonLabelChanged;
-    iframeSettingsReady = true;
-    if (shouldRefresh) {
-        scheduleIframeProcessing();
+    const shouldNotifyCurrentUrl = Boolean(changes.urlRulesConfig);
+    if (
+        changes.iframeBehavior ||
+        changes.iframeButton ||
+        changes.iframeEnhancedPreview ||
+        changes.autoRedirectLinks ||
+        changes.urlRulesConfig
+    ) {
+        loadRuntimeSettings(shouldNotifyCurrentUrl);
     }
 });
+
+function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
+    extensionApi.storage.local.get(
+        [
+            STORAGE_KEYS.iframeBehavior,
+            STORAGE_KEYS.iframeButton,
+            STORAGE_KEYS.iframeEnhancedPreview,
+            STORAGE_KEYS.autoRedirectLinks,
+            STORAGE_KEYS.urlRulesConfig,
+        ],
+        (result = {}) => {
+            const previousBehavior = redirecttubeIframeBehavior;
+            const normalizedBehavior =
+                normalizeIframeBehavior(result[STORAGE_KEYS.iframeBehavior]) ||
+                normalizeIframeBehavior(result[STORAGE_KEYS.iframeButton]) ||
+                "iframeBehaviorReplace";
+
+            redirecttubeIframeBehavior = normalizedBehavior;
+            redirecttubeIframeEnhancedPreview =
+                result[STORAGE_KEYS.iframeEnhancedPreview] === true;
+            redirecttubeAutoRedirect =
+                result[STORAGE_KEYS.autoRedirectLinks] || "autoRedirectLinksNo";
+
+            redirecttubeUrlRulesConfig = normalizeUrlRulesConfig(
+                result[STORAGE_KEYS.urlRulesConfig]
+            );
+
+            const shouldRefresh =
+                !iframeSettingsReady ||
+                redirecttubeIframeBehavior !== previousBehavior;
+            iframeSettingsReady = true;
+            if (shouldRefresh) {
+                scheduleIframeProcessing();
+            }
+
+            if (shouldNotifyCurrentUrl && isTopLevelDocument) {
+                notifyCurrentUrl();
+            }
+        }
+    );
+}
+
+function installUrlChangeTracking() {
+    notifyCurrentUrl();
+
+    window.addEventListener("popstate", notifyCurrentUrl);
+    window.addEventListener("hashchange", notifyCurrentUrl);
+    window.addEventListener("pageshow", notifyCurrentUrl);
+
+    patchHistoryMethod("pushState");
+    patchHistoryMethod("replaceState");
+}
+
+function patchHistoryMethod(methodName) {
+    const originalMethod = history[methodName];
+    if (typeof originalMethod !== "function") {
+        return;
+    }
+
+    history[methodName] = function () {
+        const result = originalMethod.apply(this, arguments);
+        notifyCurrentUrl();
+        return result;
+    };
+}
+
+function notifyCurrentUrl() {
+    if (!isTopLevelDocument) {
+        return;
+    }
+
+    extensionApi.runtime.sendMessage({
+        message: RUNTIME_MESSAGES.currentUrlChanged,
+        url: window.location.href,
+    });
+}
 
 function handleDocumentClick(event) {
     if (redirecttubeAutoRedirect !== "autoRedirectLinksYes") {
@@ -412,10 +439,7 @@ function handleDocumentClick(event) {
 
     event.preventDefault();
     event.stopPropagation();
-    extensionApi.runtime.sendMessage({
-        message: "autoRedirectLink",
-        url: resolvedUrl,
-    });
+    redirecttubeOpenInFreeTube(resolvedUrl);
 }
 
 function resolveAbsoluteUrl(href) {
@@ -435,7 +459,7 @@ function shouldRedirectUrl(url) {
 
 function redirecttubeOpenInFreeTube(src) {
     let newUrl = "freetube://" + src;
-    window.open(newUrl, "_blank");
+    window.location.assign(newUrl);
 }
 
 function getDefaultButtonLabel() {

@@ -30,7 +30,8 @@
         "iframeBehavior": {
             "replace": "Vervangen",
             "label": "iFrame-gedrag",
-            "none": "Niets"
+            "none": "Niets",
+            "enhancedPreview": "Toon miniatuurachtergrond en videotitel in iFrame-placeholder (kan verbinden met Google-servers)"
         },
         "urlRules": {
             "advancedTitle": "Geavanceerd",

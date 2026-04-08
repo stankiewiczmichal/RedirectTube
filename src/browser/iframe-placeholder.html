@@ -9,8 +9,11 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="header">
-            <div>
+        <div class="media" id="mediaLayer" aria-hidden="true"></div>
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="header">
+                <p id="videoTitle" class="video-title" hidden></p>
                 <svg class="logo" width="192px" viewBox="0 0 861 205" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
             <g transform="matrix(4.63167,0,0,4.63167,-55.5801,-55.5801)">
                 <path d="M14.75,12C13.226,12 12,13.274 12,14.857L12,44.857C12,49.143 17.5,52 20.25,52L23,52L23,14.857C23,13.274 21.773,12 20.25,12L14.75,12Z" style="fill:#fff;"/>
@@ -65,26 +68,27 @@
             </g>
         </svg>
             </div>
-        </div>
-        <div class="content">
-            <h1 id="headline" data-i18n="iframePlaceholder.body.headline">Choose where to watch</h1>
-            <p id="message" data-i18n="iframePlaceholder.body.message">Pick the player you want to use for this video.</p>
-            <div class="actions">
-                <button class="primary" data-action="freetube">
-                    <span id="freetubeLabel" data-i18n="iframePlaceholder.buttons.freetube">Open in FreeTube app</span>
-                </button>
-                <button data-action="youtube">
-                    <span id="youtubeLabel" data-i18n="iframePlaceholder.buttons.youtube">Watch on YouTube</span>
-                </button>
-            </div>
-            <p id="note">
-                <span data-i18n="iframePlaceholder.note.before_link">Note: You can disable this prompt in </span><a id="settingsLink" href="options.html" target="_blank" rel="noreferrer noopener" data-i18n="iframePlaceholder.note.link">RedirectTube settings</a><span data-i18n="iframePlaceholder.note.after_link"> if you prefer to always use the original YouTube frame.</span>
-            </p>
-            <div class="warning" id="warning" data-i18n="iframePlaceholder.warning" hidden>
-                Unable to read the original video URL. Please reload the page.
+            <div class="panel">
+                <h1 id="headline" data-i18n="iframePlaceholder.body.headline">Choose where to watch</h1>
+                <p id="message" data-i18n="iframePlaceholder.body.message">Pick the player you want to use for this video.</p>
+                <div class="actions">
+                    <button class="primary" data-action="freetube">
+                        <span id="freetubeLabel" data-i18n="iframePlaceholder.buttons.freetube">Open in FreeTube app</span>
+                    </button>
+                    <button data-action="youtube">
+                        <span id="youtubeLabel" data-i18n="iframePlaceholder.buttons.youtube">Watch on YouTube</span>
+                    </button>
+                </div>
+                <p id="note">
+                    <span data-i18n="iframePlaceholder.note.before_link">Note: You can disable this prompt in </span><a id="settingsLink" href="options.html" target="_blank" rel="noreferrer noopener" data-i18n="iframePlaceholder.note.link">RedirectTube settings</a><span data-i18n="iframePlaceholder.note.after_link"> if you prefer to always use the original YouTube frame.</span>
+                </p>
+                <div class="warning" id="warning" data-i18n="iframePlaceholder.warning" hidden>
+                    Unable to read the original video URL. Please reload the page.
+                </div>
             </div>
         </div>
     </div>
+    <script src="shared.js"></script>
     <script src="iframe-placeholder.js" defer></script>
 </body>
 </html>

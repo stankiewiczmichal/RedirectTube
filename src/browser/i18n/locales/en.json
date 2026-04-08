@@ -56,7 +56,8 @@
         "iframeBehavior": {
             "label": "iFrame behavior",
             "none": "Nothing",
-            "replace": "Replace"
+            "replace": "Replace",
+            "enhancedPreview": "Show thumbnail background and video title in iFrame placeholder (may connect to Google servers)"
         },
         "extensionIcon": {
             "label": "Extension icon"
