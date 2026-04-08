@@ -380,16 +380,32 @@ function installUrlChangeTracking() {
 }
 
 function patchHistoryMethod(methodName) {
-    const originalMethod = history[methodName];
-    if (typeof originalMethod !== "function") {
+    if (methodName === "pushState") {
+        const originalMethod = history.pushState;
+        if (typeof originalMethod !== "function") {
+            return;
+        }
+
+        history.pushState = function () {
+            const result = originalMethod.apply(this, arguments);
+            notifyCurrentUrl();
+            return result;
+        };
         return;
     }
 
-    history[methodName] = function () {
-        const result = originalMethod.apply(this, arguments);
-        notifyCurrentUrl();
-        return result;
-    };
+    if (methodName === "replaceState") {
+        const originalMethod = history.replaceState;
+        if (typeof originalMethod !== "function") {
+            return;
+        }
+
+        history.replaceState = function () {
+            const result = originalMethod.apply(this, arguments);
+            notifyCurrentUrl();
+            return result;
+        };
+    }
 }
 
 function notifyCurrentUrl() {
