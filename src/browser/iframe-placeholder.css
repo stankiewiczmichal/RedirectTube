@@ -13,77 +13,129 @@ body {
     margin: 0;
     font-family: sans-serif;
     color: var(--color);
-    display: flex;
+    display: block;
 }
 
 .wrapper {
+    position: relative;
     width: 100%;
     background-color: var(--background);
+    min-height: 100%;
     overflow: hidden;
 }
 
-.header {
-    background-color: #cb1314;
-    color: #fff;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+.media {
+    position: absolute;
+    inset: 0;
+    background-color: var(--background);
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.03);
 }
 
-.header-title {
-    margin: 0;
-    font-size: 1.25rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-}
-
-.header-subtitle {
-    margin: 0;
-    font-size: 0.85rem;
-    opacity: 0.9;
+.overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.6) 48%, rgba(0, 0, 0, 0.78) 100%),
+        radial-gradient(circle at top right, rgba(203, 19, 20, 0.22), transparent 50%);
 }
 
 .content {
-    padding: 24px;
+    position: relative;
+    z-index: 1;
+    min-height: 100%;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    color: #f5f7fa;
+}
+
+.header {
+    margin: 2px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.logo {
+    width: min(144px, 48vw);
+    height: auto;
+    opacity: 0.9;
+}
+
+.panel {
+    width: min(100%, 860px);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: linear-gradient(180deg, rgba(9, 12, 18, 0.68), rgba(8, 10, 15, 0.55));
 }
 
 h1 {
-    margin: 0 0 12px;
-    font-size: 1.6rem;
+    margin: 0 0 6px;
+    font-size: clamp(0.98rem, 2.9vw, 1.26rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #ffffff;
 }
 
 p {
-    margin: 0 0 18px;
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.45;
+}
+
+#message {
+    color: rgba(245, 247, 250, 0.92);
+    font-size: clamp(0.82rem, 2.1vw, 0.92rem);
 }
 
 a {
-    color: var(--url);
+    color: #dbeafe;
     transition: all 0.3s;
 }
 
 a:hover {
-    color: var(--url-hover);
+    color: #ffffff;
+}
+
+.video-title {
+    margin: 0;
+    padding: 2px 0;
+    border: none;
+    background-color: transparent;
+    font-size: clamp(0.78rem, 2vw, 0.9rem);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 7px;
+    margin-top: 8px;
 }
 
 button {
-    padding: 0.75em 1.5em;
-    border-radius: 8px;
-    border: 1px solid #79797979;
-    background-color: #79797979;
-    color: var(--color);
-    font-size: 1rem;
+    padding: 0.58em 1em;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background-color: rgba(14, 18, 24, 0.55);
+    color: #f8fafc;
+    font-size: clamp(0.82rem, 2vw, 0.9rem);
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    flex: 1 1 220px;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+    flex: 1 1 170px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,7 +143,7 @@ button {
 }
 
 button:hover {
-    background-color: #797979b9;
+    background-color: rgba(20, 25, 33, 0.78);
 }
 
 button:active {
@@ -109,33 +161,48 @@ button.primary:hover {
 }
 
 button:disabled {
-    background-color: #79797979;
-    color: #79797979;
+    background-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.24);
     cursor: not-allowed;
     transform: none;
 }
 
 #note {
-    font-size: 0.9rem;
-    color: var(--note);
-    margin-top: 12px;
+    font-size: clamp(0.74rem, 2vw, 0.82rem);
+    color: rgba(243, 244, 246, 0.85);
+    margin-top: 8px;
 }
 
 .warning {
-    margin-top: 18px;
-    padding: 12px 14px;
+    margin-top: 8px;
+    padding: 9px 11px;
     border-radius: 8px;
-    border: 1px dashed #79797979;
-    background-color: rgba(121, 121, 121, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    background-color: rgba(10, 12, 16, 0.42);
+    color: #ffe4e6;
 }
 
 @media (max-width: 480px) {
-    body {
-        padding: 16px;
+    .content {
+        padding: 10px;
+        gap: 8px;
     }
 
-    .header,
-    .content {
-        padding: 18px;
+    .logo {
+        width: min(116px, 50vw);
+    }
+
+    .panel {
+        padding: 9px;
+        border-radius: 9px;
+    }
+
+    button {
+        flex-basis: 130px;
+    }
+
+    #note {
+        margin-top: 8px;
     }
 }

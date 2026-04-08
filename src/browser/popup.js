@@ -64,21 +64,19 @@ opinionButton.addEventListener("click", function () {
         var website =
             "https://chromewebstore.google.com/detail/redirecttube/jpbaggklodpddjcadlebabhiopjkjfjh/reviews";
     }
-    extensionApi.tabs.create({
-        url: website,
-    });
+    openExternalLink(website);
 });
 
 suggestionButton.addEventListener("click", function () {
-    extensionApi.tabs.create({
-        url: "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+",
-    });
+    openExternalLink(
+        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+"
+    );
 });
 
 issueButton.addEventListener("click", function () {
-    extensionApi.tabs.create({
-        url: "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+",
-    });
+    openExternalLink(
+        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+"
+    );
 });
 
 function getMessageByKey(key) {

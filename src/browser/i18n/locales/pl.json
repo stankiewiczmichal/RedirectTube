@@ -56,7 +56,8 @@
         "iframeBehavior": {
             "label": "Zachowanie ramek iFrame",
             "none": "Nic nie rób",
-            "replace": "Zastąp"
+            "replace": "Zastąp",
+            "enhancedPreview": "Pokaż tło z miniatury i tytuł filmu w placeholderze iFrame (może łączyć z serwerami Google)"
         },
         "extensionIcon": {
             "label": "Ikona rozszerzenia"

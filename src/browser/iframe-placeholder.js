@@ -5,10 +5,17 @@
     const params = new URLSearchParams(window.location.search || "");
     const videoUrl = params.get("video") || "";
     const providedLabel = sanitizeLabel(params.get("label"));
+    const enhancedPreviewEnabled = params.get("enhancedPreview") === "1";
+    const providedTitle = sanitizeLabel(params.get("title"));
 
     const buttons = document.querySelectorAll("[data-action]");
     const warning = document.getElementById("warning");
     const settingsLink = document.getElementById("settingsLink");
+    const mediaLayer = document.getElementById("mediaLayer");
+    const videoTitle = document.getElementById("videoTitle");
+    const previewThumbnailCache = new Map();
+    const previewTitleCache = new Map();
+    const MAX_PREVIEW_CACHE_SIZE = 25;
 
     init();
 
@@ -26,11 +33,14 @@
         }
 
         setupSettingsLink();
+        applyVideoTitle();
 
         if (!videoUrl) {
             showWarning();
             return;
         }
+
+        setupEnhancedPreview();
 
         buttons.forEach((button) => {
             button.addEventListener("click", (event) => {
@@ -77,7 +87,7 @@
         if (typeof extensionApi.runtime.getURL === "function") {
             const url = extensionApi.runtime.getURL("options.html");
             if (url) {
-                window.open(url, "_blank", "noopener,noreferrer");
+                openExternalLink(url);
             }
         }
     }
@@ -89,6 +99,138 @@
         buttons.forEach((button) => {
             button.disabled = true;
         });
+    }
+
+    function applyVideoTitle(title = providedTitle) {
+        if (!videoTitle) {
+            return;
+        }
+        const resolvedTitle = sanitizeLabel(title);
+        if (!enhancedPreviewEnabled || !resolvedTitle) {
+            videoTitle.hidden = true;
+            videoTitle.textContent = "";
+            return;
+        }
+
+        videoTitle.textContent = resolvedTitle;
+        videoTitle.hidden = false;
+    }
+
+    function setupEnhancedPreview() {
+        if (!enhancedPreviewEnabled || !videoUrl || !mediaLayer) {
+            return;
+        }
+
+        const videoId = extractVideoId(videoUrl);
+        if (!videoId) {
+            return;
+        }
+
+        const thumbnailUrls = [
+            `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+            `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+        ];
+
+        Promise.all([
+            getCachedPreviewValue(previewThumbnailCache, videoId, () =>
+                fetchThumbnailUrl(thumbnailUrls)
+            ),
+            providedTitle
+                ? Promise.resolve("")
+                : getCachedPreviewValue(previewTitleCache, videoId, () =>
+                      fetchVideoTitle(videoId)
+                  ),
+        ])
+            .then(([thumbnailUrl, fetchedTitle]) => {
+                if (thumbnailUrl) {
+                    mediaLayer.style.backgroundImage = `url("${thumbnailUrl}")`;
+                }
+                if (!providedTitle && fetchedTitle) {
+                    applyVideoTitle(fetchedTitle);
+                }
+            })
+            .catch(() => {
+                // Keep placeholder minimal when preview lookup fails.
+            });
+    }
+
+    async function fetchVideoTitle(videoId) {
+        if (!videoId) {
+            return "";
+        }
+
+        const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+        const endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(watchUrl)}&format=json`;
+
+        const response = await fetch(endpoint, { method: "GET" });
+        if (!response.ok) {
+            return "";
+        }
+
+        const data = await response.json();
+        return data && typeof data.title === "string" ? data.title : "";
+    }
+
+    async function fetchThumbnailUrl(urls) {
+        for (const candidateUrl of urls) {
+            if (await probeImage(candidateUrl)) {
+                return candidateUrl;
+            }
+        }
+
+        return "";
+    }
+
+    function probeImage(url) {
+        return new Promise((resolve) => {
+            const probe = new Image();
+            probe.referrerPolicy = "no-referrer";
+            probe.onload = () => resolve(true);
+            probe.onerror = () => resolve(false);
+            probe.src = url;
+        });
+    }
+
+    function getCachedPreviewValue(cache, key, loader) {
+        if (cache.has(key)) {
+            const cachedValue = cache.get(key);
+            return cachedValue instanceof Promise
+                ? cachedValue
+                : Promise.resolve(cachedValue);
+        }
+
+        const pendingValue = loader()
+            .then((value) => {
+                cache.set(key, value);
+                trimPreviewCache(cache);
+                return value;
+            })
+            .catch((error) => {
+                cache.delete(key);
+                throw error;
+            });
+
+        cache.set(key, pendingValue);
+        return pendingValue;
+    }
+
+    function trimPreviewCache(cache) {
+        while (cache.size > MAX_PREVIEW_CACHE_SIZE) {
+            const oldestKey = cache.keys().next().value;
+            cache.delete(oldestKey);
+        }
+    }
+
+    function extractVideoId(url) {
+        if (!url) {
+            return "";
+        }
+        const embedMatch = url.match(/\/embed\/([^/?&#]+)/i);
+        if (embedMatch && embedMatch[1]) {
+            return embedMatch[1];
+        }
+        return "";
     }
 
     function postAction(action) {

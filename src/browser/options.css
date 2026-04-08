@@ -40,10 +40,29 @@ a:hover {
 
 .section {
     margin: 0.75em 32px;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.section-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.section-label label {
+    display: block;
+    line-height: 1.4;
+    margin: 0;
+}
+
+#iframeEnhancedPreviewSection.hidden {
+    display: none;
 }
 
 .url-rules-section {
     margin-top: 1.25em;
+    display: block;
 }
 
 .url-rules-card {
@@ -231,17 +250,17 @@ a:hover {
 }
 
 select {
-    position: absolute;
-    right: 32px;
     padding: 0.5em 1em;
-    margin: 2px;
+    margin: 0;
     border: #79797979 solid 1px;
     border-radius: 4px;
     background-color: #79797979;
     color: var(--color);
-    transform: translateY(-30%);
     transition: all 0.3s;
     font-size: 0.9em;
+    height: fit-content;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 select:hover {

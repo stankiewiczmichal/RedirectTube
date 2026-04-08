@@ -5,45 +5,6 @@ var autoRedirectLinks = "autoRedirectLinksNo";
 var iframeBehavior = "iframeBehaviorReplace";
 var extensionIcon = "color";
 
-const DEFAULT_ALLOW_PREFIXES = [
-    "/watch",
-    "/playlist",
-    "/@",
-    "/channel/",
-    "/live/",
-    "/shorts/",
-    "/podcasts",
-    "/gaming",
-    "/feed/subscriptions",
-    "/feed/library",
-    "/feed/you",
-    "/post/",
-    "/hashtag/",
-    "/results",
-    "/",
-];
-
-const DEFAULT_DENY_PREFIXES = [
-    "/signin",
-    "/logout",
-    "/login",
-    "/oops",
-    "/error",
-    "/verify",
-    "/consent",
-    "/account",
-    "/premium",
-    "/paid_memberships",
-    "/s/ads",
-    "/pagead",
-    "/embed/",
-    "/iframe_api",
-    "/api/",
-    "/t/terms",
-    "/about/",
-    "/howyoutubeworks/",
-];
-
 const CATEGORY_PREFIXES = {
     watch: ["/watch", "/playlist"],
     shorts: ["/shorts/"],
@@ -392,12 +353,13 @@ function saveOptions(e) {
             popupBehavior: document.getElementById("popupBehavior").value,
             autoRedirectLinks: document.getElementById("autoRedirectLinks").value,
             iframeBehavior: document.getElementById("iframeBehavior").value,
+            iframeEnhancedPreview:
+                document.getElementById("iframeEnhancedPreview").value === "1",
             extensionIcon: document.querySelector(
                 'input[name="extensionIcon"]:checked'
             ).value,
             urlRulesConfig: urlRulesResult.config,
         });
-        extensionApi.runtime.sendMessage({ message: "detectYT" });
     }, 1);
 }
 
@@ -412,6 +374,8 @@ function restoreOptions() {
             normalizeIframeBehavior(result.iframeButton) ||
             iframeBehavior;
         document.getElementById("iframeBehavior").value = storedIframeBehavior;
+        document.getElementById("iframeEnhancedPreview").value =
+            (result.iframeEnhancedPreview ?? false) ? "1" : "0";
         document.querySelector(
             'input[name="extensionIcon"][value="' +
                 (result.extensionIcon || extensionIcon) +
@@ -419,6 +383,7 @@ function restoreOptions() {
         ).checked = true;
 
         applyUrlRulesToUI(result.urlRulesConfig);
+        updateIframeEnhancedPreviewVisibility();
     }
 
     function onError(error) {
@@ -430,6 +395,7 @@ function restoreOptions() {
             "popupBehavior",
             "autoRedirectLinks",
             "iframeBehavior",
+            "iframeEnhancedPreview",
             "extensionIcon",
             "urlRulesConfig",
         ],
@@ -451,21 +417,19 @@ opinionButton.addEventListener("click", function () {
         var website =
             "https://chromewebstore.google.com/detail/redirecttube/jpbaggklodpddjcadlebabhiopjkjfjh/reviews";
     }
-    extensionApi.tabs.create({
-        url: website,
-    });
+    openExternalLink(website);
 });
 
 suggestionButton.addEventListener("click", function () {
-    extensionApi.tabs.create({
-        url: "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+",
-    });
+    openExternalLink(
+        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+"
+    );
 });
 
 issueButton.addEventListener("click", function () {
-    extensionApi.tabs.create({
-        url: "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+",
-    });
+    openExternalLink(
+        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+"
+    );
 });
 
 setTimeout(() => {
@@ -483,7 +447,13 @@ document
 document
     .querySelector("#autoRedirectLinks")
     .addEventListener("change", saveOptions);
-document.querySelector("#iframeBehavior").addEventListener("change", saveOptions);
+document.querySelector("#iframeBehavior").addEventListener("change", function() {
+    updateIframeEnhancedPreviewVisibility();
+    saveOptions();
+});
+document
+    .querySelector("#iframeEnhancedPreview")
+    .addEventListener("change", saveOptions);
 document.querySelector("#colorIcon").addEventListener("click", saveOptions);
 document.querySelector("#monoIcon").addEventListener("click", saveOptions);
 document.querySelector("#urlRulesAllowAll").addEventListener("change", (event) => {
@@ -527,6 +497,17 @@ document.getElementById("urlRulesReset").addEventListener("click", (event) => {
     showUrlRulesError("");
     saveOptions(event);
 });
+
+function updateIframeEnhancedPreviewVisibility() {
+    const iframeBehaviorValue = document.getElementById("iframeBehavior").value;
+    const enhancedPreviewSection = document.getElementById("iframeEnhancedPreviewSection");
+    
+    if (iframeBehaviorValue === "iframeBehaviorNone") {
+        enhancedPreviewSection.classList.add("hidden");
+    } else {
+        enhancedPreviewSection.classList.remove("hidden");
+    }
+}
 
 function normalizeIframeBehavior(value) {
     if (!value) {

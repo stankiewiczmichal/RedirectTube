@@ -1,22 +1,13 @@
 const extensionApi = typeof chrome !== "undefined" ? chrome : browser;
+if (typeof RUNTIME_MESSAGES === "undefined" && typeof importScripts === "function") {
+    importScripts(extensionApi.runtime.getURL("shared.js"));
+}
 
-extensionApi.tabs.onUpdated.addListener((_tabId, changeInfo) => {
-    if (changeInfo.url) {
-        handleUrlChange(changeInfo.url);
-    }
-    createContextMenu();
-    updateContentScriptSettings();
-});
-
-extensionApi.tabs.onActivated.addListener((activeInfo) => {
-    extensionApi.tabs.get(activeInfo.tabId, (tab) => {
-        if (tab && tab.url) {
-            handleUrlChange(tab.url);
-        }
-        createContextMenu();
-        updateContentScriptSettings();
-    });
-});
+let cachedExtensionIcon = "color";
+let lastUrlAllowed = false;
+let isDarkThemePreferred = false;
+let currentMenuLang = null;
+let urlRulesConfig = getDefaultUrlRulesConfig();
 
 extensionApi.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -25,53 +16,49 @@ extensionApi.runtime.onInstalled.addListener((details) => {
             extensionIcon: "color",
             autoRedirectLinks: "autoRedirectLinksNo",
             iframeBehavior: "iframeBehaviorReplace",
+            iframeEnhancedPreview: false,
             urlRulesConfig: getDefaultUrlRulesConfig(),
         });
     }
+
     loadUrlRulesConfig();
-    detectYTInThisTab();
     createContextMenu();
-    updateContentScriptSettings();
 });
 
 extensionApi.runtime.onStartup.addListener(() => {
+    extensionApi.storage.local.get(STORAGE_KEYS.extensionIcon, (result) => {
+        cachedExtensionIcon = result[STORAGE_KEYS.extensionIcon] || "color";
+        updateActionIcon();
+    });
+
     loadUrlRulesConfig();
-    detectYTInThisTab();
     createContextMenu();
-    updateContentScriptSettings();
 });
 
-extensionApi.runtime.onMessage.addListener((request, sender) => {
-    if (request.message === "detectYT") {
-        loadUrlRulesConfig();
-        detectYTInThisTab();
-        updateContentScriptSettings();
+extensionApi.runtime.onMessage.addListener((request) => {
+    if (request.message === RUNTIME_MESSAGES.currentUrlChanged && request.url) {
+        handleUrlChange(request.url);
     }
 
-    if (request.message === "autoRedirectLink" && sender.tab && request.url) {
-        if (!request.url.startsWith("freetube://")) {
-            const newUrl = "freetube://" + request.url;
-            extensionApi.tabs.update(sender.tab.id, { url: newUrl });
-        }
-    }
-
-    if (request.message === "redirecttubeTheme") {
+    if (request.message === RUNTIME_MESSAGES.redirecttubeTheme) {
         isDarkThemePreferred = Boolean(request.isDark);
         updateActionIcon();
     }
 });
 
-function detectYTInThisTab() {
-    extensionApi.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (!tabs || !tabs.length) {
-            return;
-        }
-        const tab = tabs[0];
-        if (tab.url) {
-            handleUrlChange(tab.url);
-        }
-    });
-}
+extensionApi.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "local") {
+        return;
+    }
+    if (changes[STORAGE_KEYS.urlRulesConfig]) {
+        loadUrlRulesConfig();
+    }
+
+    if (changes[STORAGE_KEYS.extensionIcon]) {
+        cachedExtensionIcon = changes[STORAGE_KEYS.extensionIcon].newValue || "color";
+        updateActionIcon();
+    }
+});
 
 function handleUrlChange(url) {
     if (!url) {
@@ -82,15 +69,12 @@ function handleUrlChange(url) {
 }
 
 function updateActionIcon() {
-    extensionApi.storage.local.get("extensionIcon", (result) => {
-        const preference = (result && result.extensionIcon) || "color";
-        const path = getIconPath(
-            preference,
-            lastUrlAllowed,
-            isDarkThemePreferred
-        );
-        extensionApi.action.setIcon({ path });
-    });
+    const path = getIconPath(
+        cachedExtensionIcon,
+        lastUrlAllowed,
+        isDarkThemePreferred
+    );
+    extensionApi.action.setIcon({ path });
 }
 
 function getIconPath(preference, isAllowed, isDarkMode) {
@@ -109,89 +93,13 @@ function getIconPath(preference, isAllowed, isDarkMode) {
         : "img/icns/color/disallow/64.png";
 }
 
-function updateContentScriptSettings() {
-    extensionApi.storage.local.get(
-        [
-            "iframeBehavior",
-            "iframeButton",
-            "autoRedirectLinks",
-            "urlRulesConfig",
-        ],
-        (result = {}) => {
-            const iframeBehaviorSetting =
-                normalizeIframeBehavior(result.iframeBehavior) ||
-                normalizeIframeBehavior(result.iframeButton) ||
-                "iframeBehaviorReplace";
-            const autoRedirectSetting =
-                result.autoRedirectLinks || "autoRedirectLinksNo";
-
-            urlRulesConfig = normalizeUrlRulesConfig(
-                result.urlRulesConfig
-            );
-
-            const buttonName =
-                getMessageByKey("ui.iframeButton.redirect") || "Watch on";
-
-            extensionApi.tabs.query(
-                { active: true, currentWindow: true },
-                (tabs) => {
-                    if (!tabs || !tabs.length) {
-                        return;
-                    }
-                    extensionApi.tabs.sendMessage(
-                        tabs[0].id,
-                        {
-                            redirecttubeButtonName: buttonName,
-                            redirecttubeIframeBehavior: iframeBehaviorSetting,
-                            redirecttubeAutoRedirect: autoRedirectSetting,
-                            redirecttubeUrlRulesConfig: urlRulesConfig,
-                        },
-                        () => extensionApi.runtime.lastError
-                    );
-                }
-            );
-        }
-    );
+function loadUrlRulesConfig() {
+    extensionApi.storage.local.get(STORAGE_KEYS.urlRulesConfig, (result = {}) => {
+        urlRulesConfig = normalizeUrlRulesConfig(
+            result[STORAGE_KEYS.urlRulesConfig]
+        );
+    });
 }
-
-const DEFAULT_ALLOW_PREFIXES = [
-    "/watch",
-    "/playlist",
-    "/@",
-    "/channel/",
-    "/live/",
-    "/shorts/",
-    "/podcasts",
-    "/gaming",
-    "/feed/subscriptions",
-    "/feed/library",
-    "/feed/you",
-    "/post/",
-    "/hashtag/",
-    "/results",
-    "/",
-];
-
-const DEFAULT_DENY_PREFIXES = [
-    "/signin",
-    "/logout",
-    "/login",
-    "/oops",
-    "/error",
-    "/verify",
-    "/consent",
-    "/account",
-    "/premium",
-    "/paid_memberships",
-    "/s/ads",
-    "/pagead",
-    "/embed/",
-    "/iframe_api",
-    "/api/",
-    "/t/terms",
-    "/about/",
-    "/howyoutubeworks/",
-];
 
 function getDefaultUrlRulesConfig() {
     return {
@@ -229,15 +137,6 @@ function normalizePrefixList(list) {
     );
 }
 
-function loadUrlRulesConfig(callback) {
-    extensionApi.storage.local.get("urlRulesConfig", (result = {}) => {
-        urlRulesConfig = normalizeUrlRulesConfig(result.urlRulesConfig);
-        if (typeof callback === "function") {
-            callback(urlRulesConfig);
-        }
-    });
-}
-
 function pathMatchesPrefix(path, prefixes) {
     return prefixes.some((prefix) => path.startsWith(prefix));
 }
@@ -271,11 +170,6 @@ function isRedirectableYoutubeUrl(url, config = urlRulesConfig) {
         return false;
     }
 }
-
-let lastUrlAllowed = false;
-let isDarkThemePreferred = false;
-let currentMenuLang = null;
-let urlRulesConfig = getDefaultUrlRulesConfig();
 
 extensionApi.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === "openInFreeTube" && info.linkUrl) {
