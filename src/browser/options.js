@@ -375,9 +375,7 @@ function restoreOptions() {
             iframeBehavior;
         document.getElementById("iframeBehavior").value = storedIframeBehavior;
         document.getElementById("iframeEnhancedPreview").value =
-            Boolean(result.iframeEnhancedPreview ?? false)
-                ? "1"
-                : "0";
+            (result.iframeEnhancedPreview ?? false) ? "1" : "0";
         document.querySelector(
             'input[name="extensionIcon"][value="' +
                 (result.extensionIcon || extensionIcon) +
