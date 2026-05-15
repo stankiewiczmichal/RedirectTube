@@ -61,6 +61,10 @@ body {
     gap: 10px;
 }
 
+.header.no-title {
+    justify-content: center;
+}
+
 .logo {
     width: min(144px, 48vw);
     height: auto;
@@ -68,11 +72,17 @@ body {
 }
 
 .panel {
-    width: min(100%, 860px);
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    margin-top: 8px;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: linear-gradient(180deg, rgba(9, 12, 18, 0.68), rgba(8, 10, 15, 0.55));
+    background: #000000b4;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 h1 {
@@ -121,15 +131,18 @@ a:hover {
 .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 7px;
-    margin-top: 8px;
+    width: 100%;
+    max-width: 512px;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 8px;
 }
 
 button {
     padding: 0.58em 1em;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    background-color: rgba(14, 18, 24, 0.55);
+    border: none;
+    background-color: rgba(28, 28, 28, 0.55);
     color: #f8fafc;
     font-size: clamp(0.82rem, 2vw, 0.9rem);
     font-weight: 600;
