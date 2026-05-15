@@ -23,7 +23,7 @@ You can install RedirectTube from the Firefox Add-ons.
 
 #### Method 2: Manual Firefox installation
 
-1. Download the latest release of RedirectTube (file that ends with `-signed.xpi`) from the [releases page](https://github.com/MStankiewiczOfficial/RedirectTube/releases/). If you see an alert about installing add-ons from untrusted sources, click "Continue installation" and don’t proceed with the next steps.
+1. Download the latest release of RedirectTube (file that ends with `-signed.xpi`) from the [releases page](https://github.com/stankiewiczmichal/RedirectTube/releases/). If you see an alert about installing add-ons from untrusted sources, click "Continue installation" and don’t proceed with the next steps.
 2. Open the downloaded file in Firefox.
 3. Click "Add" to install the extension.
    And that's it! RedirectTube is now installed in your browser.
@@ -56,7 +56,7 @@ You can install RedirectTube from the Chrome Web Store.
 > [!NOTE]
 > The Chromium build is unsigned and must be reloaded manually whenever you download a new release.
 
-1. Download the latest release archive that ends with `-chromium-unsigned.zip` from the [releases page](https://github.com/MStankiewiczOfficial/RedirectTube/releases/).
+1. Download the latest release archive that ends with `-chromium-unsigned.zip` from the [releases page](https://github.com/stankiewiczmichal/RedirectTube/releases/).
 2. Extract the ZIP file to a directory you want to keep (the browser needs to access the extracted files).
 3. Open `chrome://extensions` (or the equivalent extensions page in your Chromium browser).
 4. Enable **Developer mode**.
@@ -95,7 +95,7 @@ You can enable auto-redirect in the extension options. When enabled, any YouTube
 
 ## Issues
 
-If you encounter any issues, please report them on the [issues page](https://github.com/MStankiewiczOfficial/RedirectTube/issues/).
+If you encounter any issues, please report them on the [issues page](https://github.com/stankiewiczmichal/RedirectTube/issues/).
 
 ## Translation
 

@@ -2,7 +2,7 @@
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
     "author": "Michał Stankiewicz",
-    "version": "1.14.0",
+    "version": "1.14.1",
     "manifest_version": 3,
     "default_locale": "en",
     "icons": {

@@ -69,13 +69,13 @@ opinionButton.addEventListener("click", function () {
 
 suggestionButton.addEventListener("click", function () {
     openExternalLink(
-        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+"
+        "https://github.com/stankiewiczmichal/RedirectTube/issues/new?assignees=stankiewiczmichal&labels=enhancement&projects=&template=feature-request.yml&title=%5BFR%5D%3A+"
     );
 });
 
 issueButton.addEventListener("click", function () {
     openExternalLink(
-        "https://github.com/MStankiewiczOfficial/RedirectTube/issues/new?assignees=MStankiewiczOfficial&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+"
+        "https://github.com/stankiewiczmichal/RedirectTube/issues/new?assignees=stankiewiczmichal&labels=bug&projects=&template=bug-report.yml&title=%5BBug%5D%3A+"
     );
 });
 

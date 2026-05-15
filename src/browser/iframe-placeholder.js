@@ -13,6 +13,7 @@
     const settingsLink = document.getElementById("settingsLink");
     const mediaLayer = document.getElementById("mediaLayer");
     const videoTitle = document.getElementById("videoTitle");
+    const header = document.querySelector(".header");
     const previewThumbnailCache = new Map();
     const previewTitleCache = new Map();
     const MAX_PREVIEW_CACHE_SIZE = 25;
@@ -109,11 +110,17 @@
         if (!enhancedPreviewEnabled || !resolvedTitle) {
             videoTitle.hidden = true;
             videoTitle.textContent = "";
+            if (header) {
+                header.classList.add("no-title");
+            }
             return;
         }
 
         videoTitle.textContent = resolvedTitle;
         videoTitle.hidden = false;
+        if (header) {
+            header.classList.remove("no-title");
+        }
     }
 
     function setupEnhancedPreview() {
