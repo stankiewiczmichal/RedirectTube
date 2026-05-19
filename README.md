@@ -1,5 +1,5 @@
 <p align="center">
-   <img src="/assets/banner.jpg" title="RedirectTube">
+   <img src="/assets/banner.png" title="RedirectTube">
    <br>
    <a href="https://addons.mozilla.org/firefox/addon/redirecttube/"><img src="https://img.shields.io/amo/rating/redirecttube%40stankiewiczm.eu?style=for-the-badge&logo=firefox&logoColor=white&label=Mozilla%20Add-ons%20Rating"></a> <a href="https://chromewebstore.google.com/detail/jpbaggklodpddjcadlebabhiopjkjfjh/"><img src="https://img.shields.io/chrome-web-store/rating/jpbaggklodpddjcadlebabhiopjkjfjh?style=for-the-badge&logo=chromewebstore&logoColor=white&label=Chrome%20Web%20Store%20Rating"></a>
    <br>
@@ -83,7 +83,7 @@ Once built, load the browser-specific folder from `dist/` via your browser's dev
 ### Via button or via context menu
 
 Click the RedirectTube button in the toolbar to open the current YouTube video in FreeTube. Right-click a YouTube link and select "Open in FreeTube" to open the video in FreeTube.
-![](/assets/info.jpg)
+![](/assets/info.png)
 
 ### Auto-redirect
 You can enable auto-redirect in the extension options. When enabled, any YouTube link you open will automatically open in FreeTube instead.
