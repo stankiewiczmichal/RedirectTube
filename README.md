@@ -83,6 +83,7 @@ Once built, load the browser-specific folder from `dist/` via your browser's dev
 ### Via button or via context menu
 
 Click the RedirectTube button in the toolbar to open the current YouTube video in FreeTube. Right-click a YouTube link and select "Open in FreeTube" to open the video in FreeTube.
+
 ![](/assets/info.png)
 
 ### Auto-redirect
