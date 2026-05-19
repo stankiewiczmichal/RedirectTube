@@ -16,11 +16,6 @@
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
             "affiliation": "RedirectTube is niet verbonden aan FreeTube of de makers ervan.<br>FreeTube wordt uitgebracht onder de voorwaarden van de <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0-licentie</a>.<br>De naam ‘FreeTube’ en het FreeTube-logo zijn eigendom van de <a href=\"https://docs.freetubeapp.io/credits/\">makers van FreeTube</a>."
         },
-        "iframeButton": {
-            "label": "Knop op iframes tonen",
-            "yes": "Ja",
-            "no": "Nee"
-        },
         "page": {
             "title": "RedirectTube"
         },
@@ -65,8 +60,7 @@
             "redirect": "Website openen in FreeTube",
             "issue": "Meld een probleem",
             "options": "Instellingen",
-            "suggestion": "Deel een idee",
-            "translationHelp": "Helpen met vertalen"
+            "suggestion": "Deel een idee"
         },
         "error": {
             "e404": "Deze pagina kan niet worden geopend in FreeTube."

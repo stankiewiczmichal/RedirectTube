@@ -6,8 +6,7 @@
             "redirect": "Ava see sait FreeTube'is",
             "issue": "Teata veast või probleemist",
             "options": "Valikud",
-            "suggestion": "Soovita muudatusi",
-            "translationHelp": "Aita tõlkimisega"
+            "suggestion": "Soovita muudatusi"
         },
         "beta": {
             "label": "Beeta"
@@ -41,11 +40,6 @@
             "kofi": "Kui sulle see laiendus meeldib, <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">siis osta mulle teed</a> 🍵",
             "version": "RedirectTube'i versioon <span id=\"version\">X.Y.Z</span>",
             "affiliation": "RedirectTube pole seotud FreeTube'i ega tema loojatega.<br>FreeTube on litsentseeritud <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0 litsentsi alusel</a>.<br>Nimi „FreeTube“ ja FreeTube'i logo on <a href=\"https://docs.freetubeapp.io/credits/\">FreeTube'i loojate</a> omand."
-        },
-        "iframeButton": {
-            "label": "Näita nuppu iframe'ide puhul",
-            "yes": "Jah",
-            "no": "Ei"
         },
         "page": {
             "title": "RedirectTube"
