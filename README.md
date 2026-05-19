@@ -80,15 +80,10 @@ Once built, load the browser-specific folder from `dist/` via your browser's dev
 
 ## Usage
 
-### Via button
+### Via button or via context menu
 
-Click the RedirectTube button in the toolbar to open the current YouTube video in FreeTube.
-![](/assets/toolbar.jpg)
-
-### Via context menu
-
-Right-click a YouTube link and select "Open in FreeTube" to open the video in FreeTube.
-![](/assets/context-menu.jpg)
+Click the RedirectTube button in the toolbar to open the current YouTube video in FreeTube. Right-click a YouTube link and select "Open in FreeTube" to open the video in FreeTube.
+![](/assets/info.jpg)
 
 ### Auto-redirect
 You can enable auto-redirect in the extension options. When enabled, any YouTube link you open will automatically open in FreeTube instead.
