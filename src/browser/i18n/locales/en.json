@@ -42,6 +42,11 @@
         "page": {
             "title": "RedirectTube"
         },
+        "categories": {
+            "general": "General",
+            "advanced": "Advanced",
+            "help": "Help"
+        },
         "options": {
             "title": "Options"
         },
@@ -57,7 +62,8 @@
             "label": "iFrame behavior",
             "none": "Nothing",
             "replace": "Replace",
-            "enhancedPreview": "Show thumbnail background and video title in iFrame placeholder (may connect to Google servers)"
+            "enhancedPreview": "Show thumbnail background and video title in iFrame placeholder",
+            "enhancedPreviewDescription": "May connect to Google servers."
         },
         "extensionIcon": {
             "label": "Extension icon"
