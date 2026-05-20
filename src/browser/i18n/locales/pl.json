@@ -57,7 +57,8 @@
             "label": "Zachowanie ramek iFrame",
             "none": "Nic nie rób",
             "replace": "Zastąp",
-            "enhancedPreview": "Pokaż tło z miniatury i tytuł filmu w placeholderze iFrame (może łączyć z serwerami Google)"
+            "enhancedPreview": "Pokaż tło z miniatury i tytuł filmu w placeholderze iFrame",
+            "enhancedPreviewDescription": "Może łączyć się z serwerami Google."
         },
         "extensionIcon": {
             "label": "Ikona rozszerzenia"
@@ -87,6 +88,11 @@
             "customNote": "Dozwolone są tylko prefiksy ścieżek. Nie dołączaj domeny.",
             "deniedLabel": "Zawsze zablokowane:",
             "reset": "Przywróć domyślne ustawienia"
+        },
+        "categories": {
+            "general": "Ogólne",
+            "advanced": "Zaawansowane",
+            "help": "Pomoc"
         }
     },
     "popup": {
@@ -112,5 +118,10 @@
             "after_link": "."
         },
         "warning": "Nie można odczytać oryginalnego adresu URL filmu. Odśwież stronę."
+    },
+    "optionsplaceholder": {
+        "open": {
+            "button": "Otwórz opcje"
+        }
     }
 }
