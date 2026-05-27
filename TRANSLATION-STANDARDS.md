@@ -1,6 +1,6 @@
 # Translation Standards for RedirectTube
 
-All translations for RedirectTube are managed via the Codeberg platform: https://translate.codeberg.org/projects/redirecttube
+All translations for RedirectTube are managed via the Weblate platform: https://hosted.weblate.org/projects/redirecttube/
 
 ## General Requirements
 - Translations must be clear, contextually accurate, and user-friendly.
@@ -16,13 +16,14 @@ All translations for RedirectTube are managed via the Codeberg platform: https:/
 - Each translation should be reviewed for linguistic and technical accuracy.
 
 ## Translation Maintenance Policy
-- Translations that remain below 85% completion for three consecutive feature releases (i.e., versions introducing new features, not patch or bugfix releases) or for at least one month (whichever is longer) will be removed from the extension. This does not affect their availability on the Codeberg platform.
+- Translations that remain below 85% completion for three consecutive feature releases (i.e., versions introducing new features, not patch or bugfix releases) or for at least one month (whichever is longer) will be removed from the extension. This does not affect their availability on the Weblate platform.
 - Removed translations can be reintroduced once they meet the 85% completion requirement and pass the review process.
 
 ## Platform
-- All translations must be submitted and managed via the Codeberg platform: https://translate.codeberg.org/projects/redirecttube
-- Do not submit translations as files or pull requests; use the Codeberg interface for all contributions.
+- All translations must be submitted and managed via the Weblate platform: https://hosted.weblate.org/projects/redirecttube/
+- Do not submit translations as files or pull requests; use the Weblate interface for all contributions.
 
 ## Final Notes
 - Translations should reflect the spirit of the RedirectTube project and help users of the target language use the extension easily.
-- Suggestions and corrections can be submitted via the project's GitHub page or directly on the Codeberg translation platform.
+- Suggestions and corrections can be submitted via the project's GitHub page or directly on the Weblate translation platform.
+- By contributing translations, you agree to share them under the CC0 1.0 license and allow them to be included in the extension's releases.
