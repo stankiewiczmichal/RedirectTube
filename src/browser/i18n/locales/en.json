@@ -4,6 +4,9 @@
         "createdby": "Created with ❤️ by <a href=\"https://www.stankiewiczm.eu\" target=\"_blank\">Michał Stankiewicz</a>",
         "button": {
             "redirect": "Open this site in FreeTube",
+            "redirect_freetube": "Open this site in FreeTube",
+            "redirect_invidious": "Open this site in Invidious",
+            "redirect_piped": "Open this site in Piped",
             "options": "Options",
             "opinion": "Give your opinion",
             "suggestion": "Make a suggestion",
@@ -31,6 +34,29 @@
     "introduction": {
         "page": {
             "title": "RedirectTube • Introduction"
+        },
+        "step1": {
+            "title": "Choose your YouTube player",
+            "next": "Next"
+        },
+        "step2": {
+            "title": "Set up your selected player",
+            "back": "Back",
+            "finish": "Finish",
+            "freetube": {
+                "title": "FreeTube requires the desktop app",
+                "body": "Download FreeTube before continuing.",
+                "download": "Download FreeTube"
+            },
+            "instance": {
+                "title": "Choose your preferred instance",
+                "label": "Preferred instance URL",
+                "check": "Check instance",
+                "checking": "Checking instance...",
+                "valid": "The instance looks valid.",
+                "invalid": "This instance could not be verified.",
+                "required": "Enter an instance URL to continue."
+            }
         },
         "usage": {
             "title": "Usage",
@@ -67,6 +93,14 @@
         },
         "extensionIcon": {
             "label": "Extension icon"
+        },
+        "playerSettings": {
+            "label": "Preferred player",
+            "freetube": "FreeTube",
+            "invidious": "Invidious",
+            "piped": "Piped",
+            "invidiousInstance": "Preferred Invidious instance",
+            "pipedInstance": "Preferred Piped instance"
         },
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
