@@ -9,6 +9,9 @@ let redirecttubeButtonLabel =
 let isTopLevelDocument = false;
 let iframeSettingsReady = false;
 let redirecttubeUrlRulesConfig = getDefaultUrlRulesConfig();
+let redirecttubeSelectedPlayer = "freetube";
+let redirecttubePreferredInvidiousInstance = "https://yewtu.be";
+let redirecttubePreferredPipedInstance = "https://piped.video";
 
 const iframeMetadata = new WeakMap();
 const iframePlaceholderUrl = extensionApi.runtime.getURL(
@@ -287,7 +290,7 @@ function handleIframePromptMessage(event) {
     }
 
     if (data.action === "freetube") {
-        redirecttubeOpenInFreeTube(metadata.originalSrc);
+        redirecttubeOpenInSelectedPlayer(metadata.originalSrc);
         return;
     }
 
@@ -335,6 +338,9 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
             STORAGE_KEYS.iframeEnhancedPreview,
             STORAGE_KEYS.autoRedirectLinks,
             STORAGE_KEYS.urlRulesConfig,
+            STORAGE_KEYS.selectedPlayer,
+            STORAGE_KEYS.preferredInvidiousInstance,
+            STORAGE_KEYS.preferredPipedInstance,
         ],
         (result = {}) => {
             const previousBehavior = redirecttubeIframeBehavior;
@@ -352,6 +358,13 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
             redirecttubeUrlRulesConfig = normalizeUrlRulesConfig(
                 result[STORAGE_KEYS.urlRulesConfig]
             );
+
+            redirecttubeSelectedPlayer =
+                result[STORAGE_KEYS.selectedPlayer] || "freetube";
+            redirecttubePreferredInvidiousInstance =
+                result[STORAGE_KEYS.preferredInvidiousInstance] || "https://yewtu.be";
+            redirecttubePreferredPipedInstance =
+                result[STORAGE_KEYS.preferredPipedInstance] || "https://piped.video";
 
             const shouldRefresh =
                 !iframeSettingsReady ||
@@ -455,7 +468,7 @@ function handleDocumentClick(event) {
 
     event.preventDefault();
     event.stopPropagation();
-    redirecttubeOpenInFreeTube(resolvedUrl);
+    redirecttubeOpenInSelectedPlayer(resolvedUrl);
 }
 
 function resolveAbsoluteUrl(href) {
@@ -473,9 +486,114 @@ function shouldRedirectUrl(url) {
     return isRedirectableYoutubeUrl(url, redirecttubeUrlRulesConfig);
 }
 
-function redirecttubeOpenInFreeTube(src) {
-    let newUrl = "freetube://" + src;
+function redirecttubeOpenInSelectedPlayer(youtubeUrl) {
+    let newUrl;
+    
+    switch (redirecttubeSelectedPlayer) {
+        case "invidious":
+            newUrl = convertYouTubeToInvidious(youtubeUrl, redirecttubePreferredInvidiousInstance);
+            break;
+        case "piped":
+            newUrl = convertYouTubeToPiped(youtubeUrl, redirecttubePreferredPipedInstance);
+            break;
+        case "freetube":
+        default:
+            newUrl = "freetube://" + youtubeUrl;
+            break;
+    }
+    
     window.location.assign(newUrl);
+}
+
+function convertYouTubeToInvidious(youtubeUrl, instanceUrl) {
+    try {
+        const url = new URL(youtubeUrl);
+        const params = url.searchParams;
+        const instanceBase = new URL(instanceUrl).origin;
+        
+        // Handle /watch?v=XXX
+        if (url.pathname.includes("/watch") && params.has("v")) {
+            const videoId = params.get("v");
+            const listId = params.get("list");
+            
+            let invidiousUrl = instanceBase + "/watch?v=" + videoId;
+            if (listId) {
+                invidiousUrl += "&list=" + listId;
+            }
+            return invidiousUrl;
+        }
+        
+        // Handle /playlist?list=XXX
+        if (url.pathname.includes("/playlist") && params.has("list")) {
+            const listId = params.get("list");
+            return instanceBase + "/playlist?list=" + listId;
+        }
+        
+        // Handle youtu.be/videoId (short URL)
+        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
+            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
+            if (videoId) {
+                let invidiousUrl = instanceBase + "/watch?v=" + videoId;
+                if (params.has("list")) {
+                    invidiousUrl += "&list=" + params.get("list");
+                }
+                return invidiousUrl;
+            }
+        }
+        
+        // If URL is recognized but has no video/playlist ID, return instance URL
+            // For other cases (channels, users, @handles, etc.), preserve path and query
+            const suffix = (url.pathname || "") + (url.search || "");
+            return instanceBase + suffix;
+    } catch (error) {
+        console.error("Error converting to Invidious URL:", error);
+        return youtubeUrl;
+    }
+}
+
+function convertYouTubeToPiped(youtubeUrl, instanceUrl) {
+    try {
+        const url = new URL(youtubeUrl);
+        const params = url.searchParams;
+        const instanceBase = new URL(instanceUrl).origin;
+        
+        // Handle /watch?v=XXX
+        if (url.pathname.includes("/watch") && params.has("v")) {
+            const videoId = params.get("v");
+            const listId = params.get("list");
+            
+            let pipedUrl = instanceBase + "/watch?v=" + videoId;
+            if (listId) {
+                pipedUrl += "&list=" + listId;
+            }
+            return pipedUrl;
+        }
+        
+        // Handle /playlist?list=XXX
+        if (url.pathname.includes("/playlist") && params.has("list")) {
+            const listId = params.get("list");
+            return instanceBase + "/playlist?list=" + listId;
+        }
+        
+        // Handle youtu.be/videoId (short URL)
+        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
+            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
+            if (videoId) {
+                let pipedUrl = instanceBase + "/watch?v=" + videoId;
+                if (params.has("list")) {
+                    pipedUrl += "&list=" + params.get("list");
+                }
+                return pipedUrl;
+            }
+        }
+        
+        // For other cases (channels, users, @handles, etc.), preserve path and query
+        const suffix = (url.pathname || "") + (url.search || "");
+        return instanceBase + suffix;
+    } catch (error) {
+        console.error("Error converting to Piped URL:", error);
+        return youtubeUrl;
+    }
 }
 
 function getDefaultButtonLabel() {

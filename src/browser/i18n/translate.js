@@ -21,22 +21,30 @@
         });
     }
 
+    function dispatchTranslationsLoaded() {
+        document.dispatchEvent(new Event("redirecttube:translations-loaded"));
+    }
+
+    function runTranslation() {
+        translateDocument()
+            .catch((error) =>
+                console.warn("Failed to translate document", error)
+            )
+            .finally(dispatchTranslationsLoaded);
+    }
+
     if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded",
             () => {
-                translateDocument().catch((error) =>
-                    console.warn("Failed to translate document", error)
-                );
+                runTranslation();
             },
             {
                 once: true,
             }
         );
     } else {
-        translateDocument().catch((error) =>
-            console.warn("Failed to translate document", error)
-        );
+        runTranslation();
     }
 
     function resolveLanguage() {

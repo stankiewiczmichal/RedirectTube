@@ -10,6 +10,10 @@ const STORAGE_KEYS = Object.freeze({
     iframeButton: "iframeButton",
     iframeEnhancedPreview: "iframeEnhancedPreview",
     autoRedirectLinks: "autoRedirectLinks",
+    selectedPlayer: "selectedPlayer",
+    preferredInvidiousInstance: "preferredInvidiousInstance",
+    preferredPipedInstance: "preferredPipedInstance",
+    introductionComplete: "introductionComplete",
 });
 
 const DEFAULT_ALLOW_PREFIXES = [
@@ -48,6 +52,7 @@ const DEFAULT_DENY_PREFIXES = [
     "/api/",
     "/t/terms",
     "/about/",
+    "/creator/",
     "/howyoutubeworks/",
 ];
 

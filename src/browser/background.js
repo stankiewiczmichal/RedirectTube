@@ -3,7 +3,7 @@ if (typeof RUNTIME_MESSAGES === "undefined" && typeof importScripts === "functio
     importScripts(extensionApi.runtime.getURL("shared.js"));
 }
 
-let cachedExtensionIcon = "color";
+let cachedExtensionIcon = "redirecttube-color";
 let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
@@ -13,7 +13,7 @@ extensionApi.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
         extensionApi.tabs.create({ url: "introduction.html" });
         extensionApi.storage.local.set({
-            extensionIcon: "color",
+            extensionIcon: "redirecttube-color",
             autoRedirectLinks: "autoRedirectLinksNo",
             iframeBehavior: "iframeBehaviorReplace",
             iframeEnhancedPreview: false,
@@ -27,7 +27,7 @@ extensionApi.runtime.onInstalled.addListener((details) => {
 
 extensionApi.runtime.onStartup.addListener(() => {
     extensionApi.storage.local.get(STORAGE_KEYS.extensionIcon, (result) => {
-        cachedExtensionIcon = result[STORAGE_KEYS.extensionIcon] || "color";
+        cachedExtensionIcon = result[STORAGE_KEYS.extensionIcon] || "redirecttube-color";
         updateActionIcon();
     });
 
@@ -55,7 +55,7 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
     }
 
     if (changes[STORAGE_KEYS.extensionIcon]) {
-        cachedExtensionIcon = changes[STORAGE_KEYS.extensionIcon].newValue || "color";
+        cachedExtensionIcon = changes[STORAGE_KEYS.extensionIcon].newValue || "redirecttube-color";
         updateActionIcon();
     }
 });
@@ -78,19 +78,24 @@ function updateActionIcon() {
 }
 
 function getIconPath(preference, isAllowed, isDarkMode) {
+    if (preference === "redirecttube-color") {
+        return isAllowed
+            ? "img/icns/redirecttube/color/allow/64.png"
+            : "img/icns/redirecttube/color/disallow/64.png";
+    }
     if (preference === "mono") {
         if (isDarkMode) {
             return isAllowed
-                ? "img/icns/mono/white/allow/64.png"
-                : "img/icns/mono/white/disallow/64.png";
+                ? "img/icns/freetube/mono/white/allow/64.png"
+                : "img/icns/freetube/mono/white/disallow/64.png";
         }
         return isAllowed
-            ? "img/icns/mono/black/allow/64.png"
-            : "img/icns/mono/black/disallow/64.png";
+            ? "img/icns/freetube/mono/black/allow/64.png"
+            : "img/icns/freetube/mono/black/disallow/64.png";
     }
     return isAllowed
-        ? "img/icns/color/allow/64.png"
-        : "img/icns/color/disallow/64.png";
+        ? "img/icns/freetube/color/allow/64.png"
+        : "img/icns/freetube/color/disallow/64.png";
 }
 
 function loadUrlRulesConfig() {
@@ -173,14 +178,123 @@ function isRedirectableYoutubeUrl(url, config = urlRulesConfig) {
 
 extensionApi.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === "openInFreeTube" && info.linkUrl) {
-        const newUrl = "freetube://" + info.linkUrl;
-        if (typeof info.tabId === "number") {
-            extensionApi.tabs.update(info.tabId, { url: newUrl });
-        } else {
-            extensionApi.tabs.update({ url: newUrl });
-        }
+        extensionApi.storage.local.get(
+            ["selectedPlayer", "preferredInvidiousInstance", "preferredPipedInstance"],
+            (result) => {
+                const selectedPlayer = result.selectedPlayer || "freetube";
+                const preferredInvidiousInstance = result.preferredInvidiousInstance || "https://yewtu.be";
+                const preferredPipedInstance = result.preferredPipedInstance || "https://piped.video";
+                
+                let newUrl;
+                
+                switch (selectedPlayer) {
+                    case "invidious":
+                        newUrl = convertYouTubeToInvidious(info.linkUrl, preferredInvidiousInstance);
+                        break;
+                    case "piped":
+                        newUrl = convertYouTubeToPiped(info.linkUrl, preferredPipedInstance);
+                        break;
+                    case "freetube":
+                    default:
+                        newUrl = "freetube://" + info.linkUrl;
+                        break;
+                }
+                
+                if (typeof info.tabId === "number") {
+                    extensionApi.tabs.update(info.tabId, { url: newUrl });
+                } else {
+                    extensionApi.tabs.update({ url: newUrl });
+                }
+            }
+        );
     }
 });
+
+function convertYouTubeToInvidious(youtubeUrl, instanceUrl) {
+    try {
+        const url = new URL(youtubeUrl);
+        const params = url.searchParams;
+        const instanceBase = new URL(instanceUrl).origin;
+        
+        if (url.pathname.includes("/watch") && params.has("v")) {
+            const videoId = params.get("v");
+            const listId = params.get("list");
+            
+            let invidiousUrl = instanceBase + "/watch?v=" + videoId;
+            if (listId) {
+                invidiousUrl += "&list=" + listId;
+            }
+            return invidiousUrl;
+        }
+        
+        if (url.pathname.includes("/playlist") && params.has("list")) {
+            const listId = params.get("list");
+            return instanceBase + "/playlist?list=" + listId;
+        }
+        
+        // Handle youtu.be/videoId (short URL)
+        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
+            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
+            if (videoId) {
+                let invidiousUrl = instanceBase + "/watch?v=" + videoId;
+                if (params.has("list")) {
+                    invidiousUrl += "&list=" + params.get("list");
+                }
+                return invidiousUrl;
+            }
+        }
+        
+        // Preserve path and query for channel/user pages or other YouTube paths
+        const suffix = (url.pathname || "") + (url.search || "");
+        return instanceBase + suffix;
+    } catch (error) {
+        console.error("Error converting to Invidious URL:", error);
+        return youtubeUrl;
+    }
+}
+
+function convertYouTubeToPiped(youtubeUrl, instanceUrl) {
+    try {
+        const url = new URL(youtubeUrl);
+        const params = url.searchParams;
+        const instanceBase = new URL(instanceUrl).origin;
+        
+        if (url.pathname.includes("/watch") && params.has("v")) {
+            const videoId = params.get("v");
+            const listId = params.get("list");
+            
+            let pipedUrl = instanceBase + "/watch?v=" + videoId;
+            if (listId) {
+                pipedUrl += "&list=" + listId;
+            }
+            return pipedUrl;
+        }
+        
+        if (url.pathname.includes("/playlist") && params.has("list")) {
+            const listId = params.get("list");
+            return instanceBase + "/playlist?list=" + listId;
+        }
+        
+        // Handle youtu.be/videoId (short URL)
+        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
+            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
+            if (videoId) {
+                let pipedUrl = instanceBase + "/watch?v=" + videoId;
+                if (params.has("list")) {
+                    pipedUrl += "&list=" + params.get("list");
+                }
+                return pipedUrl;
+            }
+        }
+        
+        // Preserve path and query for channel/user pages or other YouTube paths
+        const suffix = (url.pathname || "") + (url.search || "");
+        return instanceBase + suffix;
+    } catch (error) {
+        console.error("Error converting to Piped URL:", error);
+        return youtubeUrl;
+    }
+}
 
 function createContextMenu() {
     const lang = getBrowserLocale();

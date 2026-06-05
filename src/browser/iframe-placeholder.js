@@ -36,6 +36,21 @@
         setupSettingsLink();
         applyVideoTitle();
 
+        // Set dynamic label for the main action according to selected player
+        try {
+            const freetubeLabel = document.getElementById("freetubeLabel");
+            if (freetubeLabel && extensionApi && extensionApi.storage && extensionApi.storage.local) {
+                extensionApi.storage.local.get([STORAGE_KEYS.selectedPlayer], (res = {}) => {
+                    const selected = (res[STORAGE_KEYS.selectedPlayer] || "freetube").toLowerCase();
+                    const dynamicKey = "ui.button.redirect_" + selected;
+                    const label = getMessageByKey(dynamicKey) || getMessageByKey("ui.iframeButton.redirect") || freetubeLabel.textContent;
+                    freetubeLabel.textContent = label;
+                });
+            }
+        } catch (e) {
+            // ignore storage failures
+        }
+
         if (!videoUrl) {
             showWarning();
             return;

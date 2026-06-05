@@ -1,11 +1,12 @@
 @import url('colors.css');
+@import url('components.css');
 
 body {
     background-color: var(--background);
     color: var(--color);
     font-family: sans-serif;
     width: 300px;
-    padding: 0px;
+    padding: 1em 0px;
     margin: 0;
     cursor: default;
     -webkit-user-select: none;
@@ -16,63 +17,21 @@ body {
     width: 100%;
     padding: 0;
     text-align: center;
-    background-color: #7979793f;
 }
 
 .logo {
-    margin: 0;
+    margin: 0 auto;
     padding: 0.7em;
+    width: 128px;
 }
 
 #content {
-    padding: 0;
+    padding: 0.5em 16px;
 }
 
 #content button {
     width: 100%;
-    padding: 0.5em;
-    margin: 0;
-    border: #79797979 solid 1px;
-    background-color: #79797979;
-    color: var(--color);
-    font-size: 1em;
-    transition: all 0.15s;
-}
-
-#content button:hover {
-    background-color: #797979b9;
-}
-
-#content button:disabled {
-    background-color: #79797979;
-    color: #44444479;
-    cursor: not-allowed;
-}
-
-#content button.primary {
-    color: #fff;
-    background-color: #915050;
-    border: #a23131 solid 1px;
-}
-
-#content button.primary:hover {
-    background-color: #a23131;
-}
-
-#content button.primary:disabled {
-    background-color: #79797979;
-    color: #79797979;
-    border: #79797979 solid 1px;
-    cursor: not-allowed;
-}
-
-a {
-    color: var(--url);
-    transition: all 0.3s;
-}
-
-a:hover {
-    color: var(--url-hover);
+    margin: 0.25em 0;
 }
 
 #errorText {
