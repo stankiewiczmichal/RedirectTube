@@ -306,13 +306,13 @@
         const youtubeLabel = document.getElementById("youtubeLabel");
 
         if (headline) {
-            headline.textContent = `${fallbackLabel} FreeTube or YouTube`;
+            headline.textContent = `${fallbackLabel} or YouTube`;
         }
         if (message) {
             message.textContent = "RedirectTube lets you decide how to open embedded videos.";
         }
         if (freetubeLabel) {
-            freetubeLabel.textContent = `${fallbackLabel} FreeTube`;
+            freetubeLabel.textContent = `${fallbackLabel}`;
         }
         if (youtubeLabel) {
             youtubeLabel.textContent = `${fallbackLabel} YouTube`;

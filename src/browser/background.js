@@ -4,6 +4,9 @@ if (typeof RUNTIME_MESSAGES === "undefined" && typeof importScripts === "functio
 }
 
 let cachedExtensionIcon = "redirecttube-color";
+let cachedSelectedPlayer = "freetube";
+let cachedPreferredInvidiousInstance = DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
+let cachedPreferredPipedInstance = DEFAULT_PREFERRED_PIPED_INSTANCE;
 let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
@@ -26,10 +29,27 @@ extensionApi.runtime.onInstalled.addListener((details) => {
 });
 
 extensionApi.runtime.onStartup.addListener(() => {
-    extensionApi.storage.local.get(STORAGE_KEYS.extensionIcon, (result) => {
-        cachedExtensionIcon = result[STORAGE_KEYS.extensionIcon] || "redirecttube-color";
-        updateActionIcon();
-    });
+    extensionApi.storage.local.get(
+        [
+            STORAGE_KEYS.extensionIcon,
+            STORAGE_KEYS.selectedPlayer,
+            STORAGE_KEYS.preferredInvidiousInstance,
+            STORAGE_KEYS.preferredPipedInstance,
+        ],
+        (result = {}) => {
+            cachedExtensionIcon =
+                result[STORAGE_KEYS.extensionIcon] || "redirecttube-color";
+            cachedSelectedPlayer =
+                result[STORAGE_KEYS.selectedPlayer] || "freetube";
+            cachedPreferredInvidiousInstance =
+                result[STORAGE_KEYS.preferredInvidiousInstance] ||
+                DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
+            cachedPreferredPipedInstance =
+                result[STORAGE_KEYS.preferredPipedInstance] ||
+                DEFAULT_PREFERRED_PIPED_INSTANCE;
+            updateActionIcon();
+        }
+    );
 
     loadUrlRulesConfig();
     createContextMenu();
@@ -57,6 +77,21 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
     if (changes[STORAGE_KEYS.extensionIcon]) {
         cachedExtensionIcon = changes[STORAGE_KEYS.extensionIcon].newValue || "redirecttube-color";
         updateActionIcon();
+    }
+
+    if (changes[STORAGE_KEYS.selectedPlayer]) {
+        cachedSelectedPlayer =
+            changes[STORAGE_KEYS.selectedPlayer].newValue || "freetube";
+    }
+    if (changes[STORAGE_KEYS.preferredInvidiousInstance]) {
+        cachedPreferredInvidiousInstance =
+            changes[STORAGE_KEYS.preferredInvidiousInstance].newValue ||
+            DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
+    }
+    if (changes[STORAGE_KEYS.preferredPipedInstance]) {
+        cachedPreferredPipedInstance =
+            changes[STORAGE_KEYS.preferredPipedInstance].newValue ||
+            DEFAULT_PREFERRED_PIPED_INSTANCE;
     }
 });
 
@@ -106,195 +141,22 @@ function loadUrlRulesConfig() {
     });
 }
 
-function getDefaultUrlRulesConfig() {
-    return {
-        mode: "allowList",
-        allow: [...DEFAULT_ALLOW_PREFIXES],
-        deny: [...DEFAULT_DENY_PREFIXES],
-    };
-}
-
-function normalizeUrlRulesConfig(rawConfig) {
-    const base = getDefaultUrlRulesConfig();
-    if (!rawConfig || typeof rawConfig !== "object") {
-        return base;
-    }
-    const mode = rawConfig.mode === "allowAllExcept" ? "allowAllExcept" : "allowList";
-    const allow = Array.isArray(rawConfig.allow)
-        ? normalizePrefixList(rawConfig.allow)
-        : base.allow;
-    return {
-        mode,
-        allow,
-        deny: base.deny,
-    };
-}
-
-function normalizePrefixList(list) {
-    return Array.from(
-        new Set(
-            list
-                .map((item) => (typeof item === "string" ? item.trim() : ""))
-                .filter((item) => item.startsWith("/"))
-                .map((item) => item.toLowerCase())
-                .filter(Boolean)
-        )
-    );
-}
-
-function pathMatchesPrefix(path, prefixes) {
-    return prefixes.some((prefix) => path.startsWith(prefix));
-}
-
-function isRedirectableYoutubeUrl(url, config = urlRulesConfig) {
-    try {
-        const parsedUrl = new URL(url);
-        const host = parsedUrl.hostname.toLowerCase();
-
-        if (host === "youtu.be") {
-            return parsedUrl.pathname.length > 1;
-        }
-
-        if (!host.endsWith("youtube.com")) {
-            return false;
-        }
-
-        const path = (parsedUrl.pathname || "/").toLowerCase();
-        const normalizedConfig = normalizeUrlRulesConfig(config);
-
-        if (pathMatchesPrefix(path, normalizedConfig.deny)) {
-            return false;
-        }
-
-        if (normalizedConfig.mode === "allowAllExcept") {
-            return true;
-        }
-
-        return pathMatchesPrefix(path, normalizedConfig.allow);
-    } catch (error) {
-        return false;
-    }
-}
-
 extensionApi.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === "openInFreeTube" && info.linkUrl) {
-        extensionApi.storage.local.get(
-            ["selectedPlayer", "preferredInvidiousInstance", "preferredPipedInstance"],
-            (result) => {
-                const selectedPlayer = result.selectedPlayer || "freetube";
-                const preferredInvidiousInstance = result.preferredInvidiousInstance || "https://yewtu.be";
-                const preferredPipedInstance = result.preferredPipedInstance || "https://piped.video";
-                
-                let newUrl;
-                
-                switch (selectedPlayer) {
-                    case "invidious":
-                        newUrl = convertYouTubeToInvidious(info.linkUrl, preferredInvidiousInstance);
-                        break;
-                    case "piped":
-                        newUrl = convertYouTubeToPiped(info.linkUrl, preferredPipedInstance);
-                        break;
-                    case "freetube":
-                    default:
-                        newUrl = "freetube://" + info.linkUrl;
-                        break;
-                }
-                
-                if (typeof info.tabId === "number") {
-                    extensionApi.tabs.update(info.tabId, { url: newUrl });
-                } else {
-                    extensionApi.tabs.update({ url: newUrl });
-                }
-            }
+        const newUrl = buildRedirectUrl(
+            info.linkUrl,
+            cachedSelectedPlayer,
+            cachedPreferredInvidiousInstance,
+            cachedPreferredPipedInstance
         );
+
+        if (typeof info.tabId === "number") {
+            extensionApi.tabs.update(info.tabId, { url: newUrl });
+        } else {
+            extensionApi.tabs.update({ url: newUrl });
+        }
     }
 });
-
-function convertYouTubeToInvidious(youtubeUrl, instanceUrl) {
-    try {
-        const url = new URL(youtubeUrl);
-        const params = url.searchParams;
-        const instanceBase = new URL(instanceUrl).origin;
-        
-        if (url.pathname.includes("/watch") && params.has("v")) {
-            const videoId = params.get("v");
-            const listId = params.get("list");
-            
-            let invidiousUrl = instanceBase + "/watch?v=" + videoId;
-            if (listId) {
-                invidiousUrl += "&list=" + listId;
-            }
-            return invidiousUrl;
-        }
-        
-        if (url.pathname.includes("/playlist") && params.has("list")) {
-            const listId = params.get("list");
-            return instanceBase + "/playlist?list=" + listId;
-        }
-        
-        // Handle youtu.be/videoId (short URL)
-        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
-            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
-            if (videoId) {
-                let invidiousUrl = instanceBase + "/watch?v=" + videoId;
-                if (params.has("list")) {
-                    invidiousUrl += "&list=" + params.get("list");
-                }
-                return invidiousUrl;
-            }
-        }
-        
-        // Preserve path and query for channel/user pages or other YouTube paths
-        const suffix = (url.pathname || "") + (url.search || "");
-        return instanceBase + suffix;
-    } catch (error) {
-        console.error("Error converting to Invidious URL:", error);
-        return youtubeUrl;
-    }
-}
-
-function convertYouTubeToPiped(youtubeUrl, instanceUrl) {
-    try {
-        const url = new URL(youtubeUrl);
-        const params = url.searchParams;
-        const instanceBase = new URL(instanceUrl).origin;
-        
-        if (url.pathname.includes("/watch") && params.has("v")) {
-            const videoId = params.get("v");
-            const listId = params.get("list");
-            
-            let pipedUrl = instanceBase + "/watch?v=" + videoId;
-            if (listId) {
-                pipedUrl += "&list=" + listId;
-            }
-            return pipedUrl;
-        }
-        
-        if (url.pathname.includes("/playlist") && params.has("list")) {
-            const listId = params.get("list");
-            return instanceBase + "/playlist?list=" + listId;
-        }
-        
-        // Handle youtu.be/videoId (short URL)
-        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
-            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
-            if (videoId) {
-                let pipedUrl = instanceBase + "/watch?v=" + videoId;
-                if (params.has("list")) {
-                    pipedUrl += "&list=" + params.get("list");
-                }
-                return pipedUrl;
-            }
-        }
-        
-        // Preserve path and query for channel/user pages or other YouTube paths
-        const suffix = (url.pathname || "") + (url.search || "");
-        return instanceBase + suffix;
-    } catch (error) {
-        console.error("Error converting to Piped URL:", error);
-        return youtubeUrl;
-    }
-}
 
 function createContextMenu() {
     const lang = getBrowserLocale();
@@ -302,8 +164,11 @@ function createContextMenu() {
         return;
     }
     currentMenuLang = lang;
-    const title =
-        getMessageByKey("ui.contextMenu.redirect") || "Open in FreeTube";
+    // Prefer a player-specific context menu title when possible
+    const perPlayerKey = "ui.contextMenu.redirect_" + (cachedSelectedPlayer || "freetube");
+    let title = getMessageByKey(perPlayerKey) || getMessageByKey("ui.contextMenu.redirect") || "Open in FreeTube";
+    const playerLabel = getMessageByKey("options.playerSettings." + (cachedSelectedPlayer || "freetube")) || (cachedSelectedPlayer || "freetube");
+    title = title.replace(/FreeTube/g, playerLabel);
 
     extensionApi.contextMenus.removeAll(() => {
         extensionApi.contextMenus.create({

@@ -487,113 +487,13 @@ function shouldRedirectUrl(url) {
 }
 
 function redirecttubeOpenInSelectedPlayer(youtubeUrl) {
-    let newUrl;
-    
-    switch (redirecttubeSelectedPlayer) {
-        case "invidious":
-            newUrl = convertYouTubeToInvidious(youtubeUrl, redirecttubePreferredInvidiousInstance);
-            break;
-        case "piped":
-            newUrl = convertYouTubeToPiped(youtubeUrl, redirecttubePreferredPipedInstance);
-            break;
-        case "freetube":
-        default:
-            newUrl = "freetube://" + youtubeUrl;
-            break;
-    }
-    
+    const newUrl = buildRedirectUrl(
+        youtubeUrl,
+        redirecttubeSelectedPlayer,
+        redirecttubePreferredInvidiousInstance,
+        redirecttubePreferredPipedInstance
+    );
     window.location.assign(newUrl);
-}
-
-function convertYouTubeToInvidious(youtubeUrl, instanceUrl) {
-    try {
-        const url = new URL(youtubeUrl);
-        const params = url.searchParams;
-        const instanceBase = new URL(instanceUrl).origin;
-        
-        // Handle /watch?v=XXX
-        if (url.pathname.includes("/watch") && params.has("v")) {
-            const videoId = params.get("v");
-            const listId = params.get("list");
-            
-            let invidiousUrl = instanceBase + "/watch?v=" + videoId;
-            if (listId) {
-                invidiousUrl += "&list=" + listId;
-            }
-            return invidiousUrl;
-        }
-        
-        // Handle /playlist?list=XXX
-        if (url.pathname.includes("/playlist") && params.has("list")) {
-            const listId = params.get("list");
-            return instanceBase + "/playlist?list=" + listId;
-        }
-        
-        // Handle youtu.be/videoId (short URL)
-        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
-            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
-            if (videoId) {
-                let invidiousUrl = instanceBase + "/watch?v=" + videoId;
-                if (params.has("list")) {
-                    invidiousUrl += "&list=" + params.get("list");
-                }
-                return invidiousUrl;
-            }
-        }
-        
-        // If URL is recognized but has no video/playlist ID, return instance URL
-            // For other cases (channels, users, @handles, etc.), preserve path and query
-            const suffix = (url.pathname || "") + (url.search || "");
-            return instanceBase + suffix;
-    } catch (error) {
-        console.error("Error converting to Invidious URL:", error);
-        return youtubeUrl;
-    }
-}
-
-function convertYouTubeToPiped(youtubeUrl, instanceUrl) {
-    try {
-        const url = new URL(youtubeUrl);
-        const params = url.searchParams;
-        const instanceBase = new URL(instanceUrl).origin;
-        
-        // Handle /watch?v=XXX
-        if (url.pathname.includes("/watch") && params.has("v")) {
-            const videoId = params.get("v");
-            const listId = params.get("list");
-            
-            let pipedUrl = instanceBase + "/watch?v=" + videoId;
-            if (listId) {
-                pipedUrl += "&list=" + listId;
-            }
-            return pipedUrl;
-        }
-        
-        // Handle /playlist?list=XXX
-        if (url.pathname.includes("/playlist") && params.has("list")) {
-            const listId = params.get("list");
-            return instanceBase + "/playlist?list=" + listId;
-        }
-        
-        // Handle youtu.be/videoId (short URL)
-        if (url.hostname.includes("youtu.be") && url.pathname.length > 1) {
-            const videoId = url.pathname.substring(1).split(/[?#]/)[0];
-            if (videoId) {
-                let pipedUrl = instanceBase + "/watch?v=" + videoId;
-                if (params.has("list")) {
-                    pipedUrl += "&list=" + params.get("list");
-                }
-                return pipedUrl;
-            }
-        }
-        
-        // For other cases (channels, users, @handles, etc.), preserve path and query
-        const suffix = (url.pathname || "") + (url.search || "");
-        return instanceBase + suffix;
-    } catch (error) {
-        console.error("Error converting to Piped URL:", error);
-        return youtubeUrl;
-    }
 }
 
 function getDefaultButtonLabel() {
@@ -607,75 +507,5 @@ function getDefaultButtonLabel() {
         );
     }
     return "Watch on";
-}
-
-function getDefaultUrlRulesConfig() {
-    return {
-        mode: "allowList",
-        allow: [...DEFAULT_ALLOW_PREFIXES],
-        deny: [...DEFAULT_DENY_PREFIXES],
-    };
-}
-
-function normalizeUrlRulesConfig(rawConfig) {
-    const base = getDefaultUrlRulesConfig();
-    if (!rawConfig || typeof rawConfig !== "object") {
-        return base;
-    }
-    const mode = rawConfig.mode === "allowAllExcept" ? "allowAllExcept" : "allowList";
-    const allow = Array.isArray(rawConfig.allow)
-        ? normalizePrefixList(rawConfig.allow)
-        : base.allow;
-    return {
-        mode,
-        allow,
-        deny: base.deny,
-    };
-}
-
-function normalizePrefixList(list) {
-    return Array.from(
-        new Set(
-            list
-                .map((item) => (typeof item === "string" ? item.trim() : ""))
-                .filter((item) => item.startsWith("/"))
-                .map((item) => item.toLowerCase())
-                .filter(Boolean)
-        )
-    );
-}
-
-function pathMatchesPrefix(path, prefixes) {
-    return prefixes.some((prefix) => path.startsWith(prefix));
-}
-
-function isRedirectableYoutubeUrl(url, config = redirecttubeUrlRulesConfig) {
-    try {
-        const parsedUrl = new URL(url);
-        const host = parsedUrl.hostname.toLowerCase();
-
-        if (host === "youtu.be") {
-            return parsedUrl.pathname.length > 1;
-        }
-
-        if (!host.endsWith("youtube.com")) {
-            return false;
-        }
-
-        const path = (parsedUrl.pathname || "/").toLowerCase();
-        const normalizedConfig = normalizeUrlRulesConfig(config);
-
-        if (pathMatchesPrefix(path, normalizedConfig.deny)) {
-            return false;
-        }
-
-        if (normalizedConfig.mode === "allowAllExcept") {
-            return true;
-        }
-
-        return pathMatchesPrefix(path, normalizedConfig.allow);
-    } catch (error) {
-        return false;
-    }
 }
 

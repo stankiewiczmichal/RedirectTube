@@ -146,46 +146,6 @@ function addCustomPathFromInput() {
     saveOptions();
 }
 
-function getDefaultUrlRulesConfig() {
-    return {
-        mode: "allowList",
-        allow: [...DEFAULT_ALLOW_PREFIXES],
-        deny: [...DEFAULT_DENY_PREFIXES],
-    };
-}
-
-function normalizePrefixList(list) {
-    return Array.from(
-        new Set(
-            list
-                .map((item) => (typeof item === "string" ? item.trim() : ""))
-                .filter((item) => item.startsWith("/"))
-                .map((item) => item.toLowerCase())
-                .filter(Boolean)
-        )
-    );
-}
-
-function normalizeUrlRulesConfig(rawConfig) {
-    const base = getDefaultUrlRulesConfig();
-    if (!rawConfig || typeof rawConfig !== "object") {
-        return base;
-    }
-    const mode = rawConfig.mode === "allowAllExcept" ? "allowAllExcept" : "allowList";
-    const allow = Array.isArray(rawConfig.allow)
-        ? normalizePrefixList(rawConfig.allow)
-        : base.allow;
-    return {
-        mode,
-        allow,
-        deny: base.deny,
-    };
-}
-
-function pathMatchesPrefix(path, prefixes) {
-    return prefixes.some((prefix) => path.startsWith(prefix));
-}
-
 function parseCustomPaths(rawText) {
     const lines = (rawText || "").split(/\r?\n/);
     const valid = [];
@@ -371,37 +331,35 @@ function syncPreferredInstanceVisibility() {
 }
 
 function saveOptions(e) {
-    setTimeout(() => {
-        if (e && typeof e.preventDefault === "function") {
-            e.preventDefault();
-        }
+    if (e && typeof e.preventDefault === "function") {
+        e.preventDefault();
+    }
 
-        const urlRulesResult = readUrlRulesFromUI();
-        if (urlRulesResult.errors.length) {
-            showUrlRulesError(urlRulesResult.errors[0]);
-            return;
-        }
-        showUrlRulesError("");
+    const urlRulesResult = readUrlRulesFromUI();
+    if (urlRulesResult.errors.length) {
+        showUrlRulesError(urlRulesResult.errors[0]);
+        return;
+    }
+    showUrlRulesError("");
 
-        extensionApi.storage.local.set({
-            popupBehavior: document.getElementById("popupBehavior").value,
-            autoRedirectLinks: document.getElementById("autoRedirectLinks").value,
-            iframeBehavior: document.getElementById("iframeBehavior").value,
-            iframeEnhancedPreview:
-                document.getElementById("iframeEnhancedPreview").value === "1",
-            extensionIcon: document.querySelector(
-                'input[name="extensionIcon"]:checked'
-            ).value,
-            selectedPlayer: getSelectedPlayerFromUI(),
-            preferredInvidiousInstance: document.getElementById(
-                "preferredInvidiousInstance"
-            ).value.trim(),
-            preferredPipedInstance: document.getElementById(
-                "preferredPipedInstance"
-            ).value.trim(),
-            urlRulesConfig: urlRulesResult.config,
-        });
-    }, 1);
+    extensionApi.storage.local.set({
+        popupBehavior: document.getElementById("popupBehavior").value,
+        autoRedirectLinks: document.getElementById("autoRedirectLinks").value,
+        iframeBehavior: document.getElementById("iframeBehavior").value,
+        iframeEnhancedPreview:
+            document.getElementById("iframeEnhancedPreview").value === "1",
+        extensionIcon: document.querySelector(
+            'input[name="extensionIcon"]:checked'
+        ).value,
+        selectedPlayer: getSelectedPlayerFromUI(),
+        preferredInvidiousInstance: document.getElementById(
+            "preferredInvidiousInstance"
+        ).value.trim(),
+        preferredPipedInstance: document.getElementById(
+            "preferredPipedInstance"
+        ).value.trim(),
+        urlRulesConfig: urlRulesResult.config,
+    });
 }
 
 function restoreOptions() {

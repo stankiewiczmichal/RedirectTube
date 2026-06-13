@@ -54,6 +54,22 @@ const radios = Array.from(
 
 const validationTimers = new Map();
 let currentValidationToken = 0;
+const _registeredListeners = [];
+
+function addListener(target, type, handler, options) {
+    if (!target || !target.addEventListener) return;
+    target.addEventListener(type, handler, options);
+    _registeredListeners.push({ target, type, handler, options });
+}
+
+function cleanupEventListeners() {
+    _registeredListeners.forEach(({ target, type, handler, options }) => {
+        try {
+            target.removeEventListener(type, handler, options);
+        } catch (e) {}
+    });
+    _registeredListeners.length = 0;
+}
 
 function toMessageName(key) {
     return key
@@ -152,6 +168,15 @@ function normalizeInstanceUrl(rawValue) {
 }
 
 async function storageGet(keys) {
+    const globalStorage = (typeof window !== 'undefined' && window.storage) ? window.storage : null;
+    if (globalStorage && typeof globalStorage.get === 'function') {
+        try {
+            return await globalStorage.get(keys);
+        } catch (e) {
+            return {};
+        }
+    }
+
     if (
         !extensionApi ||
         !extensionApi.storage ||
@@ -177,6 +202,15 @@ async function storageGet(keys) {
 }
 
 async function storageSet(values) {
+    const globalStorage = (typeof window !== 'undefined' && window.storage) ? window.storage : null;
+    if (globalStorage && typeof globalStorage.set === 'function') {
+        try {
+            return await globalStorage.set(values);
+        } catch (e) {
+            return;
+        }
+    }
+
     if (
         !extensionApi ||
         !extensionApi.storage ||
@@ -387,17 +421,7 @@ function handlePlayerChange(event) {
     saveSelectedPlayer(radio.value);
 }
 
-function handleFinish() {
-    if (CONTROLS.finish.disabled) {
-        return;
-    }
 
-    if (extensionApi && extensionApi.storage && extensionApi.storage.local) {
-        storageSet({ [STORAGE_KEYS.introductionComplete]: true });
-    }
-
-    window.close();
-}
 
 function handleNext() {
     const selectedPlayer = getSelectedPlayer();
@@ -418,16 +442,12 @@ function handleBack() {
 
 function initPlayerSelection() {
     radios.forEach((radio) => {
-        radio.addEventListener("change", handlePlayerChange);
+        addListener(radio, "change", handlePlayerChange);
     });
 
     document.querySelectorAll(".player-option").forEach((label) => {
-        label.addEventListener("keydown", (event) => {
-            if (
-                event.key === "Enter" ||
-                event.key === " " ||
-                event.code === "Space"
-            ) {
+        const keyHandler = (event) => {
+            if (event.key === "Enter" || event.key === " " || event.code === "Space") {
                 event.preventDefault();
                 const input = label.querySelector('input[type="radio"]');
                 if (input) {
@@ -435,43 +455,32 @@ function initPlayerSelection() {
                     input.dispatchEvent(new Event("change", { bubbles: true }));
                 }
             }
-        });
+        };
+        addListener(label, "keydown", keyHandler);
     });
 }
 
 function initStep2Controls() {
     if (CONTROLS.invidiousInput) {
-        CONTROLS.invidiousInput.addEventListener("input", () => {
-            scheduleInstanceValidation("invidious");
-        });
-        CONTROLS.invidiousInput.addEventListener("blur", () => {
-            scheduleInstanceValidation("invidious", 0);
-        });
+        addListener(CONTROLS.invidiousInput, "input", () => scheduleInstanceValidation("invidious"));
+        addListener(CONTROLS.invidiousInput, "blur", () => scheduleInstanceValidation("invidious", 0));
     }
 
     if (CONTROLS.pipedInput) {
-        CONTROLS.pipedInput.addEventListener("input", () => {
-            scheduleInstanceValidation("piped");
-        });
-        CONTROLS.pipedInput.addEventListener("blur", () => {
-            scheduleInstanceValidation("piped", 0);
-        });
+        addListener(CONTROLS.pipedInput, "input", () => scheduleInstanceValidation("piped"));
+        addListener(CONTROLS.pipedInput, "blur", () => scheduleInstanceValidation("piped", 0));
     }
 
     if (CONTROLS.invidiousCheck) {
-        CONTROLS.invidiousCheck.addEventListener("click", () => {
-            runInstanceValidation("invidious");
-        });
+        addListener(CONTROLS.invidiousCheck, "click", () => runInstanceValidation("invidious"));
     }
 
     if (CONTROLS.pipedCheck) {
-        CONTROLS.pipedCheck.addEventListener("click", () => {
-            runInstanceValidation("piped");
-        });
+        addListener(CONTROLS.pipedCheck, "click", () => runInstanceValidation("piped"));
     }
 
     if (CONTROLS.downloadFreetube) {
-        CONTROLS.downloadFreetube.addEventListener("click", (event) => {
+        addListener(CONTROLS.downloadFreetube, "click", (event) => {
             event.preventDefault();
             openExternalLink("https://freetubeapp.io/");
         });
@@ -480,15 +489,15 @@ function initStep2Controls() {
 
 async function init() {
     if (CONTROLS.next) {
-        CONTROLS.next.addEventListener("click", handleNext);
+        addListener(CONTROLS.next, "click", handleNext);
     }
 
     if (CONTROLS.back) {
-        CONTROLS.back.addEventListener("click", handleBack);
+        addListener(CONTROLS.back, "click", handleBack);
     }
 
     if (CONTROLS.finish) {
-        CONTROLS.finish.addEventListener("click", handleFinish);
+        addListener(CONTROLS.finish, "click", handleFinish);
     }
 
     initPlayerSelection();
@@ -511,6 +520,24 @@ document.addEventListener("redirecttube:translations-loaded", () => {
         saveSelectedPlayer(selectedPlayer);
     }
 });
+
+// cleanup listeners on finish/back
+function handleFinish() {
+    if (CONTROLS.finish.disabled) {
+        return;
+    }
+
+    if (extensionApi && extensionApi.storage && extensionApi.storage.local) {
+        storage.set({ [STORAGE_KEYS.introductionComplete]: true });
+    }
+
+    cleanupEventListeners();
+    cancelPendingValidations();
+    window.close();
+}
+
+// override previous binding of handleFinish in case we redefined it above
+
 
 init().catch((error) => {
     console.error("Failed to initialize introduction", error);
