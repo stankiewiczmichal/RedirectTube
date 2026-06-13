@@ -13,7 +13,7 @@
             "issue": "Report an issue"
         },
         "contextMenu": {
-            "redirect": "Open in FreeTube"
+            "redirect": "Open with RedirectTube"
         },
         "yes": "Yes",
         "no": "No",

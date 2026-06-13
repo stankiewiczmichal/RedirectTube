@@ -101,10 +101,14 @@ function normalizeUrlRulesConfig(rawConfig) {
     const allow = Array.isArray(rawConfig.allow)
         ? normalizePrefixList(rawConfig.allow)
         : base.allow;
+    const deny = Array.isArray(rawConfig.deny)
+        ? normalizePrefixList(rawConfig.deny)
+        : base.deny;
+
     return {
         mode,
         allow,
-        deny: base.deny,
+        deny,
     };
 }
 
@@ -218,17 +222,23 @@ function buildRedirectUrl(
 }
 
 function openExternalLink(url) {
-    window.open(url, "_blank", "noopener,noreferrer");
+    if (typeof window !== "undefined" && typeof window.open === "function") {
+        window.open(url, "_blank", "noopener,noreferrer");
+        return;
+    }
+    // service worker context: try clients.openWindow if available
+    if (typeof clients !== "undefined" && typeof clients.openWindow === "function") {
+        try {
+            clients.openWindow(url);
+        } catch (e) {
+            // ignore
+        }
+    }
 }
 
 const storage = {
     get(keys) {
         return new Promise((resolve) => {
-            try {
-                if (!window || !window.extensionApi || !extensionApi.storage || !extensionApi.storage.local) {
-                    // fallback to chrome/browser globals
-                }
-            } catch (e) {}
             const api = typeof chrome !== 'undefined' ? chrome : (typeof browser !== 'undefined' ? browser : null);
             if (!api || !api.storage || !api.storage.local || typeof api.storage.local.get !== 'function') {
                 resolve({});
@@ -255,5 +265,18 @@ const storage = {
     },
 };
 
-// Expose to global scope for pages that include shared.js
-window.storage = window.storage || storage;
+// Expose to global scope for pages that include shared.js — prefer globalThis/self/window
+const _root = (typeof globalThis !== 'undefined'
+    ? globalThis
+    : typeof self !== 'undefined'
+    ? self
+    : typeof window !== 'undefined'
+    ? window
+    : {});
+if (!_root.storage) {
+    try {
+        _root.storage = storage;
+    } catch (e) {
+        // ignore if environment prevents assignment
+    }
+}

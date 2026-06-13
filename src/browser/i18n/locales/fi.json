@@ -68,9 +68,6 @@
             "redirect": "Katso"
         },
         "close": "Sulje",
-        "contextMenu": {
-            "redirect": "Avaa FreeTubessa"
-        },
         "no": "Ei",
         "yes": "Kyllä"
     },

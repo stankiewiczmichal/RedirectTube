@@ -11,6 +11,7 @@ let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
 let urlRulesConfig = getDefaultUrlRulesConfig();
+let urlRulesConfigLoaded = false;
 
 extensionApi.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -48,6 +49,12 @@ extensionApi.runtime.onStartup.addListener(() => {
                 result[STORAGE_KEYS.preferredPipedInstance] ||
                 DEFAULT_PREFERRED_PIPED_INSTANCE;
             updateActionIcon();
+            // Ensure context menu reflects the loaded selected player
+            try {
+                createContextMenu();
+            } catch (e) {
+                // ignore: avoid breaking startup if i18n isn't ready yet
+            }
         }
     );
 
@@ -57,7 +64,17 @@ extensionApi.runtime.onStartup.addListener(() => {
 
 extensionApi.runtime.onMessage.addListener((request) => {
     if (request.message === RUNTIME_MESSAGES.currentUrlChanged && request.url) {
-        handleUrlChange(request.url);
+        // Ensure urlRulesConfig is loaded before evaluating the URL (avoid race with startup)
+        if (!urlRulesConfigLoaded) {
+            extensionApi.storage.local.get(STORAGE_KEYS.urlRulesConfig, (result = {}) => {
+                urlRulesConfig = normalizeUrlRulesConfig(result[STORAGE_KEYS.urlRulesConfig]);
+                urlRulesConfigLoaded = true;
+                handleUrlChange(request.url);
+            });
+        } else {
+            handleUrlChange(request.url);
+        }
+        return;
     }
 
     if (request.message === RUNTIME_MESSAGES.redirecttubeTheme) {
@@ -82,6 +99,12 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
     if (changes[STORAGE_KEYS.selectedPlayer]) {
         cachedSelectedPlayer =
             changes[STORAGE_KEYS.selectedPlayer].newValue || "freetube";
+        // Refresh context menu so title reflects the newly selected player
+        try {
+            createContextMenu();
+        } catch (e) {
+            // ignore
+        }
     }
     if (changes[STORAGE_KEYS.preferredInvidiousInstance]) {
         cachedPreferredInvidiousInstance =
@@ -109,7 +132,17 @@ function updateActionIcon() {
         lastUrlAllowed,
         isDarkThemePreferred
     );
-    extensionApi.action.setIcon({ path });
+    try {
+        const resolvedPath =
+            extensionApi && extensionApi.runtime && typeof extensionApi.runtime.getURL === "function"
+                ? extensionApi.runtime.getURL(path)
+                : path;
+        // Debug: log resolved path when icon fails to load in the wild
+        // console.debug("Setting action icon:", resolvedPath);
+        extensionApi.action.setIcon({ path: resolvedPath });
+    } catch (err) {
+        console.error("Failed to set action icon:", err, { path });
+    }
 }
 
 function getIconPath(preference, isAllowed, isDarkMode) {
@@ -138,6 +171,7 @@ function loadUrlRulesConfig() {
         urlRulesConfig = normalizeUrlRulesConfig(
             result[STORAGE_KEYS.urlRulesConfig]
         );
+        urlRulesConfigLoaded = true;
     });
 }
 
@@ -150,10 +184,33 @@ extensionApi.contextMenus.onClicked.addListener((info) => {
             cachedPreferredPipedInstance
         );
 
-        if (typeof info.tabId === "number") {
-            extensionApi.tabs.update(info.tabId, { url: newUrl });
-        } else {
-            extensionApi.tabs.update({ url: newUrl });
+        // Debug: show what URL we will open and which player is selected
+        try {
+            console.debug && console.debug("contextMenu.openRedirect", {
+                linkUrl: info.linkUrl,
+                newUrl,
+                selectedPlayer: cachedSelectedPlayer,
+            });
+        } catch (e) {
+            // ignore
+        }
+
+        // Open the redirect URL in a new tab to ensure the target player handles it.
+        // Using tabs.create avoids potential failures when updating the originating tab
+        // to a custom scheme (eg. freetube://) which some browsers may ignore.
+        try {
+            extensionApi.tabs.create({ url: newUrl });
+        } catch (err) {
+            // Fallback: try updating the current tab if create failed
+            try {
+                if (typeof info.tabId === "number") {
+                    extensionApi.tabs.update(info.tabId, { url: newUrl });
+                } else {
+                    extensionApi.tabs.update({ url: newUrl });
+                }
+            } catch (err2) {
+                console.error("Failed to open redirect URL from context menu", err2, { newUrl });
+            }
         }
     }
 });
@@ -165,10 +222,19 @@ function createContextMenu() {
     }
     currentMenuLang = lang;
     // Prefer a player-specific context menu title when possible
-    const perPlayerKey = "ui.contextMenu.redirect_" + (cachedSelectedPlayer || "freetube");
-    let title = getMessageByKey(perPlayerKey) || getMessageByKey("ui.contextMenu.redirect") || "Open in FreeTube";
-    const playerLabel = getMessageByKey("options.playerSettings." + (cachedSelectedPlayer || "freetube")) || (cachedSelectedPlayer || "freetube");
-    title = title.replace(/FreeTube/g, playerLabel);
+    const playerKey = (cachedSelectedPlayer || "freetube");
+    const perPlayerKey = "ui.contextMenu.redirect_" + playerKey;
+    // Allow i18n strings to include a placeholder like {player} or %PLAYER%.
+    let title =
+        getMessageByKey(perPlayerKey) || getMessageByKey("ui.contextMenu.redirect") || "Open in {player}";
+    const playerLabel =
+        getMessageByKey("options.playerSettings." + playerKey) ||
+        (playerKey === "freetube" ? "FreeTube" : playerKey);
+    // Replace common placeholder formats and any literal "FreeTube"
+    title = title
+        .replace(/\{player\}/g, playerLabel)
+        .replace(/%PLAYER%/g, playerLabel)
+        .replace(/FreeTube/g, playerLabel);
 
     extensionApi.contextMenus.removeAll(() => {
         extensionApi.contextMenus.create({
