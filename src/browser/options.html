@@ -1,209 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title data-i18n="options.page.title">RedirectTube</title>
+        <title>RedirectTube</title>
+        <link rel="icon" type="image/png" href="img/icns/redirecttube/color/allow/32.png">
         <link rel="stylesheet" href="options.css">
     </head>
 </head>
+
 <body>
-    <div id="title">
-        <svg class="logo" width="192px" viewBox="0 0 861 205" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-            <g transform="matrix(4.63167,0,0,4.63167,-55.5801,-55.5801)">
-                <path d="M14.75,12C13.226,12 12,13.274 12,14.857L12,44.857C12,49.143 17.5,52 20.25,52L23,52L23,14.857C23,13.274 21.773,12 20.25,12L14.75,12Z" style="fill:#fff;"/>
-            </g>
-            <g transform="matrix(4.63167,0,0,4.63167,-55.5801,-55.5801)">
-                <path d="M26,20.25C26,21.773 27.268,23 28.842,23L45.895,23C50.158,23 53,17.5 53,14.75L53,12L28.842,12C27.268,12 26,13.226 26,14.75L26,20.25Z" style="fill:#fff;"/>
-            </g>
-            <g transform="matrix(4.63167,0,0,4.63167,-55.5801,-55.5801)">
-                <path d="M27.321,26C27.311,26 27.301,26 27.291,26C26.583,26 26,26.515 26,27.141C26,27.141 26,27.142 26,27.143L26,41.86C26.001,42.485 26.584,42.999 27.291,42.999C27.517,42.999 27.74,42.946 27.936,42.846L35.146,39.167L42.356,35.487C42.755,35.283 43.001,34.906 43.001,34.499C43.001,34.092 42.755,33.715 42.356,33.511L35.146,29.832L27.936,26.152C27.749,26.056 27.537,26.004 27.321,25.999L27.321,26Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(4.63167,0,0,4.63167,111.16,106.529)">
-                <path d="M5.7,21.25C4.872,21.25 4.173,20.965 3.604,20.396C3.035,19.827 2.75,19.128 2.75,18.3L2.75,5.7C2.75,4.872 3.035,4.173 3.604,3.604C4.173,3.035 4.872,2.75 5.7,2.75L12,2.75L12,5.7L5.7,5.7L5.7,18.3L18.3,18.3L18.3,12L21.25,12L21.25,18.3C21.25,19.128 20.965,19.827 20.396,20.396C19.827,20.965 19.128,21.25 18.3,21.25L5.7,21.25Z" style="fill:#fff;"/>
-            </g>
-            <g transform="matrix(4.63167,0,0,4.63167,111.16,106.529)">
-                <path d="M10.45,15.6L8.4,13.55L16.25,5.7L14.4,5.7L14.4,2.75L21.25,2.75L21.25,9.6L18.3,9.6L18.3,7.75L10.45,15.6Z" style="fill:#fff;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M513.622,291.072L513.622,380L526.326,380L526.326,341.634L533.822,341.634L546.145,380L559.357,380L545.382,338.966C547.669,338.077 550.21,336.552 552.116,334.393C554.783,331.344 556.816,326.008 556.816,320.291L556.816,313.558C556.816,306.952 555.038,301.616 552.116,298.059C546.145,290.691 536.744,291.072 530.265,291.072L513.622,291.072ZM526.326,302.505L532.933,302.505C535.6,302.505 538.649,302.251 541.19,304.792C542.842,306.444 544.112,309.493 544.112,312.923L544.112,319.275C544.112,322.705 543.985,324.865 541.444,327.278C539.03,329.565 536.363,330.2 533.568,330.2L526.326,330.2L526.326,302.505Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M561.582,380L588.587,380L588.587,371.448L570.584,371.448L570.584,352.185L586.247,352.185L586.247,344.083L570.584,344.083L570.584,325.54L588.317,325.54L588.317,316.988L561.582,316.988L561.582,380Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M592.638,316.988L592.638,380L606.05,380C609.561,380 614.782,379.37 618.743,375.049C622.343,371.088 622.794,366.497 622.794,362.177L622.794,334.361C622.794,331.661 622.523,325 617.933,320.769C613.972,317.168 608.571,316.988 604.79,316.988L592.638,316.988ZM601.64,325.81L606.23,325.81C608.481,325.81 610.371,325.81 612.081,327.88C613.522,329.68 613.792,331.931 613.792,333.731L613.792,361.637C613.792,363.707 613.612,366.948 611.721,369.018C609.921,370.908 607.581,371.178 605.69,371.178L601.64,371.178L601.64,325.81Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <rect x="628.735" y="316.988" width="9.002" height="63.012" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M644.038,316.988L644.038,380L653.039,380L653.039,352.815L658.35,352.815L667.082,380L676.444,380L666.542,350.924C668.162,350.294 669.962,349.214 671.313,347.684C673.203,345.523 674.643,341.743 674.643,337.692L674.643,332.921C674.643,328.24 673.383,324.459 671.313,321.939C667.082,316.718 660.421,316.988 655.83,316.988L644.038,316.988ZM653.039,325.09L657.72,325.09C659.61,325.09 661.771,324.91 663.571,326.71C664.741,327.88 665.642,330.041 665.642,332.471L665.642,336.972C665.642,339.402 665.552,340.933 663.751,342.643C662.041,344.263 660.151,344.713 658.17,344.713L653.039,344.713L653.039,325.09Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M679.594,380L706.599,380L706.599,371.448L688.596,371.448L688.596,352.185L704.259,352.185L704.259,344.083L688.596,344.083L688.596,325.54L706.329,325.54L706.329,316.988L679.594,316.988L679.594,380Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M731.444,334.901L740.176,334.901L740.176,330.581C740.176,326.17 738.375,322.389 736.125,320.139C733.424,317.528 729.014,316.088 725.233,316.088C721.902,316.088 717.762,317.258 714.971,319.779C710.92,323.289 710.38,327.97 710.38,332.111L710.38,364.787C710.38,368.028 710.29,372.349 713.531,376.129C715.511,378.47 718.932,380.9 724.873,380.9C731.084,380.9 734.775,378.74 736.665,376.669C738.285,374.959 740.446,371.358 740.446,365.147L740.446,362.537L731.444,362.537L731.444,364.787C731.444,367.848 730.634,369.288 730.184,369.918C729.104,371.358 727.123,372.078 725.143,372.078C722.622,372.078 721.182,370.728 720.552,369.828C719.382,368.208 719.382,366.317 719.382,364.247L719.382,333.191C719.382,331.031 719.472,328.78 720.912,326.98C721.812,325.9 723.253,324.91 725.593,324.91C728.474,324.91 729.824,326.53 730.274,327.16C731.084,328.33 731.444,330.041 731.444,331.301L731.444,334.901Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M739.255,316.988L739.255,325.54L750.417,325.54L750.417,380L759.419,380L759.419,325.54L770.581,325.54L770.581,316.988L739.255,316.988Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M770.422,291.072L770.422,303.141L786.174,303.141L786.174,380L798.879,380L798.879,303.141L814.632,303.141L814.632,291.072L770.422,291.072Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M816.221,316.988L816.221,363.437C816.221,377.299 824.503,380.9 831.254,380.9C838.005,380.9 846.287,377.299 846.287,363.437L846.287,316.988L837.285,316.988L837.285,364.787C837.285,369.108 835.215,372.078 831.254,372.078C827.293,372.078 825.223,369.108 825.223,364.787L825.223,316.988L816.221,316.988Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M852.588,316.988L852.588,380L866.271,380C871.672,380 875.002,378.56 876.983,377.029C882.384,372.979 882.384,366.497 882.384,363.887L882.384,359.116C882.384,356.055 882.384,354.345 880.584,351.195C879.773,349.844 878.693,348.314 876.263,347.234C877.163,346.694 878.513,345.794 879.683,344.353C882.024,341.563 882.384,338.682 882.384,334.541C882.384,330.851 882.294,324.099 876.623,320.049C872.662,317.258 867.441,316.988 864.741,316.988L852.588,316.988ZM861.59,325.09L865.821,325.09C868.791,325.09 870.592,326.08 871.672,327.16C872.662,328.24 873.382,329.86 873.382,331.481L873.382,335.352C873.382,337.332 872.752,339.492 871.672,340.753C870.772,341.833 868.971,343.093 865.911,343.093L861.59,343.093L861.59,325.09ZM861.59,351.195L866.181,351.195C868.161,351.195 869.511,351.645 870.952,352.815C872.932,354.525 873.382,356.686 873.382,359.746L873.382,362.717C873.382,363.797 873.292,367.038 871.762,369.108C869.871,371.718 866.991,371.898 865.641,371.898L861.59,371.898L861.59,351.195Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-            <g transform="matrix(1.48054,0,0,1.48054,-493.556,-404.804)">
-                <path d="M887.785,380L914.79,380L914.79,371.448L896.787,371.448L896.787,352.185L912.45,352.185L912.45,344.083L896.787,344.083L896.787,325.54L914.52,325.54L914.52,316.988L887.785,316.988L887.785,380Z" style="fill:#fff;fill-rule:nonzero;"/>
-            </g>
-        </svg>
-        <div class="socials">
-            <div class="social" id="GitHubBackground">
-                <span class="social-title" id="GitHubTitle">GitHub</span>
-                <a href="https://github.com/stankiewiczmichal/RedirectTube" target="_blank" title="GitHub">
-                    <svg class="social-logo" id="GitHubIcon" viewBox="0 0 97.6 96" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M48.9,0C21.8,0,0,22,0,49.2C0,71,14,89.4,33.4,95.9c2.4,0.5,3.3-1.1,3.3-2.4c0-1.1-0.1-5.1-0.1-9.1 c-13.6,2.9-16.4-5.9-16.4-5.9c-2.2-5.7-5.4-7.2-5.4-7.2c-4.4-3,0.3-3,0.3-3c4.9,0.3,7.5,5.1,7.5,5.1c4.4,7.5,11.4,5.4,14.2,4.1 c0.4-3.2,1.7-5.4,3.1-6.6c-10.8-1.1-22.2-5.4-22.2-24.3c0-5.4,1.9-9.8,5-13.2c-0.5-1.2-2.2-6.3,0.5-13c0,0,4.1-1.3,13.4,5.1 c3.9-1.1,8.1-1.6,12.2-1.6s8.3,0.6,12.2,1.6c9.3-6.4,13.4-5.1,13.4-5.1c2.7,6.8,1,11.8,0.5,13c3.2,3.4,5,7.8,5,13.2 c0,18.9-11.4,23.1-22.3,24.3c1.8,1.5,3.3,4.5,3.3,9.1c0,6.6-0.1,11.9-0.1,13.5c0,1.3,0.9,2.9,3.3,2.4C83.6,89.4,97.6,71,97.6,49.2 C97.7,22,75.8,0,48.9,0z"/>
-                    </svg>
-                </a>
-            </div>
-            <div class="social" id="MastodonBackground">
-                <span class="social-title" id="MastodonTitle">Mastodon</span>
-                <a href="https://fosstodon.org/@mstankiewicz" target="_blank" title="Mastodon">
-                    <svg class="social-logo" id="MastodonIcon" viewBox="0 0 74 79" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M73.7014 17.9592C72.5616 9.62034 65.1774 3.04876 56.424 1.77536C54.9472 1.56019 49.3517 0.7771 36.3901 0.7771H36.2933C23.3281 0.7771 20.5465 1.56019 19.0697 1.77536C10.56 3.01348 2.78877 8.91838 0.903306 17.356C-0.00357857 21.5113 -0.100361 26.1181 0.068112 30.3439C0.308275 36.404 0.354874 42.4535 0.91406 48.489C1.30064 52.498 1.97502 56.4751 2.93215 60.3905C4.72441 67.6217 11.9795 73.6395 19.0876 76.0945C26.6979 78.6548 34.8821 79.0799 42.724 77.3221C43.5866 77.1245 44.4398 76.8953 45.2833 76.6342C47.1867 76.0381 49.4199 75.3714 51.0616 74.2003C51.0841 74.1839 51.1026 74.1627 51.1156 74.1382C51.1286 74.1138 51.1359 74.0868 51.1368 74.0592V68.2108C51.1364 68.185 51.1302 68.1596 51.1185 68.1365C51.1069 68.1134 51.0902 68.0932 51.0695 68.0773C51.0489 68.0614 51.0249 68.0503 50.9994 68.0447C50.9738 68.0391 50.9473 68.0392 50.9218 68.045C45.8976 69.226 40.7491 69.818 35.5836 69.8087C26.694 69.8087 24.3031 65.6569 23.6184 63.9285C23.0681 62.4347 22.7186 60.8764 22.5789 59.2934C22.5775 59.2669 22.5825 59.2403 22.5934 59.216C22.6043 59.1916 22.621 59.1702 22.6419 59.1533C22.6629 59.1365 22.6876 59.1248 22.714 59.1191C22.7404 59.1134 22.7678 59.1139 22.794 59.1206C27.7345 60.2936 32.799 60.8856 37.8813 60.8843C39.1036 60.8843 40.3223 60.8843 41.5447 60.8526C46.6562 60.7115 52.0437 60.454 57.0728 59.4874C57.1983 59.4628 57.3237 59.4416 57.4313 59.4098C65.3638 57.9107 72.9128 53.2051 73.6799 41.2895C73.7086 40.8204 73.7803 36.3758 73.7803 35.889C73.7839 34.2347 74.3216 24.1533 73.7014 17.9592ZM61.4925 47.6918H53.1514V27.5855C53.1514 23.3526 51.3591 21.1938 47.7136 21.1938C43.7061 21.1938 41.6988 23.7476 41.6988 28.7919V39.7974H33.4078V28.7919C33.4078 23.7476 31.3969 21.1938 27.3894 21.1938C23.7654 21.1938 21.9552 23.3526 21.9516 27.5855V47.6918H13.6176V26.9752C13.6176 22.7423 14.7157 19.3795 16.9118 16.8868C19.1772 14.4 22.1488 13.1231 25.8373 13.1231C30.1064 13.1231 33.3325 14.7386 35.4832 17.9662L37.5587 21.3949L39.6377 17.9662C41.7884 14.7386 45.0145 13.1231 49.2765 13.1231C52.9614 13.1231 55.9329 14.4 58.2055 16.8868C60.4017 19.3772 61.4997 22.74 61.4997 26.9752L61.4925 47.6918Z" fill="inherit"/>
-                    </svg>
-                </a>
-            </div>
+    <div id="sidebar">
+        <div id="title">
+            <img class="logo browser-light" src="img/logo_default.png" alt="RedirectTube">
+            <img class="logo browser-dark" src="img/logo_light.png" alt="RedirectTube">
         </div>
+        <nav>
+            <ul>
+                <li>
+                    <button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="category-icon">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                        </svg>
+                        <span data-i18n="options.categories.general">General</span>
+                    </button>
+                </li>
+                <li>
+                    <button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="category-icon">
+                            <path d="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z" />
+                        </svg>
+                        <span data-i18n="options.categories.advanced">Advanced</span>
+                    </button>
+                </li>
+                <li>
+                    <button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="category-icon">
+                            <path d="M4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2M12.19,5.5C11.3,5.5 10.59,5.68 10.05,6.04C9.5,6.4 9.22,7 9.27,7.69H11.24C11.24,7.41 11.34,7.2 11.5,7.06C11.7,6.92 11.92,6.85 12.19,6.85C12.5,6.85 12.77,6.93 12.95,7.11C13.13,7.28 13.22,7.5 13.22,7.8C13.22,8.08 13.14,8.33 13,8.54C12.83,8.76 12.62,8.94 12.36,9.08C11.84,9.4 11.5,9.68 11.29,9.92C11.1,10.16 11,10.5 11,11H13C13,10.72 13.05,10.5 13.14,10.32C13.23,10.15 13.4,10 13.66,9.85C14.12,9.64 14.5,9.36 14.79,9C15.08,8.63 15.23,8.24 15.23,7.8C15.23,7.1 14.96,6.54 14.42,6.12C13.88,5.71 13.13,5.5 12.19,5.5M11,12V14H13V12H11Z" />
+                        </svg>
+                        <span data-i18n="options.categories.help">Help</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <footer>
+            <p data-i18n="options.footer.version">RedirectTube v<span id="version">X.Y.Z</span></p>
+            <div class="socials">
+                <div class="social" id="GitHubBackground">
+                    <span class="social-title" id="GitHubTitle">GitHub</span>
+                    <a href="https://github.com/stankiewiczmichal/RedirectTube" target="_blank" title="GitHub">
+                        <svg class="social-logo" id="GitHubIcon" viewBox="0 0 97.6 96"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M48.9,0C21.8,0,0,22,0,49.2C0,71,14,89.4,33.4,95.9c2.4,0.5,3.3-1.1,3.3-2.4c0-1.1-0.1-5.1-0.1-9.1 c-13.6,2.9-16.4-5.9-16.4-5.9c-2.2-5.7-5.4-7.2-5.4-7.2c-4.4-3,0.3-3,0.3-3c4.9,0.3,7.5,5.1,7.5,5.1c4.4,7.5,11.4,5.4,14.2,4.1 c0.4-3.2,1.7-5.4,3.1-6.6c-10.8-1.1-22.2-5.4-22.2-24.3c0-5.4,1.9-9.8,5-13.2c-0.5-1.2-2.2-6.3,0.5-13c0,0,4.1-1.3,13.4,5.1 c3.9-1.1,8.1-1.6,12.2-1.6s8.3,0.6,12.2,1.6c9.3-6.4,13.4-5.1,13.4-5.1c2.7,6.8,1,11.8,0.5,13c3.2,3.4,5,7.8,5,13.2 c0,18.9-11.4,23.1-22.3,24.3c1.8,1.5,3.3,4.5,3.3,9.1c0,6.6-0.1,11.9-0.1,13.5c0,1.3,0.9,2.9,3.3,2.4C83.6,89.4,97.6,71,97.6,49.2 C97.7,22,75.8,0,48.9,0z" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="social" id="MastodonBackground">
+                    <span class="social-title" id="MastodonTitle">Mastodon</span>
+                    <a href="https://fosstodon.org/@mstankiewicz" target="_blank" title="Mastodon">
+                        <svg class="social-logo" id="MastodonIcon" viewBox="0 0 74 79"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M73.7014 17.9592C72.5616 9.62034 65.1774 3.04876 56.424 1.77536C54.9472 1.56019 49.3517 0.7771 36.3901 0.7771H36.2933C23.3281 0.7771 20.5465 1.56019 19.0697 1.77536C10.56 3.01348 2.78877 8.91838 0.903306 17.356C-0.00357857 21.5113 -0.100361 26.1181 0.068112 30.3439C0.308275 36.404 0.354874 42.4535 0.91406 48.489C1.30064 52.498 1.97502 56.4751 2.93215 60.3905C4.72441 67.6217 11.9795 73.6395 19.0876 76.0945C26.6979 78.6548 34.8821 79.0799 42.724 77.3221C43.5866 77.1245 44.4398 76.8953 45.2833 76.6342C47.1867 76.0381 49.4199 75.3714 51.0616 74.2003C51.0841 74.1839 51.1026 74.1627 51.1156 74.1382C51.1286 74.1138 51.1359 74.0868 51.1368 74.0592V68.2108C51.1364 68.185 51.1302 68.1596 51.1185 68.1365C51.1069 68.1134 51.0902 68.0932 51.0695 68.0773C51.0489 68.0614 51.0249 68.0503 50.9994 68.0447C50.9738 68.0391 50.9473 68.0392 50.9218 68.045C45.8976 69.226 40.7491 69.818 35.5836 69.8087C26.694 69.8087 24.3031 65.6569 23.6184 63.9285C23.0681 62.4347 22.7186 60.8764 22.5789 59.2934C22.5775 59.2669 22.5825 59.2403 22.5934 59.216C22.6043 59.1916 22.621 59.1702 22.6419 59.1533C22.6629 59.1365 22.6876 59.1248 22.714 59.1191C22.7404 59.1134 22.7678 59.1139 22.794 59.1206C27.7345 60.2936 32.799 60.8856 37.8813 60.8843C39.1036 60.8843 40.3223 60.8843 41.5447 60.8526C46.6562 60.7115 52.0437 60.454 57.0728 59.4874C57.1983 59.4628 57.3237 59.4416 57.4313 59.4098C65.3638 57.9107 72.9128 53.2051 73.6799 41.2895C73.7086 40.8204 73.7803 36.3758 73.7803 35.889C73.7839 34.2347 74.3216 24.1533 73.7014 17.9592ZM61.4925 47.6918H53.1514V27.5855C53.1514 23.3526 51.3591 21.1938 47.7136 21.1938C43.7061 21.1938 41.6988 23.7476 41.6988 28.7919V39.7974H33.4078V28.7919C33.4078 23.7476 31.3969 21.1938 27.3894 21.1938C23.7654 21.1938 21.9552 23.3526 21.9516 27.5855V47.6918H13.6176V26.9752C13.6176 22.7423 14.7157 19.3795 16.9118 16.8868C19.1772 14.4 22.1488 13.1231 25.8373 13.1231C30.1064 13.1231 33.3325 14.7386 35.4832 17.9662L37.5587 21.3949L39.6377 17.9662C41.7884 14.7386 45.0145 13.1231 49.2765 13.1231C52.9614 13.1231 55.9329 14.4 58.2055 16.8868C60.4017 19.3772 61.4997 22.74 61.4997 26.9752L61.4925 47.6918Z"
+                                fill="inherit" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
     <div id="content">
-        <h1 data-i18n="options.options.title">Options</h1>
-        <div class="section">
-            <div class="section-label">
-                <label for="popupBehavior" data-i18n="options.popupBehavior.label">When clicking the extension icon</label>
-            </div>
-            <select name="popupBehavior" id="popupBehavior">
-                <option value="showPopup" data-i18n="options.popupBehavior.showPopup">Show menu</option>
-                <option value="redirect" data-i18n="options.popupBehavior.redirect">Redirect to FreeTube</option>
-            </select>
-        </div>
-        <br>
-        <div class="section">
-            <div class="section-label">
-                <label for="autoRedirectLinks" data-i18n="options.autoRedirectLinks.label">Automatically redirect YouTube links when clicked</label>
-                <!-- <span class="beta-label" data-i18n="ui.beta.label">Beta</span> -->
-            </div>
-            <select name="autoRedirectLinks" id="autoRedirectLinks">
-                <option value="autoRedirectLinksNo" data-i18n="ui.no">No</option>
-                <option value="autoRedirectLinksYes" data-i18n="ui.yes">Yes</option>
-            </select>
-        </div>
-        <br>
-        <div class="section">
-            <div class="section-label">
-                <label for="iframeBehavior" data-i18n="options.iframeBehavior.label">iFrame behavior</label>
-                <!-- <span class="beta-label" data-i18n="ui.beta.label">Beta</span> -->
-            </div>
-            <select name="iframeBehavior" id="iframeBehavior">
-                <option value="iframeBehaviorNone" data-i18n="options.iframeBehavior.none">Nothing</option>
-                <option value="iframeBehaviorReplace" data-i18n="options.iframeBehavior.replace">Replace</option>
-            </select>
-        </div>
-        <div class="section" id="iframeEnhancedPreviewSection">
-            <div class="section-label">
-                <label for="iframeEnhancedPreview" data-i18n="options.iframeBehavior.enhancedPreview">Show thumbnail background and video title in iFrame placeholder (may connect to Google servers)</label>
-            </div>
-            <select name="iframeEnhancedPreview" id="iframeEnhancedPreview">
-                <option value="0" data-i18n="ui.no">No</option>
-                <option value="1" data-i18n="ui.yes">Yes</option>
-            </select>
-        </div>
-        <br>
-        <div class="section">
-            <label for="extensionIcon" data-i18n="options.extensionIcon.label">Extension icon:</label>
-            <div class="extension-icons-list">
-                <label class="extension-icon">
-                    <input type="radio" name="extensionIcon" value="color" id="colorIcon">
-                    <div class="extension-icons">
-                        <img src="img/icns/color/example.png" alt="Color icons">
-                    </div>
-                </label>
-                <label class="extension-icon">
-                    <input type="radio" name="extensionIcon" value="mono" id="monoIcon">
-                    <div class="extension-icons">
-                        <img src="img/icns/mono/black/example.png" class="browser-light" alt="Mono icons">
-                        <img src="img/icns/mono/white/example.png" class="browser-dark" alt="Mono icons">
-                    </div>
-                </label>
-            </div>
-        </div>
-        <div class="section url-rules-section">
-            <details class="collapsible" id="urlRulesAdvanced">
-                <summary>
-                    <h2 data-i18n="options.urlRules.advancedTitle">Advanced</h2>
-                </summary>
-                <div class="url-rules-card">
-                    <label class="toggle">
-                        <input type="checkbox" id="urlRulesAllowAll">
-                        <span data-i18n="options.urlRules.allowAll">Allow all YouTube paths (except blocked)</span>
-                    </label>
-                    <div class="subsection" id="urlRulesAllowList">
-                        <p class="muted" data-i18n="options.urlRules.categoriesLabel">Select which paths should be redirected:</p>
-                        <div class="pill-grid" id="urlRulesCategoryPills">
-                            <button type="button" class="pill-toggle" data-category="watch" data-i18n="options.urlRules.category.watch">Videos & playlists</button>
-                            <button type="button" class="pill-toggle" data-category="shorts" data-i18n="options.urlRules.category.shorts">Shorts</button>
-                            <button type="button" class="pill-toggle" data-category="feed" data-i18n="options.urlRules.category.feed">Feeds (subscriptions, library, you)</button>
-                            <button type="button" class="pill-toggle" data-category="search" data-i18n="options.urlRules.category.search">Search results</button>
-                            <button type="button" class="pill-toggle" data-category="hashtag" data-i18n="options.urlRules.category.hashtag">Hashtags & posts</button>
-                            <button type="button" class="pill-toggle" data-category="podcasts" data-i18n="options.urlRules.category.podcasts">Podcasts & gaming</button>
-                            <button type="button" class="pill-toggle" data-category="home" data-i18n="options.urlRules.category.home">Home</button>
-                            <button type="button" class="pill-toggle" data-category="profiles" data-i18n="options.urlRules.category.profiles">Channels & handles</button>
-                        </div>
-                        <label for="urlRulesCustomInput" data-i18n="options.urlRules.customLabel">Additional paths</label>
-                        <div class="pill-input-row">
-                            <input id="urlRulesCustomInput" type="text" placeholder="/example">
-                            <button id="urlRulesCustomAdd" type="button" data-i18n="options.urlRules.customAdd">Add path</button>
-                        </div>
-                        <ul id="urlRulesCustomList" class="pill-list pill-list-removable"></ul>
-                        <p class="note" data-i18n="options.urlRules.customNote">Only path prefixes are allowed. Do not include the domain.</p>
-                    </div>
-                    <details class="subsection collapsible" id="urlRulesDenySection">
-                        <summary>
-                            <span class="muted" data-i18n="options.urlRules.deniedLabel">Always blocked:</span>
-                        </summary>
-                        <ul id="urlRulesDenyList" class="pill-list"></ul>
-                    </details>
-                    <div class="section-actions">
-                        <button id="urlRulesReset" data-i18n="options.urlRules.reset">Restore defaults</button>
-                        <span class="error" id="urlRulesError"></span>
-                    </div>
+        <h1><span data-i18n="options.options.title">Options</span> / <span id="categoryName"></span></h1>
+        <div class="category" id="generalCategory">
+            <div class="section flex-row">
+                <div class="section-label">
+                    <label for="popupBehavior" data-i18n="options.popupBehavior.label">When clicking the extension
+                        icon</label>
                 </div>
-            </details>
+                <select name="popupBehavior" id="popupBehavior">
+                    <option value="showPopup" data-i18n="options.popupBehavior.showPopup">Show menu</option>
+                    <option value="redirect" data-i18n="options.popupBehavior.redirect">Redirect to FreeTube</option>
+                </select>
+            </div>
+            <div class="section flex-row" id="playerPrefferedSection">
+                <div class="section-label">
+                    <label data-i18n="options.playerSettings.label">Preferred player setup</label>
+                </div>
+                <div class="player-settings-grid">
+                    <label class="player-choice">
+                        <input type="radio" name="selectedPlayer" value="freetube" id="selectedPlayerFreetube">
+                        <span data-i18n="options.playerSettings.freetube">FreeTube</span>
+                    </label>
+                    <label class="player-choice">
+                        <input type="radio" name="selectedPlayer" value="invidious" id="selectedPlayerInvidious">
+                        <span data-i18n="options.playerSettings.invidious">Invidious</span>
+                    </label>
+                    <label class="player-choice">
+                        <input type="radio" name="selectedPlayer" value="piped" id="selectedPlayerPiped">
+                        <span data-i18n="options.playerSettings.piped">Piped</span>
+                    </label>
+                </div>
+            </div>
+            <div class="section player-instance-section" id="playerInstanceSection" hidden>
+                <div class="flex-row">
+                    <label for="preferredInvidiousInstance" data-i18n="options.playerSettings.invidiousInstance">Preferred Invidious instance</label>
+                    <input id="preferredInvidiousInstance" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://yewtu.be">
+                </div>
+                <div class="flex-row">
+                    <label for="preferredPipedInstance" data-i18n="options.playerSettings.pipedInstance">Preferred Piped instance</label>
+                    <input id="preferredPipedInstance" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://piped.video">
+                </div>
+            </div>
+            <div class="section flex-row">
+                <div class="section-label">
+                    <label for="autoRedirectLinks" data-i18n="options.autoRedirectLinks.label">Automatically redirect
+                        YouTube links when clicked</label>
+                    <!-- <span class="beta-label" data-i18n="ui.beta.label">Beta</span> -->
+                </div>
+                <select name="autoRedirectLinks" id="autoRedirectLinks">
+                    <option value="autoRedirectLinksNo" data-i18n="ui.no">No</option>
+                    <option value="autoRedirectLinksYes" data-i18n="ui.yes">Yes</option>
+                </select>
+            </div>
+            <div class="section flex-row">
+                <div class="section-label">
+                    <label for="iframeBehavior" data-i18n="options.iframeBehavior.label">iFrame behavior</label>
+                    <!-- <span class="beta-label" data-i18n="ui.beta.label">Beta</span> -->
+                </div>
+                <select name="iframeBehavior" id="iframeBehavior">
+                    <option value="iframeBehaviorNone" data-i18n="options.iframeBehavior.none">Nothing</option>
+                    <option value="iframeBehaviorReplace" data-i18n="options.iframeBehavior.replace">Replace</option>
+                </select>
+            </div>
+            <div class="section flex-row" id="iframeEnhancedPreviewSection">
+                <div class="section-label">
+                    <label for="iframeEnhancedPreview"><span data-i18n="options.iframeBehavior.enhancedPreview">Show thumbnail
+                        background and video title in iFrame placeholder</span><br><span class="description" data-i18n="options.iframeBehavior.enhancedPreviewDescription">May connect to
+                            Google servers.</span></label>
+                </div>
+                <select name="iframeEnhancedPreview" id="iframeEnhancedPreview">
+                    <option value="0" data-i18n="ui.no">No</option>
+                    <option value="1" data-i18n="ui.yes">Yes</option>
+                </select>
+            </div>
+            <div class="section icon-section">
+                <label for="extensionIcon" data-i18n="options.extensionIcon.label">Extension icon:</label>
+                <div class="extension-icons-list">
+                    <label class="extension-icon">
+                        <input type="radio" name="extensionIcon" value="redirecttube-color" id="colorIcon">
+                        <div class="extension-icons">
+                            <img src="img/icns/redirecttube/color/example.png" alt="Color icons">
+                        </div>
+                    </label>
+                    <label class="extension-icon">
+                        <input type="radio" name="extensionIcon" value="color" id="colorIcon">
+                        <div class="extension-icons">
+                            <img src="img/icns/freetube/color/example.png" alt="Color icons">
+                        </div>
+                    </label>
+                    <label class="extension-icon">
+                        <input type="radio" name="extensionIcon" value="mono" id="monoIcon">
+                        <div class="extension-icons">
+                            <img src="img/icns/freetube/mono/black/example.png" class="browser-light" alt="Mono icons">
+                            <img src="img/icns/freetube/mono/white/example.png" class="browser-dark" alt="Mono icons">
+                        </div>
+                    </label>
+                </div>
+            </div>
         </div>
-        <br>
-        <div class="section">
-            <button id="opinionButton" data-i18n="ui.button.opinion">Give your opinion</button>
-            <button id="suggestionButton" data-i18n="ui.button.suggestion">Make a suggestion</button>
-            <button id="issueButton" data-i18n="ui.button.issue">Report an issue</button>
+        <div class="category" id="advancedCategory">
+            <div class="section">
+                <label class="toggle">
+                    <input type="checkbox" id="urlRulesAllowAll">
+                    <span data-i18n="options.urlRules.allowAll">Allow all YouTube paths (except blocked)</span>
+                </label>
+                <div class="subsection" id="urlRulesAllowList">
+                    <p class="muted" data-i18n="options.urlRules.categoriesLabel">Select which paths should be
+                        redirected:</p>
+                    <div class="pill-grid" id="urlRulesCategoryPills">
+                        <button type="button" class="pill-toggle" data-category="watch"
+                            data-i18n="options.urlRules.category.watch">Videos & playlists</button>
+                        <button type="button" class="pill-toggle" data-category="shorts"
+                            data-i18n="options.urlRules.category.shorts">Shorts</button>
+                        <button type="button" class="pill-toggle" data-category="feed"
+                            data-i18n="options.urlRules.category.feed">Feeds (subscriptions, library, you)</button>
+                        <button type="button" class="pill-toggle" data-category="search"
+                            data-i18n="options.urlRules.category.search">Search results</button>
+                        <button type="button" class="pill-toggle" data-category="hashtag"
+                            data-i18n="options.urlRules.category.hashtag">Hashtags & posts</button>
+                        <button type="button" class="pill-toggle" data-category="podcasts"
+                            data-i18n="options.urlRules.category.podcasts">Podcasts & gaming</button>
+                        <button type="button" class="pill-toggle" data-category="home"
+                            data-i18n="options.urlRules.category.home">Home</button>
+                        <button type="button" class="pill-toggle" data-category="profiles"
+                            data-i18n="options.urlRules.category.profiles">Channels & handles</button>
+                    </div>
+                    <label for="urlRulesCustomInput" data-i18n="options.urlRules.customLabel">Additional
+                        paths</label>
+                    <div class="pill-input-row">
+                        <input id="urlRulesCustomInput" type="text" placeholder="/example">
+                        <button id="urlRulesCustomAdd" type="button" data-i18n="options.urlRules.customAdd">Add
+                            path</button>
+                    </div>
+                    <ul id="urlRulesCustomList" class="pill-list pill-list-removable"></ul>
+                    <p class="note" data-i18n="options.urlRules.customNote">Only path prefixes are allowed. Do not
+                        include the domain.</p>
+                </div>
+                <details class="subsection collapsible" id="urlRulesDenySection">
+                    <summary>
+                        <span class="muted" data-i18n="options.urlRules.deniedLabel">Always blocked:</span>
+                    </summary>
+                    <ul id="urlRulesDenyList" class="pill-list"></ul>
+                </details>
+                <div class="section-actions">
+                    <button id="urlRulesReset" data-i18n="options.urlRules.reset">Restore defaults</button>
+                    <span class="error" id="urlRulesError"></span>
+                </div>
+            </div>
+        </div>
+        <div class="category" id="helpCategory">
+            <div class="section about-section">
+                <p data-i18n="ui.createdby">Created with ❤️ by <a href="https://www.stankiewiczm.eu"
+                        target="_blank">Michał Stankiewicz</a></p>
+                <p><a href="https://github.com/stankiewiczmichal/RedirectTube/blob/main/LICENSE.md">CC BY-NC-SA 4.0</a>
+                </p>
+                <p data-i18n="options.footer.kofi">If you like this extension, consider <a
+                        href="https://ko-fi.com/mstankiewicz" target="_blank">buying me a tea</a> 🍵</p>
+                <p data-i18n="options.footer.affiliation">RedirectTube is not affiliated with FreeTube or its
+                    creators.<br>FreeTube is licensed under the <a
+                        href="https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE">AGPL-3.0 licence</a>.<br>The
+                    name "FreeTube" and FreeTube logo are the property of the <a
+                        href="https://docs.freetubeapp.io/credits/">creators of FreeTube</a>.</p>
+                <div class="flex-row help-section-actions">
+                    <button id="opinionButton" data-i18n="ui.button.opinion">Give your opinion</button>
+                    <button id="suggestionButton" data-i18n="ui.button.suggestion">Make a suggestion</button>
+                    <button id="issueButton" data-i18n="ui.button.issue">Report an issue</button>
+                </div>
+            </div>
         </div>
     </div>
-    <br>
-    <footer>
-        <p data-i18n="options.footer.version">RedirectTube v<span id="version">X.Y.Z</span></p>
-        <p data-i18n="ui.createdby">Created with ❤️ by <a href="https://www.stankiewiczm.eu" target="_blank">Michał Stankiewicz</a></p>
-        <p><a href="https://github.com/stankiewiczmichal/RedirectTube/blob/main/LICENSE.md">CC BY-NC-SA 4.0</a></p>
-        <p data-i18n="options.footer.kofi">If you like this extension, consider <a href="https://ko-fi.com/mstankiewicz" target="_blank">buying me a tea</a> 🍵</p>
-        <hr>
-        <p data-i18n="options.footer.affiliation">RedirectTube is not affiliated with FreeTube or its creators.<br>FreeTube is licensed under the <a href="https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE">AGPL-3.0 licence</a>.<br>The name "FreeTube" and FreeTube logo are the property of the <a href="https://docs.freetubeapp.io/credits/">creators of FreeTube</a>.</p>
-    </footer>
     <script src="shared.js"></script>
     <script src="i18n/translate.js"></script>
     <script src="options.js"></script>
 </body>
+
 </html>

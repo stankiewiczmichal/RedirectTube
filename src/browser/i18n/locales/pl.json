@@ -4,13 +4,16 @@
         "createdby": "Stworzone z ❤️ przez <a href=\"https://www.stankiewiczm.eu\" target=\"_blank\">Michała Stankiewicza</a>",
         "button": {
             "redirect": "Otwórz tę stronę we FreeTube",
+            "redirect_freetube": "Otwórz we FreeTube",
+            "redirect_invidious": "Otwórz w Invidious",
+            "redirect_piped": "Otwórz w Piped",
             "options": "Opcje",
             "opinion": "Wyraź opinię",
             "suggestion": "Napisz sugestię",
             "issue": "Zgłoś problem"
         },
         "contextMenu": {
-            "redirect": "Otwórz we FreeTube"
+            "redirect": "Otwórz za pomocą RedirectTube"
         },
         "yes": "Tak",
         "no": "Nie",
@@ -31,6 +34,29 @@
     "introduction": {
         "page": {
             "title": "RedirectTube • Wprowadzenie"
+        },
+        "step1": {
+            "title": "Wybierz odtwarzacz YouTube",
+            "next": "Dalej"
+        },
+        "step2": {
+            "title": "Skonfiguruj wybrany odtwarzacz",
+            "back": "Wstecz",
+            "finish": "Zakończ",
+            "freetube": {
+                "title": "FreeTube wymaga aplikacji desktopowej",
+                "body": "Pobierz FreeTube, zanim przejdziesz dalej.",
+                "download": "Pobierz FreeTube"
+            },
+            "instance": {
+                "title": "Wybierz preferowaną instancję",
+                "label": "Adres preferowanej instancji",
+                "check": "Sprawdź instancję",
+                "checking": "Sprawdzanie instancji...",
+                "valid": "Instancja wygląda poprawnie.",
+                "invalid": "Nie udało się zweryfikować tej instancji.",
+                "required": "Wpisz adres instancji, aby kontynuować."
+            }
         },
         "usage": {
             "title": "Korzystanie",
@@ -62,6 +88,14 @@
         },
         "extensionIcon": {
             "label": "Ikona rozszerzenia"
+        },
+        "playerSettings": {
+            "label": "Preferowany odtwarzacz",
+            "freetube": "FreeTube",
+            "invidious": "Invidious",
+            "piped": "Piped",
+            "invidiousInstance": "Preferowana instancja Invidious",
+            "pipedInstance": "Preferowana instancja Piped"
         },
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",

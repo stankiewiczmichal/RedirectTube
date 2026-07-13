@@ -9,6 +9,9 @@ let redirecttubeButtonLabel =
 let isTopLevelDocument = false;
 let iframeSettingsReady = false;
 let redirecttubeUrlRulesConfig = getDefaultUrlRulesConfig();
+let redirecttubeSelectedPlayer = "freetube";
+let redirecttubePreferredInvidiousInstance = "https://yewtu.be";
+let redirecttubePreferredPipedInstance = "https://piped.video";
 
 const iframeMetadata = new WeakMap();
 const iframePlaceholderUrl = extensionApi.runtime.getURL(
@@ -287,7 +290,7 @@ function handleIframePromptMessage(event) {
     }
 
     if (data.action === "freetube") {
-        redirecttubeOpenInFreeTube(metadata.originalSrc);
+        redirecttubeOpenInSelectedPlayer(metadata.originalSrc);
         return;
     }
 
@@ -335,6 +338,9 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
             STORAGE_KEYS.iframeEnhancedPreview,
             STORAGE_KEYS.autoRedirectLinks,
             STORAGE_KEYS.urlRulesConfig,
+            STORAGE_KEYS.selectedPlayer,
+            STORAGE_KEYS.preferredInvidiousInstance,
+            STORAGE_KEYS.preferredPipedInstance,
         ],
         (result = {}) => {
             const previousBehavior = redirecttubeIframeBehavior;
@@ -352,6 +358,13 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
             redirecttubeUrlRulesConfig = normalizeUrlRulesConfig(
                 result[STORAGE_KEYS.urlRulesConfig]
             );
+
+            redirecttubeSelectedPlayer =
+                result[STORAGE_KEYS.selectedPlayer] || "freetube";
+            redirecttubePreferredInvidiousInstance =
+                result[STORAGE_KEYS.preferredInvidiousInstance] || "https://yewtu.be";
+            redirecttubePreferredPipedInstance =
+                result[STORAGE_KEYS.preferredPipedInstance] || "https://piped.video";
 
             const shouldRefresh =
                 !iframeSettingsReady ||
@@ -455,7 +468,7 @@ function handleDocumentClick(event) {
 
     event.preventDefault();
     event.stopPropagation();
-    redirecttubeOpenInFreeTube(resolvedUrl);
+    redirecttubeOpenInSelectedPlayer(resolvedUrl);
 }
 
 function resolveAbsoluteUrl(href) {
@@ -473,8 +486,13 @@ function shouldRedirectUrl(url) {
     return isRedirectableYoutubeUrl(url, redirecttubeUrlRulesConfig);
 }
 
-function redirecttubeOpenInFreeTube(src) {
-    let newUrl = "freetube://" + src;
+function redirecttubeOpenInSelectedPlayer(youtubeUrl) {
+    const newUrl = buildRedirectUrl(
+        youtubeUrl,
+        redirecttubeSelectedPlayer,
+        redirecttubePreferredInvidiousInstance,
+        redirecttubePreferredPipedInstance
+    );
     window.location.assign(newUrl);
 }
 
@@ -489,75 +507,5 @@ function getDefaultButtonLabel() {
         );
     }
     return "Watch on";
-}
-
-function getDefaultUrlRulesConfig() {
-    return {
-        mode: "allowList",
-        allow: [...DEFAULT_ALLOW_PREFIXES],
-        deny: [...DEFAULT_DENY_PREFIXES],
-    };
-}
-
-function normalizeUrlRulesConfig(rawConfig) {
-    const base = getDefaultUrlRulesConfig();
-    if (!rawConfig || typeof rawConfig !== "object") {
-        return base;
-    }
-    const mode = rawConfig.mode === "allowAllExcept" ? "allowAllExcept" : "allowList";
-    const allow = Array.isArray(rawConfig.allow)
-        ? normalizePrefixList(rawConfig.allow)
-        : base.allow;
-    return {
-        mode,
-        allow,
-        deny: base.deny,
-    };
-}
-
-function normalizePrefixList(list) {
-    return Array.from(
-        new Set(
-            list
-                .map((item) => (typeof item === "string" ? item.trim() : ""))
-                .filter((item) => item.startsWith("/"))
-                .map((item) => item.toLowerCase())
-                .filter(Boolean)
-        )
-    );
-}
-
-function pathMatchesPrefix(path, prefixes) {
-    return prefixes.some((prefix) => path.startsWith(prefix));
-}
-
-function isRedirectableYoutubeUrl(url, config = redirecttubeUrlRulesConfig) {
-    try {
-        const parsedUrl = new URL(url);
-        const host = parsedUrl.hostname.toLowerCase();
-
-        if (host === "youtu.be") {
-            return parsedUrl.pathname.length > 1;
-        }
-
-        if (!host.endsWith("youtube.com")) {
-            return false;
-        }
-
-        const path = (parsedUrl.pathname || "/").toLowerCase();
-        const normalizedConfig = normalizeUrlRulesConfig(config);
-
-        if (pathMatchesPrefix(path, normalizedConfig.deny)) {
-            return false;
-        }
-
-        if (normalizedConfig.mode === "allowAllExcept") {
-            return true;
-        }
-
-        return pathMatchesPrefix(path, normalizedConfig.allow);
-    } catch (error) {
-        return false;
-    }
 }
 

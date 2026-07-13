@@ -18,9 +18,6 @@
         "iframeButton": {
             "redirect": "Vaata siin:"
         },
-        "contextMenu": {
-            "redirect": "Ava FreeTube'is"
-        },
         "no": "Ei",
         "yes": "Jah"
     },

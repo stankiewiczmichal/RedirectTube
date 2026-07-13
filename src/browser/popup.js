@@ -7,37 +7,85 @@ var opinionButton = document.getElementById("opinionButton");
 var suggestionButton = document.getElementById("suggestionButton");
 var issueButton = document.getElementById("issueButton");
 
+let cachedPopupSettings = null;
+
 document.addEventListener("DOMContentLoaded", function () {
     extensionApi.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         var url = tabs[0].url;
-        if (
-            url.startsWith("https://www.youtube.com/watch?v=") ||
-            url.startsWith("https://www.youtube.com/playlist?list=") ||
-            url.startsWith("https://www.youtube.com/@") ||
-            url.startsWith("https://www.youtube.com/channel/") ||
-            url.startsWith("https://www.youtube.com/live/")
-        ) {
-            loadOptions(url, tabs);
-        } else {
-            errorText.textContent =
-                getMessageByKey("ui.error.e404") ||
-                "Cannot open this page in FreeTube.";
-            redirectButton.disabled = true;
-        }
+        extensionApi.storage.local.get(
+            [
+                STORAGE_KEYS.urlRulesConfig,
+                "popupBehavior",
+                STORAGE_KEYS.selectedPlayer,
+                STORAGE_KEYS.preferredInvidiousInstance,
+                STORAGE_KEYS.preferredPipedInstance,
+            ],
+            function (result = {}) {
+                const normalizedRules = normalizeUrlRulesConfig(
+                    result[STORAGE_KEYS.urlRulesConfig]
+                );
+
+                cachedPopupSettings = result;
+                const selectedPlayer = (result && result[STORAGE_KEYS.selectedPlayer]) || "freetube";
+                updateRedirectButtonLabel(selectedPlayer);
+
+                if (!isRedirectableYoutubeUrl(url, normalizedRules)) {
+                    errorText.textContent = getBlockedMessage(selectedPlayer);
+                    redirectButton.disabled = true;
+                    return;
+                }
+
+                if (result && result.popupBehavior === "redirect") {
+                    openInSelectedPlayer(url, tabs, result);
+                }
+            }
+        );
     });
 });
 
-function loadOptions(url, tabs) {
-    extensionApi.storage.local.get("popupBehavior", function (result) {
-        if (result && result.popupBehavior === "redirect") {
-            openInFreeTube(url, tabs);
-        }
-    });
-}
-function openInFreeTube(url, tabs) {
-    var freeTubeUrl = "freetube://" + url;
-    extensionApi.tabs.update(tabs[0].id, { url: freeTubeUrl });
+function openInSelectedPlayer(url, tabs, storageResult) {
+    const selectedPlayer = storageResult[STORAGE_KEYS.selectedPlayer] || "freetube";
+    const preferredInvidiousInstance =
+        storageResult[STORAGE_KEYS.preferredInvidiousInstance] ||
+        DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
+    const preferredPipedInstance =
+        storageResult[STORAGE_KEYS.preferredPipedInstance] ||
+        DEFAULT_PREFERRED_PIPED_INSTANCE;
+
+    const finalUrl = buildRedirectUrl(
+        url,
+        selectedPlayer,
+        preferredInvidiousInstance,
+        preferredPipedInstance
+    );
+
+    extensionApi.tabs.update(tabs[0].id, { url: finalUrl });
     window.close();
+}
+
+function updateRedirectButtonLabel(selectedPlayer) {
+    const dynamicKey = "ui.button.redirect_" + selectedPlayer;
+    let label = getMessageByKey(dynamicKey) || getMessageByKey("ui.button.redirect");
+    if (!label) {
+        return;
+    }
+
+    const playerLabel =
+        getMessageByKey("options.playerSettings." + selectedPlayer) || selectedPlayer;
+    label = label.replace(/FreeTube/g, playerLabel);
+    redirectButton.textContent = label;
+}
+
+function getBlockedMessage(selectedPlayer) {
+    const perPlayerKey = "ui.error.e404_" + selectedPlayer;
+    let message = getMessageByKey(perPlayerKey) || getMessageByKey("ui.error.e404");
+    if (!message) {
+        message = "Cannot open this page in FreeTube.";
+    }
+
+    const playerLabel =
+        getMessageByKey("options.playerSettings." + selectedPlayer) || selectedPlayer;
+    return message.replace(/FreeTube/g, playerLabel);
 }
 
 redirectButton.addEventListener("click", function () {
@@ -46,14 +94,28 @@ redirectButton.addEventListener("click", function () {
             { active: true, currentWindow: true },
             function (tabs) {
                 var url = tabs[0].url;
-                openInFreeTube(url, tabs);
+                if (cachedPopupSettings) {
+                    openInSelectedPlayer(url, tabs, cachedPopupSettings);
+                    return;
+                }
+                extensionApi.storage.local.get(
+                    [
+                        STORAGE_KEYS.selectedPlayer,
+                        STORAGE_KEYS.preferredInvidiousInstance,
+                        STORAGE_KEYS.preferredPipedInstance,
+                    ],
+                    function (result = {}) {
+                        cachedPopupSettings = result;
+                        openInSelectedPlayer(url, tabs, result);
+                    }
+                );
             }
         );
     }
 });
 
 optionsButton.addEventListener("click", function () {
-    extensionApi.runtime.openOptionsPage();
+    window.open("options.html");
 });
 
 opinionButton.addEventListener("click", function () {

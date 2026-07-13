@@ -1,4 +1,5 @@
 @import url('colors.css');
+@import url('components.css');
 
 body {
     background-color: var(--background);
@@ -6,43 +7,118 @@ body {
     font-family: sans-serif;
     padding: 0px;
     margin: 0;
-    min-width: 500px;
+    display: flex;
+}
+
+body.dir-ltr {
+    direction: ltr;
+}
+
+body.dir-rtl {
+    direction: rtl;
+}
+
+#sidebar {
+    display: flex;
+    position: sticky;
+    top: 12px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    height: calc(100vh - 42px);
+    gap: 1em;
+    background-color: var(--background-alt);
+    padding: 0 0 16px 0;
+    margin-block: 12px;
+    margin-inline-start: 12px;
+    border-radius: 22px;
+}
+
+.logo {
+    width: 192px;
 }
 
 #title {
     width: 100%;
     padding: 0;
     text-align: center;
-    background-color: #cb1314;
 }
 
-.logo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 1.5em;
+nav {
+    width: 100%;
+    max-width: 240px;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--background-element);
+    border-radius: 18px;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li button {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    background: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border: none;
+    color: var(--color);
+}
+
+nav ul li button:hover {
+    background-color: rgba(203, 19, 20, 0.1);
+}
+
+nav ul li button.active {
+    background-color: #cb1314;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.category-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    fill: var(--color);
+}
+
+#content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 16px;
+    gap: 1em;
 }
 
 h1 {
-    margin-top: 1em;
-    margin-left: 32px;
-    font-size: 1.7em;
-}
-
-a {
-    color: var(--url);
-    transition: all 0.3s;
-}
-
-a:hover {
-    color: var(--url-hover);
+    margin: 22px auto;
+    font-size: 3em;
 }
 
 .section {
-    margin: 0.75em 32px;
-    display: flex;
+    background: var(--background-alt);
+    border-radius: 24px;
+    padding: 1em;
+    margin: 1em auto;
+    max-width: 800px;
     align-items: center;
-    gap: 1em;
 }
 
 .section-label {
@@ -56,8 +132,52 @@ a:hover {
     margin: 0;
 }
 
+.section-label .description {
+    font-size: 0.9em;
+    color: var(--note);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.flex-row {
+    display: flex;
+}
+
+.section > .flex-row {
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.section > .flex-row input[type="url"] {
+    flex: 1 1 280px;
+    min-width: 220px;
+}
+
 #iframeEnhancedPreviewSection.hidden {
     display: none;
+}
+
+.category {
+    /* display: none; */
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.category[style*="display: block"] {
+    display: block !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .url-rules-section {
@@ -68,14 +188,12 @@ a:hover {
 .url-rules-card {
     margin-top: 0.75em;
     padding: 16px;
-    border: 1px solid #79797979;
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(121, 121, 121, 0.08);
 }
 
 .collapsible {
-    border: 1px solid #7979793f;
-    border-radius: 12px;
+    border-radius: 22px;
     padding: 10px 12px;
     background-color: rgba(121, 121, 121, 0.05);
 }
@@ -106,7 +224,7 @@ a:hover {
 }
 
 .collapsible h2 {
-    margin: 0;
+    margin: 3px 0 0 8px;
 }
 
 .collapsible .url-rules-card {
@@ -124,7 +242,6 @@ a:hover {
 .url-rules-card .subsection + .subsection {
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid #7979793f;
 }
 
 .pill-grid {
@@ -172,7 +289,7 @@ a:hover {
 #urlRulesCustomInput {
     flex: 1;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 16px;
     border: 1px solid #79797979;
     background-color: rgba(0, 0, 0, 0.08);
     color: var(--color);
@@ -249,22 +366,74 @@ a:hover {
     pointer-events: none;
 }
 
-select {
-    padding: 0.5em 1em;
-    margin: 0;
-    border: #79797979 solid 1px;
-    border-radius: 4px;
-    background-color: #79797979;
-    color: var(--color);
-    transition: all 0.3s;
-    font-size: 0.9em;
-    height: fit-content;
-    white-space: nowrap;
-    flex-shrink: 0;
+.icon-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
 }
 
-select:hover {
-    background-color: #797979b9;
+.player-settings-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.player-instance-section-active {
+    border-radius: 22px 22px 0 0;
+    margin-bottom: 0;
+}
+
+.player-instance-section {
+    border-top: 1px solid var(--background-element);
+    border-radius: 0 0 22px 22px;
+    margin-top: 0;
+}
+
+.player-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--background-element);
+    cursor: pointer;
+}
+
+.player-choice input[type="radio"] {
+    margin: 0;
+}
+
+.player-choice input[type="radio"]:checked + span {
+    color: var(--accent);
+}
+
+.player-choice input[type="radio"]:checked {
+    accent-color: var(--accent);
+}
+
+.player-settings-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.player-settings-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+input[type="url"], input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+}
+
+@media (max-width: 700px) {
+    .player-settings-columns {
+        grid-template-columns: 1fr;
+    }
 }
 
 .extension-icon {
@@ -284,7 +453,7 @@ select:hover {
 
 .extension-icons {
     padding: 6px 6px 3px 6px;
-    border: 2px solid var(--background);
+    border: 2px solid var(--background-alt);
     border-radius: 8px;
     transition: all 0.15s;
 }
@@ -298,33 +467,23 @@ select:hover {
 }
 
 .extension-icons img {
-    height: 32px;
+    height: 28px;
 }
 
-button {
-    padding: 0.5em 1em;
-    margin: 2px;
-    border: #79797979 solid 1px;
-    border-radius: 4px;
-    background-color: #79797979;
-    color: var(--color);
-    transition: all 0.3s;
-    font-size: 0.9em;
+.about-section {
+    text-align: center;
 }
 
-button:hover {
-    background-color: #797979b9;
-}
-
-button:disabled {
-    background-color: #79797979;
-    color: #79797979;
-    cursor: not-allowed;
+.help-section-actions {
+    justify-content: center;
+    gap: 16px;
 }
 
 footer {
-    margin-top: 1em;
-    padding: 0.5em;
+    width: calc(100% - 32px);
+    border-radius: 22px;
+    margin: 1em;
+    padding: 0.5em 0;
     text-align: center;
     background-color: #7979793f;
 }
@@ -335,11 +494,8 @@ footer p {
 
 .socials {
     display: flex;
-    position: fixed;
-    flex-direction: column;
-    align-items: flex-end;
-    top: 8px;
-    right: 8px;
+    justify-content: center;
+    gap: 8px;
 }
 
 .social {
@@ -360,12 +516,12 @@ footer p {
 .social-logo {
     width: 24px;
     height: 24px;
-    fill: #ffffffd0;
+    fill: var(--color);
     transition: all 0.3s;
     cursor: default;
 }
 .social-logo:hover {
-    fill: #ffffff;
+    opacity: 0.6;
 }
 
 .beta-label {

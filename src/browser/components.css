@@ -1,0 +1,110 @@
+body {
+    font: 1em sans-serif;
+}
+
+.logo {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1.5em;
+}
+
+h1 {
+	margin-top: 1em;
+	margin-left: 32px;
+	font-size: 1.7em;
+}
+
+a {
+	color: var(--url);
+	transition: all 0.3s;
+}
+
+a:hover {
+	color: var(--url-hover);
+}
+
+button {
+	padding: .6em 1.5em;
+	margin: 2px;
+	border: none;
+	border-radius: 16px;
+	background-color: var(--background-element);
+	color: var(--color);
+	transition: all 0.3s;
+	font-size: 0.9em;
+}
+
+button:hover {
+	background-color: var(--background-element-hover);
+}
+
+button:disabled {
+	background-color: var(--background-element-disabled);
+	color: #79797979;
+	cursor: not-allowed;
+}
+
+button.primary {
+	background-color: var(--accent);
+	border-color: #cb1314;
+	color: #ffffff;
+}
+
+button.primary:hover {
+	background-color: #b21010;
+}
+
+button.primary:disabled {
+	background-color: #ff8686;
+	cursor: not-allowed;
+}
+
+input[type="checkbox"] {
+	width: 14px;
+	height: 14px;
+	accent-color: var(--accent);
+}
+
+select {
+	all: unset;
+	box-sizing: border-box;
+	display: inline-block;
+	padding: 0.6em 1.5em;
+	margin: 0;
+	border-radius: 16px;
+	background-color: var(--background-element);
+	color: var(--color);
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-image:
+		linear-gradient(45deg, transparent 50%, var(--color) 50%),
+		linear-gradient(135deg, var(--color) 50%, transparent 50%);
+	background-repeat: no-repeat;
+	background-position: right 0.95em center, right 0.7em center;
+	background-size: 6px 6px, 6px 6px;
+	padding-right: 2.2em;
+	transition: all 0.3s;
+	font-size: 0.9em;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+select:hover {
+	background-color: var(--background-element-hover);
+}
+
+select:disabled {
+    background-color: var(--background-element-disabled);
+    cursor: not-allowed;
+}
+
+input[type="url"], input[type="text"] {
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--background-element);
+    background: var(--background);
+    color: var(--color);
+}

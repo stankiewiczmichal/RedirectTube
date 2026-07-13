@@ -1,4 +1,5 @@
 @import url('colors.css');
+@import url('components.css');
 
 body {
     background-color: var(--background);
@@ -16,35 +17,23 @@ body {
     width: 100%;
     padding: 0;
     text-align: center;
-    background-color: #cb1314;
+    background-color: var(--background-alt);
 }
 
 .logo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 1.5em;
+    width: 256px;
 }
 
-h1 {
-    margin-top: 1em;
-    margin-left: 32px;
-    font-size: 1.7em;
-}
-
-a {
-    color: var(--url);
-}
-
-a:hover {
-    color: var(--url-hover);
-}
 
 .section {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0.75em 32px;
+}
+
+[hidden] {
+    display: none !important;
 }
 
 .socials {
@@ -81,32 +70,12 @@ a:hover {
     fill: #ffffff;
 }
 
-button {
-    padding: 0.5em 1em;
-    margin: 2px;
-    border: #79797979 solid 1px;
-    border-radius: 4px;
-    background-color: #79797979;
-    color: var(--color);
-    font-size: 0.9em;
-    transition: all 0.3s;
-    cursor: pointer;
-}
 
-button:hover {
-    background-color: #797979b9;
-}
-
-button:disabled {
-    background-color: #79797979;
-    color: #79797979;
-    cursor: not-allowed;
-}
-
-img {
-    width: 100%;
-    max-width: 700px;
+.provider {
     height: auto;
+    width: 128px;
+    border: 2px solid transparent;
+    border-radius: 18px;
 }
 
 .images {
@@ -114,9 +83,108 @@ img {
     flex-wrap: wrap;
     justify-content: center;
     margin: 0.75em 32px;
+    gap: 18px;
 }
 
 .image {
     text-align: center;
     transition: all 0.3s;
+}
+
+.player-option {
+    display: inline-block;
+    cursor: pointer;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    background: transparent;
+    user-select: none;
+}
+.player-option input {
+    display: none;
+}
+.player-option .provider {
+    width: 128px;
+    height: auto;
+    display: block;
+    margin: 0 auto 8px;
+}
+.player-option h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+/* `.player-option.selected` removed: visual state is driven by the radio `:checked` CSS above. */
+
+/* Mirror options.css behavior: style based on checked radio so selection persists visually */
+.player-option input[type="radio"]:checked ~ .provider {
+    border: 2px solid var(--accent);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.player-option input[type="radio"]:checked ~ h2 {
+    color: var(--accent);
+}
+
+.setup-panels {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.setup-panel {
+    width: min(100%, 720px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(121, 121, 121, 0.12);
+}
+
+.setup-panel h2,
+.setup-panel p {
+    margin: 0;
+}
+
+.instance-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.instance-row input {
+    flex: 1 1 320px;
+    min-width: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--background-element);
+    background: var(--background);
+    color: var(--color);
+}
+
+.instance-status {
+    min-height: 1.4em;
+    color: var(--note);
+}
+
+.instance-status.is-ok {
+    color: #2e9e56;
+}
+
+.instance-status.is-error {
+    color: #dc5a5a;
+}
+
+.setup-link {
+    display: inline-flex;
+    align-self: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.buttons {
+    margin-top: 12px;
 }

@@ -93,12 +93,18 @@ You can enable auto-redirect in the extension options. When enabled, any YouTube
 
 If you encounter any issues, please report them on the [issues page](https://github.com/stankiewiczmichal/RedirectTube/issues/).
 
+<picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=stankiewiczmichal/RedirectTube&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=stankiewiczmichal/RedirectTube&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=stankiewiczmichal/RedirectTube&type=date&legend=top-left" />
+ </picture>
+
 ## Translation
 
 If your language is not yet supported by RedirectTube, you can change that! Help develop the extension by translating it into your language.
-Translations are managed via the [Codeberg platform](https://translate.codeberg.org/engage/redirecttube/).
+Translations are managed via [Weblate](https://hosted.weblate.org/engage/redirecttube/).
 
-[![](https://translate.codeberg.org/widget/redirecttube/ui/multi-auto.svg)](https://translate.codeberg.org/engage/redirecttube/)
+[![](https://hosted.weblate.org/widget/redirecttube/ui/multi-auto.svg)](https://hosted.weblate.org/engage/redirecttube/)
 
 ## License
 

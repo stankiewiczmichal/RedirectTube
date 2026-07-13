@@ -2,18 +2,18 @@
     "name": "__MSG_extension_name__",
     "description": "__MSG_extension_description__",
     "author": "Michał Stankiewicz",
-    "version": "1.14.1",
+    "version": "2.0.0",
     "manifest_version": 3,
     "default_locale": "en",
     "icons": {
-        "16": "img/icns/color/allow/16.png",
-        "32": "img/icns/color/allow/32.png",
-        "48": "img/icns/color/allow/48.png",
-        "64": "img/icns/color/allow/64.png",
-        "96": "img/icns/color/allow/96.png",
-        "128": "img/icns/color/allow/128.png",
-        "256": "img/icns/color/allow/256.png",
-        "512": "img/icns/color/allow/512.png"
+        "16": "img/icns/redirecttube/color/allow/16.png",
+        "32": "img/icns/redirecttube/color/allow/32.png",
+        "48": "img/icns/redirecttube/color/allow/48.png",
+        "64": "img/icns/redirecttube/color/allow/64.png",
+        "96": "img/icns/redirecttube/color/allow/96.png",
+        "128": "img/icns/redirecttube/color/allow/128.png",
+        "256": "img/icns/redirecttube/color/allow/256.png",
+        "512": "img/icns/redirecttube/color/allow/512.png"
     },
     "background": {
         "scripts": [
@@ -51,7 +51,7 @@
         "default_title": "__MSG_ui_button_redirect__"
     },
     "options_ui": {
-        "page": "options.html"
+        "page": "options-placeholder.html"
     },
     "browser_specific_settings": {
         "gecko": {
