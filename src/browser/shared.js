@@ -14,6 +14,8 @@ const STORAGE_KEYS = Object.freeze({
     preferredInvidiousInstance: "preferredInvidiousInstance",
     preferredPipedInstance: "preferredPipedInstance",
     introductionComplete: "introductionComplete",
+    shortcutEnabled: "shortcutEnabled",
+    shortcutBehavior: "shortcutBehavior",
 });
 
 const DEFAULT_ALLOW_PREFIXES = [
@@ -60,7 +62,11 @@ const PLAYERS = Object.freeze({
     freetube: "freetube",
     invidious: "invidious",
     piped: "piped",
+    opentubex: "opentubex",
 });
+
+const DEFAULT_SHORTCUT_ENABLED = true;
+const DEFAULT_SHORTCUT_BEHAVIOR = "replaceTab";
 
 const DEFAULT_PREFERRED_INVIDIOUS_INSTANCE = "https://yewtu.be";
 const DEFAULT_PREFERRED_PIPED_INSTANCE = "https://piped.video";
@@ -112,6 +118,27 @@ function normalizeUrlRulesConfig(rawConfig) {
     };
 }
 
+function normalizeIframeBehavior(value) {
+    if (!value) {
+        return null;
+    }
+    if (value === "iframeBehaviorReplace" || value === "iframeBehaviorNone") {
+        return value;
+    }
+    if (value === "iframeBehaviorButton" || value === "iframeButtonYes") {
+        return "iframeBehaviorReplace";
+    }
+    if (value === "iframeButtonNo") {
+        return "iframeBehaviorNone";
+    }
+    return null;
+}
+
+function isSameOrSubdomain(hostname, baseDomain) {
+    const host = (hostname || "").toLowerCase();
+    return host === baseDomain || host.endsWith("." + baseDomain);
+}
+
 function isRedirectableYoutubeUrl(url, config = getDefaultUrlRulesConfig()) {
     try {
         const parsedUrl = new URL(url);
@@ -121,7 +148,7 @@ function isRedirectableYoutubeUrl(url, config = getDefaultUrlRulesConfig()) {
             return parsedUrl.pathname.length > 1;
         }
 
-        if (!host.endsWith("youtube.com")) {
+        if (!isSameOrSubdomain(host, "youtube.com")) {
             return false;
         }
 
@@ -217,6 +244,9 @@ function buildRedirectUrl(
             youtubeUrl,
             preferredPipedInstance || DEFAULT_PREFERRED_PIPED_INSTANCE
         );
+    }
+    if (normalizedPlayer === PLAYERS.opentubex) {
+        return "opentubex://" + youtubeUrl;
     }
     return "freetube://" + youtubeUrl;
 }

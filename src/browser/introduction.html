@@ -72,6 +72,13 @@
                         <h2 data-i18n="introduction.piped.title">Piped</h2>
                     </label>
                 </div>
+                <div class="image">
+                    <label class="player-option" for="opentubex" tabindex="0">
+                        <input id="opentubex" type="radio" name="player" value="opentubex">
+                        <img class="provider provider-invert-on-light" src="img/opentubex-logo.svg" alt="OpenTubeX">
+                        <h2 data-i18n="introduction.opentubex.title">OpenTubeX</h2>
+                    </label>
+                </div>
             </div>
                 <div class="buttons">
                     <button id="next" class="primary" data-i18n="introduction.step1.next">Next</button>
@@ -103,9 +110,33 @@
                     </div>
                     <p id="pipedInstanceStatus" class="instance-status" aria-live="polite"></p>
                 </div>
+                <div class="setup-panel" id="setup-opentubex-panel" hidden>
+                    <h2 data-i18n="introduction.step2.opentubex.title">OpenTubeX requires the desktop app</h2>
+                    <p data-i18n="introduction.step2.opentubex.body">Download OpenTubeX before continuing.</p>
+                    <button id="opentubexDownload" class="primary" type="button" data-i18n="introduction.step2.opentubex.download">Download OpenTubeX</button>
+                </div>
             </div>
             <div class="buttons">
                 <button id="back" type="button" data-i18n="introduction.step2.back">Back</button>
+                <button id="step2Next" class="primary" type="button" data-i18n="introduction.step2.next">Next</button>
+            </div>
+        </div>
+        <div class="section" id="introduction-step-3" hidden>
+            <h1 data-i18n="introduction.step3.title">Keyboard shortcut</h1>
+            <label class="flex-row">
+                <input type="checkbox" id="shortcutEnabled">
+                <span data-i18n="introduction.step3.enable">Enable keyboard shortcut redirect</span>
+            </label>
+            <div id="shortcutOptions">
+                <select id="shortcutBehavior">
+                    <option value="replaceTab" data-i18n="options.shortcut.replaceTab">Replace current tab</option>
+                    <option value="newTab" data-i18n="options.shortcut.newTab">Open in a new tab</option>
+                </select>
+                <button id="changeShortcutButton" type="button" data-i18n="options.shortcut.change">Change keyboard shortcut…</button>
+                <p class="note" data-i18n="introduction.step3.firefoxHint">On Firefox, click the gear icon and choose "Manage Extension Shortcuts".</p>
+            </div>
+            <div class="buttons">
+                <button id="step3Back" type="button" data-i18n="introduction.step2.back">Back</button>
                 <button id="finish" class="primary" type="button" data-i18n="introduction.step2.finish">Finish</button>
             </div>
         </div>

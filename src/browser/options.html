@@ -86,6 +86,27 @@
                     <option value="redirect" data-i18n="options.popupBehavior.redirect">Redirect to FreeTube</option>
                 </select>
             </div>
+            <div class="section flex-row">
+                <div class="section-label">
+                    <label for="shortcutEnabled" data-i18n="options.shortcut.enable">Enable keyboard shortcut redirect</label>
+                </div>
+                <input type="checkbox" id="shortcutEnabled">
+            </div>
+            <div class="section flex-row" id="shortcutOptions">
+                <div class="section-label">
+                    <label for="shortcutBehavior" data-i18n="options.shortcut.behaviorLabel">Keyboard shortcut behavior</label>
+                </div>
+                <select name="shortcutBehavior" id="shortcutBehavior">
+                    <option value="replaceTab" data-i18n="options.shortcut.replaceTab">Replace current tab</option>
+                    <option value="newTab" data-i18n="options.shortcut.newTab">Open in a new tab</option>
+                </select>
+            </div>
+            <div class="section flex-row">
+                <div class="section-label">
+                    <label data-i18n="options.shortcut.changeLabel">Keyboard shortcut key</label>
+                </div>
+                <button id="changeShortcutButton" type="button" data-i18n="options.shortcut.change">Change keyboard shortcut…</button>
+            </div>
             <div class="section flex-row" id="playerPrefferedSection">
                 <div class="section-label">
                     <label data-i18n="options.playerSettings.label">Preferred player setup</label>
@@ -102,6 +123,10 @@
                     <label class="player-choice">
                         <input type="radio" name="selectedPlayer" value="piped" id="selectedPlayerPiped">
                         <span data-i18n="options.playerSettings.piped">Piped</span>
+                    </label>
+                    <label class="player-choice">
+                        <input type="radio" name="selectedPlayer" value="opentubex" id="selectedPlayerOpenTubeX">
+                        <span data-i18n="options.playerSettings.opentubex">OpenTubeX</span>
                     </label>
                 </div>
             </div>

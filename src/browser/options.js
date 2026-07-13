@@ -7,6 +7,8 @@ var extensionIcon = "redirecttube-color";
 var selectedPlayer = "freetube";
 var preferredInvidiousInstance = "https://yewtu.be";
 var preferredPipedInstance = "https://piped.video";
+var shortcutEnabled = true;
+var shortcutBehavior = "replaceTab";
 
 const CATEGORY_PREFIXES = {
     watch: ["/watch", "/playlist"],
@@ -319,6 +321,19 @@ function setPreferredInstanceVisibility(player) {
     }
 }
 
+function setShortcutOptionsVisibility(enabled) {
+    const shortcutOptions = document.getElementById("shortcutOptions");
+    if (shortcutOptions) {
+        shortcutOptions.hidden = !enabled;
+    }
+}
+
+function openShortcutsSettings() {
+    const isFirefox = Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+    const url = isFirefox ? "about:addons" : "chrome://extensions/shortcuts";
+    extensionApi.tabs.create({ url });
+}
+
 function getSelectedPlayerFromUI() {
     const selected = document.querySelector(
         'input[name="selectedPlayer"]:checked'
@@ -359,6 +374,8 @@ function saveOptions(e) {
             "preferredPipedInstance"
         ).value.trim(),
         urlRulesConfig: urlRulesResult.config,
+        shortcutEnabled: document.getElementById("shortcutEnabled").checked,
+        shortcutBehavior: document.getElementById("shortcutBehavior").value,
     });
 }
 
@@ -390,6 +407,12 @@ function restoreOptions() {
         applyUrlRulesToUI(result.urlRulesConfig);
         syncPreferredInstanceVisibility();
         updateIframeEnhancedPreviewVisibility();
+
+        document.getElementById("shortcutEnabled").checked =
+            result.shortcutEnabled ?? shortcutEnabled;
+        document.getElementById("shortcutBehavior").value =
+            result.shortcutBehavior || shortcutBehavior;
+        setShortcutOptionsVisibility(document.getElementById("shortcutEnabled").checked);
     }
 
     function onError(error) {
@@ -407,6 +430,8 @@ function restoreOptions() {
             "preferredInvidiousInstance",
             "preferredPipedInstance",
             "urlRulesConfig",
+            "shortcutEnabled",
+            "shortcutBehavior",
         ],
         function (result) {
             if (extensionApi.runtime.lastError) {
@@ -561,6 +586,16 @@ document
 document
     .querySelector("#preferredPipedInstance")
     ?.addEventListener("change", saveOptions);
+document.querySelector("#shortcutEnabled")?.addEventListener("change", (event) => {
+    setShortcutOptionsVisibility(Boolean(event.target.checked));
+    saveOptions(event);
+});
+document
+    .querySelector("#shortcutBehavior")
+    ?.addEventListener("change", saveOptions);
+document
+    .querySelector("#changeShortcutButton")
+    ?.addEventListener("click", openShortcutsSettings);
 document.querySelector("#urlRulesAllowAll")?.addEventListener("change", (event) => {
     const isAllowAll = Boolean(event.target.checked);
     setAllowListEnabled(!isAllowAll);
@@ -610,26 +645,10 @@ if (urlRulesResetBtn) {
 function updateIframeEnhancedPreviewVisibility() {
     const iframeBehaviorValue = document.getElementById("iframeBehavior").value;
     const enhancedPreviewSection = document.getElementById("iframeEnhancedPreviewSection");
-    
+
     if (iframeBehaviorValue === "iframeBehaviorNone") {
         enhancedPreviewSection.classList.add("hidden");
     } else {
         enhancedPreviewSection.classList.remove("hidden");
     }
-}
-
-function normalizeIframeBehavior(value) {
-    if (!value) {
-        return null;
-    }
-    if (value === "iframeBehaviorReplace" || value === "iframeBehaviorNone") {
-        return value;
-    }
-    if (value === "iframeBehaviorButton" || value === "iframeButtonYes") {
-        return "iframeBehaviorReplace";
-    }
-    if (value === "iframeButtonNo") {
-        return "iframeBehaviorNone";
-    }
-    return null;
 }

@@ -349,10 +349,19 @@
         }
         return template.replace(/{{\s*(\w+)\s*}}/g, (match, token) => {
             if (Object.prototype.hasOwnProperty.call(replacements, token)) {
-                return replacements[token];
+                return escapeHtml(replacements[token]);
             }
             return match;
         });
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
     }
 
     function sanitizeLabel(raw) {

@@ -7,6 +7,8 @@ let cachedExtensionIcon = "redirecttube-color";
 let cachedSelectedPlayer = "freetube";
 let cachedPreferredInvidiousInstance = DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
 let cachedPreferredPipedInstance = DEFAULT_PREFERRED_PIPED_INSTANCE;
+let cachedShortcutEnabled = DEFAULT_SHORTCUT_ENABLED;
+let cachedShortcutBehavior = DEFAULT_SHORTCUT_BEHAVIOR;
 let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
@@ -22,6 +24,8 @@ extensionApi.runtime.onInstalled.addListener((details) => {
             iframeBehavior: "iframeBehaviorReplace",
             iframeEnhancedPreview: false,
             urlRulesConfig: getDefaultUrlRulesConfig(),
+            shortcutEnabled: DEFAULT_SHORTCUT_ENABLED,
+            shortcutBehavior: DEFAULT_SHORTCUT_BEHAVIOR,
         });
     }
 
@@ -36,6 +40,8 @@ extensionApi.runtime.onStartup.addListener(() => {
             STORAGE_KEYS.selectedPlayer,
             STORAGE_KEYS.preferredInvidiousInstance,
             STORAGE_KEYS.preferredPipedInstance,
+            STORAGE_KEYS.shortcutEnabled,
+            STORAGE_KEYS.shortcutBehavior,
         ],
         (result = {}) => {
             cachedExtensionIcon =
@@ -48,6 +54,12 @@ extensionApi.runtime.onStartup.addListener(() => {
             cachedPreferredPipedInstance =
                 result[STORAGE_KEYS.preferredPipedInstance] ||
                 DEFAULT_PREFERRED_PIPED_INSTANCE;
+            cachedShortcutEnabled =
+                result[STORAGE_KEYS.shortcutEnabled] !== undefined
+                    ? Boolean(result[STORAGE_KEYS.shortcutEnabled])
+                    : DEFAULT_SHORTCUT_ENABLED;
+            cachedShortcutBehavior =
+                result[STORAGE_KEYS.shortcutBehavior] || DEFAULT_SHORTCUT_BEHAVIOR;
             updateActionIcon();
             // Ensure context menu reflects the loaded selected player
             try {
@@ -116,6 +128,42 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
             changes[STORAGE_KEYS.preferredPipedInstance].newValue ||
             DEFAULT_PREFERRED_PIPED_INSTANCE;
     }
+    if (changes[STORAGE_KEYS.shortcutEnabled]) {
+        cachedShortcutEnabled = Boolean(changes[STORAGE_KEYS.shortcutEnabled].newValue);
+    }
+    if (changes[STORAGE_KEYS.shortcutBehavior]) {
+        cachedShortcutBehavior =
+            changes[STORAGE_KEYS.shortcutBehavior].newValue || DEFAULT_SHORTCUT_BEHAVIOR;
+    }
+});
+
+extensionApi.commands.onCommand.addListener((command) => {
+    if (command !== "redirect-current-tab") {
+        return;
+    }
+    if (!cachedShortcutEnabled) {
+        return;
+    }
+    extensionApi.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs && tabs[0];
+        if (!tab || !tab.url) {
+            return;
+        }
+        if (!isRedirectableYoutubeUrl(tab.url, urlRulesConfig)) {
+            return;
+        }
+        const newUrl = buildRedirectUrl(
+            tab.url,
+            cachedSelectedPlayer,
+            cachedPreferredInvidiousInstance,
+            cachedPreferredPipedInstance
+        );
+        if (cachedShortcutBehavior === "newTab") {
+            extensionApi.tabs.create({ url: newUrl });
+        } else {
+            extensionApi.tabs.update(tab.id, { url: newUrl });
+        }
+    });
 });
 
 function handleUrlChange(url) {
@@ -137,8 +185,6 @@ function updateActionIcon() {
             extensionApi && extensionApi.runtime && typeof extensionApi.runtime.getURL === "function"
                 ? extensionApi.runtime.getURL(path)
                 : path;
-        // Debug: log resolved path when icon fails to load in the wild
-        // console.debug("Setting action icon:", resolvedPath);
         extensionApi.action.setIcon({ path: resolvedPath });
     } catch (err) {
         console.error("Failed to set action icon:", err, { path });
@@ -183,17 +229,6 @@ extensionApi.contextMenus.onClicked.addListener((info) => {
             cachedPreferredInvidiousInstance,
             cachedPreferredPipedInstance
         );
-
-        // Debug: show what URL we will open and which player is selected
-        try {
-            console.debug && console.debug("contextMenu.openRedirect", {
-                linkUrl: info.linkUrl,
-                newUrl,
-                selectedPlayer: cachedSelectedPlayer,
-            });
-        } catch (e) {
-            // ignore
-        }
 
         // Open the redirect URL in a new tab to ensure the target player handles it.
         // Using tabs.create avoids potential failures when updating the originating tab
@@ -248,22 +283,6 @@ function createContextMenu() {
             ],
         });
     });
-}
-
-function normalizeIframeBehavior(value) {
-    if (!value) {
-        return null;
-    }
-    if (value === "iframeBehaviorReplace" || value === "iframeBehaviorNone") {
-        return value;
-    }
-    if (value === "iframeBehaviorButton" || value === "iframeButtonYes") {
-        return "iframeBehaviorReplace";
-    }
-    if (value === "iframeButtonNo") {
-        return "iframeBehaviorNone";
-    }
-    return null;
 }
 
 function getBrowserLocale() {

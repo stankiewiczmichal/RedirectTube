@@ -4,8 +4,7 @@ const extensionApi = typeof chrome !== "undefined" ? chrome : browser;
 let redirecttubeAutoRedirect = "autoRedirectLinksNo";
 let redirecttubeIframeBehavior = "iframeBehaviorReplace";
 let redirecttubeIframeEnhancedPreview = false;
-let redirecttubeButtonLabel =
-    localStorage.getItem("redirecttubeButtonName") || getDefaultButtonLabel();
+let redirecttubeButtonLabel = getDefaultButtonLabel();
 let isTopLevelDocument = false;
 let iframeSettingsReady = false;
 let redirecttubeUrlRulesConfig = getDefaultUrlRulesConfig();
@@ -35,19 +34,6 @@ if (isTopLevelDocument) {
     syncThemePreference();
     loadRuntimeSettings();
     installUrlChangeTracking();
-}
-
-function normalizeIframeBehavior(value) {
-    if (!value) {
-        return null;
-    }
-    if (value === "iframeBehaviorNone" || value === "iframeBehaviorReplace") {
-        return value;
-    }
-    if (value === "iframeBehaviorButton") {
-        return "iframeBehaviorReplace";
-    }
-    return null;
 }
 
 function syncThemePreference() {
@@ -263,10 +249,16 @@ function restoreIframeToOriginal(iframe, options = {}) {
 }
 
 function isYoutubeEmbedSrc(src) {
-    return (
-        src.includes("youtube.com/embed") ||
-        src.includes("youtube-nocookie.com/embed")
-    );
+    try {
+        const url = new URL(src, window.location.href);
+        const host = url.hostname.toLowerCase();
+        const isYoutubeHost =
+            isSameOrSubdomain(host, "youtube.com") ||
+            isSameOrSubdomain(host, "youtube-nocookie.com");
+        return isYoutubeHost && url.pathname.startsWith("/embed");
+    } catch (error) {
+        return false;
+    }
 }
 
 function handleIframePromptMessage(event) {

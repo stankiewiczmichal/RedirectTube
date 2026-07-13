@@ -53,6 +53,15 @@
     "options_ui": {
         "page": "options-placeholder.html"
     },
+    "commands": {
+        "redirect-current-tab": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+F",
+                "mac": "Command+Shift+F"
+            },
+            "description": "__MSG_commands_redirectCurrentTab_description__"
+        }
+    },
     "browser_specific_settings": {
         "gecko": {
             "id": "redirecttube@stankiewiczm.eu",

@@ -31,6 +31,11 @@
         "name": "RedirectTube",
         "description": "Open YouTube links in FreeTube"
     },
+    "commands": {
+        "redirectCurrentTab": {
+            "description": "Redirect the current tab to your selected player"
+        }
+    },
     "introduction": {
         "page": {
             "title": "RedirectTube • Introduction"
@@ -39,14 +44,23 @@
             "title": "Choose your YouTube player",
             "next": "Next"
         },
+        "opentubex": {
+            "title": "OpenTubeX"
+        },
         "step2": {
             "title": "Set up your selected player",
             "back": "Back",
             "finish": "Finish",
+            "next": "Next",
             "freetube": {
                 "title": "FreeTube requires the desktop app",
                 "body": "Download FreeTube before continuing.",
                 "download": "Download FreeTube"
+            },
+            "opentubex": {
+                "title": "OpenTubeX requires the desktop app",
+                "body": "Download OpenTubeX before continuing.",
+                "download": "Download OpenTubeX"
             },
             "instance": {
                 "title": "Choose your preferred instance",
@@ -57,6 +71,11 @@
                 "invalid": "This instance could not be verified.",
                 "required": "Enter an instance URL to continue."
             }
+        },
+        "step3": {
+            "title": "Keyboard shortcut",
+            "enable": "Enable keyboard shortcut redirect",
+            "firefoxHint": "On Firefox, click the gear icon and choose \"Manage Extension Shortcuts\"."
         },
         "usage": {
             "title": "Usage",
@@ -84,6 +103,14 @@
         "autoRedirectLinks": {
             "label": "Automatically redirect YouTube links when clicked"
         },
+        "shortcut": {
+            "enable": "Enable keyboard shortcut redirect",
+            "behaviorLabel": "Keyboard shortcut behavior",
+            "replaceTab": "Replace current tab",
+            "newTab": "Open in a new tab",
+            "changeLabel": "Keyboard shortcut key",
+            "change": "Change keyboard shortcut…"
+        },
         "iframeBehavior": {
             "label": "iFrame behavior",
             "none": "Nothing",
@@ -99,6 +126,7 @@
             "freetube": "FreeTube",
             "invidious": "Invidious",
             "piped": "Piped",
+            "opentubex": "OpenTubeX",
             "invidiousInstance": "Preferred Invidious instance",
             "pipedInstance": "Preferred Piped instance"
         },

@@ -10,7 +10,12 @@ const STORAGE_KEYS = {
     preferredInvidiousInstance: "preferredInvidiousInstance",
     preferredPipedInstance: "preferredPipedInstance",
     introductionComplete: "introductionComplete",
+    shortcutEnabled: "shortcutEnabled",
+    shortcutBehavior: "shortcutBehavior",
 };
+
+const DEFAULT_SHORTCUT_ENABLED = true;
+const DEFAULT_SHORTCUT_BEHAVIOR = "replaceTab";
 
 const DEFAULT_INSTANCE_BY_PLAYER = {
     invidious: "https://yewtu.be",
@@ -30,15 +35,19 @@ const PLAYER_STORAGE_KEY_BY_PLAYER = {
 const STEPS = {
     first: document.getElementById("introduction-step-1"),
     second: document.getElementById("introduction-step-2"),
+    third: document.getElementById("introduction-step-3"),
 };
 
 const CONTROLS = {
     next: document.getElementById("next"),
     back: document.getElementById("back"),
     finish: document.getElementById("finish"),
+    step2Next: document.getElementById("step2Next"),
+    step3Back: document.getElementById("step3Back"),
     freetubePanel: document.getElementById("setup-freetube-panel"),
     invidiousPanel: document.getElementById("setup-invidious-panel"),
     pipedPanel: document.getElementById("setup-piped-panel"),
+    opentubexPanel: document.getElementById("setup-opentubex-panel"),
     invidiousInput: document.getElementById("invidiousInstanceUrl"),
     pipedInput: document.getElementById("pipedInstanceUrl"),
     invidiousCheck: document.getElementById("invidiousInstanceCheck"),
@@ -46,6 +55,11 @@ const CONTROLS = {
     invidiousStatus: document.getElementById("invidiousInstanceStatus"),
     pipedStatus: document.getElementById("pipedInstanceStatus"),
     downloadFreetube: document.getElementById("freetubeDownload"),
+    downloadOpentubex: document.getElementById("opentubexDownload"),
+    shortcutEnabled: document.getElementById("shortcutEnabled"),
+    shortcutBehavior: document.getElementById("shortcutBehavior"),
+    shortcutOptions: document.getElementById("shortcutOptions"),
+    changeShortcutButton: document.getElementById("changeShortcutButton"),
 };
 
 const radios = Array.from(
@@ -108,12 +122,20 @@ function getRadioByPlayer(player) {
 function setVisibleStep(stepNumber) {
     STEPS.first.hidden = stepNumber !== 1;
     STEPS.second.hidden = stepNumber !== 2;
+    STEPS.third.hidden = stepNumber !== 3;
 }
 
 function setPanelVisibility(activePlayer) {
     CONTROLS.freetubePanel.hidden = activePlayer !== "freetube";
     CONTROLS.invidiousPanel.hidden = activePlayer !== "invidious";
     CONTROLS.pipedPanel.hidden = activePlayer !== "piped";
+    CONTROLS.opentubexPanel.hidden = activePlayer !== "opentubex";
+}
+
+function openShortcutsSettings() {
+    const isFirefox = Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+    const url = isFirefox ? "about:addons" : "chrome://extensions/shortcuts";
+    extensionApi.tabs.create({ url });
 }
 
 function setInstanceStatus(player, type, message) {
@@ -290,6 +312,10 @@ async function validateInstance(player, rawValue) {
     }
 }
 
+function setStep2NextEnabled(enabled) {
+    CONTROLS.step2Next.disabled = !enabled;
+}
+
 function setFinishEnabled(enabled) {
     CONTROLS.finish.disabled = !enabled;
 }
@@ -339,7 +365,7 @@ async function runInstanceValidation(player) {
     );
 
     checkButton.disabled = true;
-    setFinishEnabled(false);
+    setStep2NextEnabled(false);
 
     try {
         if (!rawValue.trim()) {
@@ -356,7 +382,7 @@ async function runInstanceValidation(player) {
         input.value = normalizedValue;
         await savePreferredInstance(player, normalizedValue);
         setInstanceStatus(player, "ok", validMessage);
-        setFinishEnabled(true);
+        setStep2NextEnabled(true);
     } catch (error) {
         if (token !== currentValidationToken) {
             return;
@@ -364,7 +390,7 @@ async function runInstanceValidation(player) {
 
         const isMissing = error && error.message === "missing-instance";
         setInstanceStatus(player, "error", isMissing ? requiredMessage : invalidMessage);
-        setFinishEnabled(false);
+        setStep2NextEnabled(false);
     } finally {
         if (token === currentValidationToken) {
             checkButton.disabled = false;
@@ -395,8 +421,8 @@ async function renderStep2() {
     setVisibleStep(2);
     setPanelVisibility(player);
 
-    if (player === "freetube") {
-        setFinishEnabled(true);
+    if (player === "freetube" || player === "opentubex") {
+        setStep2NextEnabled(true);
         return;
     }
 
@@ -407,8 +433,40 @@ async function renderStep2() {
 
     const preferredInstance = await restorePreferredInstance(player);
     input.value = preferredInstance;
-    setFinishEnabled(false);
+    setStep2NextEnabled(false);
     scheduleInstanceValidation(player, 0);
+}
+
+async function renderStep3() {
+    setVisibleStep(3);
+
+    const result = await storageGet([
+        STORAGE_KEYS.shortcutEnabled,
+        STORAGE_KEYS.shortcutBehavior,
+    ]);
+    const isEnabled =
+        result[STORAGE_KEYS.shortcutEnabled] !== undefined
+            ? Boolean(result[STORAGE_KEYS.shortcutEnabled])
+            : DEFAULT_SHORTCUT_ENABLED;
+    const behavior =
+        result[STORAGE_KEYS.shortcutBehavior] || DEFAULT_SHORTCUT_BEHAVIOR;
+
+    CONTROLS.shortcutEnabled.checked = isEnabled;
+    CONTROLS.shortcutBehavior.value = behavior;
+    CONTROLS.shortcutOptions.hidden = !isEnabled;
+
+    setFinishEnabled(true);
+}
+
+function handleStep2Next() {
+    if (CONTROLS.step2Next.disabled) {
+        return;
+    }
+    renderStep3();
+}
+
+function handleStep3Back() {
+    setVisibleStep(2);
 }
 
 function handlePlayerChange(event) {
@@ -437,7 +495,7 @@ function handleBack() {
     clearInstanceStatus("invidious");
     clearInstanceStatus("piped");
     setVisibleStep(1);
-    setFinishEnabled(false);
+    setStep2NextEnabled(false);
 }
 
 function initPlayerSelection() {
@@ -485,6 +543,25 @@ function initStep2Controls() {
             openExternalLink("https://freetubeapp.io/");
         });
     }
+
+    if (CONTROLS.downloadOpentubex) {
+        addListener(CONTROLS.downloadOpentubex, "click", (event) => {
+            event.preventDefault();
+            openExternalLink("https://opentubex.org/");
+        });
+    }
+}
+
+function initStep3Controls() {
+    if (CONTROLS.shortcutEnabled) {
+        addListener(CONTROLS.shortcutEnabled, "change", (event) => {
+            CONTROLS.shortcutOptions.hidden = !event.target.checked;
+        });
+    }
+
+    if (CONTROLS.changeShortcutButton) {
+        addListener(CONTROLS.changeShortcutButton, "click", openShortcutsSettings);
+    }
 }
 
 async function init() {
@@ -496,17 +573,26 @@ async function init() {
         addListener(CONTROLS.back, "click", handleBack);
     }
 
+    if (CONTROLS.step2Next) {
+        addListener(CONTROLS.step2Next, "click", handleStep2Next);
+    }
+
+    if (CONTROLS.step3Back) {
+        addListener(CONTROLS.step3Back, "click", handleStep3Back);
+    }
+
     if (CONTROLS.finish) {
         addListener(CONTROLS.finish, "click", handleFinish);
     }
 
     initPlayerSelection();
     initStep2Controls();
+    initStep3Controls();
 
     await restoreSelectedPlayer();
     setVisibleStep(1);
     setNextEnabled(!!getSelectedPlayer());
-    setFinishEnabled(false);
+    setStep2NextEnabled(false);
 
     const selectedPlayer = getSelectedPlayer();
     if (selectedPlayer) {
@@ -522,14 +608,16 @@ document.addEventListener("redirecttube:translations-loaded", () => {
 });
 
 // cleanup listeners on finish/back
-function handleFinish() {
+async function handleFinish() {
     if (CONTROLS.finish.disabled) {
         return;
     }
 
-    if (extensionApi && extensionApi.storage && extensionApi.storage.local) {
-        storage.set({ [STORAGE_KEYS.introductionComplete]: true });
-    }
+    await storageSet({
+        [STORAGE_KEYS.introductionComplete]: true,
+        [STORAGE_KEYS.shortcutEnabled]: CONTROLS.shortcutEnabled.checked,
+        [STORAGE_KEYS.shortcutBehavior]: CONTROLS.shortcutBehavior.value,
+    });
 
     cleanupEventListeners();
     cancelPendingValidations();
