@@ -152,7 +152,7 @@
             "youtube": "Watch on YouTube"
         },
         "note": {
-            "before_link": "Note: You can disable this prompt in" ,
+            "before_link": "Note: You can disable this prompt in",
             "link": "RedirectTube settings",
             "after_link": " if you prefer to always use the original YouTube frame."
         },
