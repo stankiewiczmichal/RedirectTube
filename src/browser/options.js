@@ -328,10 +328,29 @@ function setShortcutOptionsVisibility(enabled) {
     }
 }
 
+function isFirefox() {
+    return Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+}
+
 function openShortcutsSettings() {
-    const isFirefox = Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
-    const url = isFirefox ? "about:addons" : "chrome://extensions/shortcuts";
-    extensionApi.tabs.create({ url });
+    if (isFirefox()) {
+        // Firefox's tabs API refuses to navigate to privileged about: pages,
+        // so there's no way to deep-link there — the hint text guides the user instead.
+        return;
+    }
+    extensionApi.tabs.create({ url: "chrome://extensions/shortcuts" });
+}
+
+function applyShortcutBrowserUI() {
+    const button = document.getElementById("changeShortcutButton");
+    const hint = document.getElementById("shortcutFirefoxHint");
+    const onFirefox = isFirefox();
+    if (button) {
+        button.hidden = onFirefox;
+    }
+    if (hint) {
+        hint.hidden = !onFirefox;
+    }
 }
 
 function getSelectedPlayerFromUI() {
@@ -536,7 +555,8 @@ document.addEventListener("DOMContentLoaded", () => {
     applyTextDirection();
     renderDenyList();
     restoreOptions();
-    
+    applyShortcutBrowserUI();
+
     // Setup navbar navigation
     const navButtons = document.querySelectorAll("#sidebar nav button");
     navButtons.forEach((button, index) => {

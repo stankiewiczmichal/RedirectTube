@@ -60,6 +60,7 @@ const CONTROLS = {
     shortcutBehavior: document.getElementById("shortcutBehavior"),
     shortcutOptions: document.getElementById("shortcutOptions"),
     changeShortcutButton: document.getElementById("changeShortcutButton"),
+    shortcutFirefoxHint: document.getElementById("shortcutFirefoxHint"),
 };
 
 const radios = Array.from(
@@ -132,10 +133,27 @@ function setPanelVisibility(activePlayer) {
     CONTROLS.opentubexPanel.hidden = activePlayer !== "opentubex";
 }
 
+function isFirefox() {
+    return Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+}
+
 function openShortcutsSettings() {
-    const isFirefox = Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
-    const url = isFirefox ? "about:addons" : "chrome://extensions/shortcuts";
-    extensionApi.tabs.create({ url });
+    if (isFirefox()) {
+        // Firefox's tabs API refuses to navigate to privileged about: pages,
+        // so there's no way to deep-link there — the hint text guides the user instead.
+        return;
+    }
+    extensionApi.tabs.create({ url: "chrome://extensions/shortcuts" });
+}
+
+function applyShortcutBrowserUI() {
+    const onFirefox = isFirefox();
+    if (CONTROLS.changeShortcutButton) {
+        CONTROLS.changeShortcutButton.hidden = onFirefox;
+    }
+    if (CONTROLS.shortcutFirefoxHint) {
+        CONTROLS.shortcutFirefoxHint.hidden = !onFirefox;
+    }
 }
 
 function setInstanceStatus(player, type, message) {
@@ -562,6 +580,8 @@ function initStep3Controls() {
     if (CONTROLS.changeShortcutButton) {
         addListener(CONTROLS.changeShortcutButton, "click", openShortcutsSettings);
     }
+
+    applyShortcutBrowserUI();
 }
 
 async function init() {
