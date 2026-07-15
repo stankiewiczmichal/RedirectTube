@@ -66,7 +66,7 @@
                 "title": "Choose your preferred instance",
                 "label": "Preferred instance URL",
                 "check": "Check instance",
-                "checking": "Checking instance...",
+                "checking": "Checking instance…",
                 "valid": "The instance looks valid.",
                 "invalid": "This instance could not be verified.",
                 "required": "Enter an instance URL to continue."

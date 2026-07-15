@@ -52,16 +52,30 @@
                 "title": "Wybierz preferowaną instancję",
                 "label": "Adres preferowanej instancji",
                 "check": "Sprawdź instancję",
-                "checking": "Sprawdzanie instancji...",
+                "checking": "Sprawdzanie instancji…",
                 "valid": "Instancja wygląda poprawnie.",
                 "invalid": "Nie udało się zweryfikować tej instancji.",
                 "required": "Wpisz adres instancji, aby kontynuować."
+            },
+            "next": "Dalej",
+            "opentubex": {
+                "title": "OpenTubeX wymaga aplikacji desktopowej",
+                "body": "Pobierz OpenTubeX, zanim przejdziesz dalej.",
+                "download": "Pobierz OpenTubeX"
             }
         },
         "usage": {
             "title": "Korzystanie",
             "toolbar": "Kliknij ikonę, gdy jesteś na stronie z filmem na YouTube",
             "contextMenu": "lub kliknij prawym przyciskiem link do filmu na YouTube"
+        },
+        "opentubex": {
+            "title": "OpenTubeX"
+        },
+        "step3": {
+            "title": "Skrót klawiaturowy",
+            "enable": "Włącz przekierowanie za pomocą skrótów klawiaturowych",
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
         }
     },
     "options": {
@@ -95,7 +109,8 @@
             "invidious": "Invidious",
             "piped": "Piped",
             "invidiousInstance": "Preferowana instancja Invidious",
-            "pipedInstance": "Preferowana instancja Piped"
+            "pipedInstance": "Preferowana instancja Piped",
+            "opentubex": "OpenTubeX"
         },
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
@@ -127,6 +142,15 @@
             "general": "Ogólne",
             "advanced": "Zaawansowane",
             "help": "Pomoc"
+        },
+        "shortcut": {
+            "enable": "Włącz przekierowanie za pomocą skrótów klawiaturowych",
+            "behaviorLabel": "Działanie skrótu klawiaturowego",
+            "replaceTab": "Zastąp bieżącą kartę",
+            "newTab": "Otwórz w nowej karcie",
+            "changeLabel": "Skrót klawiszowy",
+            "change": "Zmień skrót klawiszowy…",
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
         }
     },
     "popup": {
@@ -156,6 +180,11 @@
     "optionsplaceholder": {
         "open": {
             "button": "Otwórz opcje"
+        }
+    },
+    "commands": {
+        "redirectCurrentTab": {
+            "description": "Przekieruj bieżącą kartę do wybranego odtwarzacza"
         }
     }
 }
