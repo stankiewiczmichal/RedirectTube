@@ -56,6 +56,7 @@ const DEFAULT_DENY_PREFIXES = [
     "/about/",
     "/creator/",
     "/howyoutubeworks/",
+    "/studio/",
 ];
 
 const PLAYERS = Object.freeze({
