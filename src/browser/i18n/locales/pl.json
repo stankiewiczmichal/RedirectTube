@@ -4,13 +4,16 @@
         "createdby": "Stworzone z ❤️ przez <a href=\"https://www.stankiewiczm.eu\" target=\"_blank\">Michała Stankiewicza</a>",
         "button": {
             "redirect": "Otwórz tę stronę we FreeTube",
+            "redirect_freetube": "Otwórz we FreeTube",
+            "redirect_invidious": "Otwórz w Invidious",
+            "redirect_piped": "Otwórz w Piped",
             "options": "Opcje",
             "opinion": "Wyraź opinię",
             "suggestion": "Napisz sugestię",
             "issue": "Zgłoś problem"
         },
         "contextMenu": {
-            "redirect": "Otwórz we FreeTube"
+            "redirect": "Otwórz za pomocą RedirectTube"
         },
         "yes": "Tak",
         "no": "Nie",
@@ -32,10 +35,47 @@
         "page": {
             "title": "RedirectTube • Wprowadzenie"
         },
+        "step1": {
+            "title": "Wybierz odtwarzacz YouTube",
+            "next": "Dalej"
+        },
+        "step2": {
+            "title": "Skonfiguruj wybrany odtwarzacz",
+            "back": "Wstecz",
+            "finish": "Zakończ",
+            "freetube": {
+                "title": "FreeTube wymaga aplikacji desktopowej",
+                "body": "Pobierz FreeTube, zanim przejdziesz dalej.",
+                "download": "Pobierz FreeTube"
+            },
+            "instance": {
+                "title": "Wybierz preferowaną instancję",
+                "label": "Adres preferowanej instancji",
+                "check": "Sprawdź instancję",
+                "checking": "Sprawdzanie instancji…",
+                "valid": "Instancja wygląda poprawnie.",
+                "invalid": "Nie udało się zweryfikować tej instancji.",
+                "required": "Wpisz adres instancji, aby kontynuować."
+            },
+            "next": "Dalej",
+            "opentubex": {
+                "title": "OpenTubeX wymaga aplikacji desktopowej",
+                "body": "Pobierz OpenTubeX, zanim przejdziesz dalej.",
+                "download": "Pobierz OpenTubeX"
+            }
+        },
         "usage": {
             "title": "Korzystanie",
             "toolbar": "Kliknij ikonę, gdy jesteś na stronie z filmem na YouTube",
             "contextMenu": "lub kliknij prawym przyciskiem link do filmu na YouTube"
+        },
+        "opentubex": {
+            "title": "OpenTubeX"
+        },
+        "step3": {
+            "title": "Skrót klawiaturowy",
+            "enable": "Włącz przekierowanie za pomocą skrótów klawiaturowych",
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
         }
     },
     "options": {
@@ -57,10 +97,20 @@
             "label": "Zachowanie ramek iFrame",
             "none": "Nic nie rób",
             "replace": "Zastąp",
-            "enhancedPreview": "Pokaż tło z miniatury i tytuł filmu w placeholderze iFrame (może łączyć z serwerami Google)"
+            "enhancedPreview": "Pokaż tło z miniatury i tytuł filmu w placeholderze iFrame",
+            "enhancedPreviewDescription": "Może łączyć się z serwerami Google."
         },
         "extensionIcon": {
             "label": "Ikona rozszerzenia"
+        },
+        "playerSettings": {
+            "label": "Preferowany odtwarzacz",
+            "freetube": "FreeTube",
+            "invidious": "Invidious",
+            "piped": "Piped",
+            "invidiousInstance": "Preferowana instancja Invidious",
+            "pipedInstance": "Preferowana instancja Piped",
+            "opentubex": "OpenTubeX"
         },
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
@@ -87,6 +137,20 @@
             "customNote": "Dozwolone są tylko prefiksy ścieżek. Nie dołączaj domeny.",
             "deniedLabel": "Zawsze zablokowane:",
             "reset": "Przywróć domyślne ustawienia"
+        },
+        "categories": {
+            "general": "Ogólne",
+            "advanced": "Zaawansowane",
+            "help": "Pomoc"
+        },
+        "shortcut": {
+            "enable": "Włącz przekierowanie za pomocą skrótów klawiaturowych",
+            "behaviorLabel": "Działanie skrótu klawiaturowego",
+            "replaceTab": "Zastąp bieżącą kartę",
+            "newTab": "Otwórz w nowej karcie",
+            "changeLabel": "Skrót klawiszowy",
+            "change": "Zmień skrót klawiszowy…",
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
         }
     },
     "popup": {
@@ -112,5 +176,15 @@
             "after_link": "."
         },
         "warning": "Nie można odczytać oryginalnego adresu URL filmu. Odśwież stronę."
+    },
+    "optionsplaceholder": {
+        "open": {
+            "button": "Otwórz opcje"
+        }
+    },
+    "commands": {
+        "redirectCurrentTab": {
+            "description": "Przekieruj bieżącą kartę do wybranego odtwarzacza"
+        }
     }
 }

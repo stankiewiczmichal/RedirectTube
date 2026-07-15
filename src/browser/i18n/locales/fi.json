@@ -1,0 +1,112 @@
+{
+    "options": {
+        "extensionIcon": {
+            "label": "Laajennuskuvake"
+        },
+        "options": {
+            "title": "Vaihtoehdot"
+        },
+        "popupBehavior": {
+            "label": "Kun napsautat laajennuskuvaketta",
+            "redirect": "Uudelleenohjaa FreeTubeen",
+            "showPopup": "Näytä valikko"
+        },
+        "footer": {
+            "kofi": "Jos pidät tästä laajennuksesta, harkitse <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">teen ostamista minulle</a> 🍵",
+            "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
+            "affiliation": "RedirectTube ei ole sidoksissa FreeTubeen tai sen luojiin.<br>FreeTube on lisensoitu <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0-lisenssillä</a>.<br>Nimi \"FreeTube\" ja FreeTube-logo ovat <a href=\"https://docs.freetubeapp.io/credits/\">FreeTuben luojien</a> omaisuutta."
+        },
+        "page": {
+            "title": "RedirectTube"
+        },
+        "autoRedirectLinks": {
+            "label": "Ohjaa YouTube-linkit automaattisesti uudelleen klikattaessa"
+        },
+        "iframeBehavior": {
+            "replace": "Korvaa",
+            "label": "iFrame:n käytös",
+            "none": "Ei mitään"
+        },
+        "urlRules": {
+            "category": {
+                "feed": "Syötteet (tilaukset, kirjasto, sinä)",
+                "watch": "Videot ja soittolistat",
+                "home": "Koti",
+                "shorts": "Lyhyet",
+                "podcasts": "Podcastit ja pelaaminen",
+                "hashtag": "Hash-tagit ja julkaisut",
+                "profiles": "Kanavat ja kahvat",
+                "search": "Hakutulokset"
+            },
+            "customLabel": "Lisäpolut",
+            "customNote": "Vain polun etuliitteet sallitaan. Älä sisällytä verkkotunnusta.",
+            "allowAll": "Salli kaikki YouTuben polut (paitsi estetyt)",
+            "categoriesLabel": "Valitse, mitkä polut tulisi uudelleenohjata:",
+            "reset": "Palauta oletusasetukset",
+            "advancedTitle": "Edistynyt",
+            "title": "Uudelleenohjattavat YouTuben polut",
+            "customAdd": "Lisää polku",
+            "deniedLabel": "Aina estetty:"
+        }
+    },
+    "ui": {
+        "beta": {
+            "label": "Beeta"
+        },
+        "createdby": "<a href=\"https://www.stankiewiczm.eu\" target=\"_blank\">Michał Stankiewicz</a>in luoma ❤️ kanssa",
+        "button": {
+            "opinion": "Kerro mielipiteesi",
+            "redirect": "Avaa tämä sivusto FreeTubessa",
+            "issue": "Ilmoita viasta",
+            "options": "Vaihtoehdot",
+            "suggestion": "Tee ehdotus"
+        },
+        "error": {
+            "e404": "Tätä sivua ei voi avata FreeTubessa."
+        },
+        "iframeButton": {
+            "redirect": "Katso"
+        },
+        "close": "Sulje",
+        "no": "Ei",
+        "yes": "Kyllä"
+    },
+    "introduction": {
+        "page": {
+            "title": "RedirectTube • Johdanto"
+        },
+        "usage": {
+            "title": "Käyttö",
+            "toolbar": "Napsauta kuvaketta, kun olet YouTube-videosivulla",
+            "contextMenu": "tai napsauta hiiren kakkospainikkeella YouTube-videon URL-osoitetta"
+        }
+    },
+    "popup": {
+        "page": {
+            "title": "RedirectTube"
+        }
+    },
+    "extension": {
+        "name": "RedirectTube",
+        "description": "Avaa YouTube-linkit FreeTubeen"
+    },
+    "iframePlaceholder": {
+        "warning": "Alkuperäisen videon URL-osoitteen lukeminen ei onnistu. Lataa sivu uudelleen.",
+        "body": {
+            "message": "Valitse soitin, jota haluat käyttää tälle videolle.",
+            "headline": "Valitse katselupaikka"
+        },
+        "buttons": {
+            "youtube": "Katso YouTubessa",
+            "freetube": "Avaa FreeTube-sovellukseen"
+        },
+        "page": {
+            "title": "RedirectTube • Upotusvalinta"
+        },
+        "note": {
+            "link": "RedirectTube-asetukset",
+            "before_link": "Huomautus: Voit poistaa tämän kehotteen käytöstä kohdassa",
+            "after_link": " jos haluat aina käyttää alkuperäistä YouTube-kehystä."
+        }
+    }
+}

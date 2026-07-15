@@ -6,8 +6,7 @@
             "redirect": "Ava see sait FreeTube'is",
             "issue": "Teata veast või probleemist",
             "options": "Valikud",
-            "suggestion": "Soovita muudatusi",
-            "translationHelp": "Aita tõlkimisega"
+            "suggestion": "Soovita muudatusi"
         },
         "beta": {
             "label": "Beeta"
@@ -18,9 +17,6 @@
         },
         "iframeButton": {
             "redirect": "Vaata siin:"
-        },
-        "contextMenu": {
-            "redirect": "Ava FreeTube'is"
         },
         "no": "Ei",
         "yes": "Jah"
@@ -42,11 +38,6 @@
             "version": "RedirectTube'i versioon <span id=\"version\">X.Y.Z</span>",
             "affiliation": "RedirectTube pole seotud FreeTube'i ega tema loojatega.<br>FreeTube on litsentseeritud <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0 litsentsi alusel</a>.<br>Nimi „FreeTube“ ja FreeTube'i logo on <a href=\"https://docs.freetubeapp.io/credits/\">FreeTube'i loojate</a> omand."
         },
-        "iframeButton": {
-            "label": "Näita nuppu iframe'ide puhul",
-            "yes": "Jah",
-            "no": "Ei"
-        },
         "page": {
             "title": "RedirectTube"
         },
@@ -56,8 +47,28 @@
         "iframeBehavior": {
             "replace": "Asenda",
             "label": "iFrame'i käitumine",
-            "none": "Mitte midagi",
-            "enhancedPreview": "Kuva iFrame'i asendajas video pisipildi taust ja pealkiri (võib luua ühenduse Google'i serveritega)"
+            "none": "Mitte midagi"
+        },
+        "urlRules": {
+            "advancedTitle": "Lisavalikud",
+            "category": {
+                "feed": "Sisuvood (tellimused, meediakogu, sina)",
+                "watch": "Videod ja esitusloendid",
+                "home": "Avaleht",
+                "shorts": "Lühifilmid",
+                "podcasts": "Taskuhäälingud ja mängud",
+                "hashtag": "Teemaviited ja postitused",
+                "profiles": "Kanalid ja kasutajatunnused",
+                "search": "Otsingutulemused"
+            },
+            "customLabel": "Täiendavad asukohad",
+            "customNote": "Saad sisestada vaid asukohtade eesliiteid, palun ära sisesta domeeni.",
+            "allowAll": "Kasuta kõiki YouTube'i asukohti (välja arvatud blokeerituid)",
+            "categoriesLabel": "Vali mis asukoht peaks olema suunatud edasi:",
+            "reset": "Taasta vaikimisi seadistused",
+            "title": "YouTube'i edasisuunamise asukoht",
+            "customAdd": "Lisa asukoht",
+            "deniedLabel": "Alati blokeeritud:"
         }
     },
     "introduction": {

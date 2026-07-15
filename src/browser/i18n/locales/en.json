@@ -4,13 +4,16 @@
         "createdby": "Created with ❤️ by <a href=\"https://www.stankiewiczm.eu\" target=\"_blank\">Michał Stankiewicz</a>",
         "button": {
             "redirect": "Open this site in FreeTube",
+            "redirect_freetube": "Open this site in FreeTube",
+            "redirect_invidious": "Open this site in Invidious",
+            "redirect_piped": "Open this site in Piped",
             "options": "Options",
             "opinion": "Give your opinion",
             "suggestion": "Make a suggestion",
             "issue": "Report an issue"
         },
         "contextMenu": {
-            "redirect": "Open in FreeTube"
+            "redirect": "Open with RedirectTube"
         },
         "yes": "Yes",
         "no": "No",
@@ -28,9 +31,51 @@
         "name": "RedirectTube",
         "description": "Open YouTube links in FreeTube"
     },
+    "commands": {
+        "redirectCurrentTab": {
+            "description": "Redirect the current tab to your selected player"
+        }
+    },
     "introduction": {
         "page": {
             "title": "RedirectTube • Introduction"
+        },
+        "step1": {
+            "title": "Choose your YouTube player",
+            "next": "Next"
+        },
+        "opentubex": {
+            "title": "OpenTubeX"
+        },
+        "step2": {
+            "title": "Set up your selected player",
+            "back": "Back",
+            "finish": "Finish",
+            "next": "Next",
+            "freetube": {
+                "title": "FreeTube requires the desktop app",
+                "body": "Download FreeTube before continuing.",
+                "download": "Download FreeTube"
+            },
+            "opentubex": {
+                "title": "OpenTubeX requires the desktop app",
+                "body": "Download OpenTubeX before continuing.",
+                "download": "Download OpenTubeX"
+            },
+            "instance": {
+                "title": "Choose your preferred instance",
+                "label": "Preferred instance URL",
+                "check": "Check instance",
+                "checking": "Checking instance…",
+                "valid": "The instance looks valid.",
+                "invalid": "This instance could not be verified.",
+                "required": "Enter an instance URL to continue."
+            }
+        },
+        "step3": {
+            "title": "Keyboard shortcut",
+            "enable": "Enable keyboard shortcut redirect",
+            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\"."
         },
         "usage": {
             "title": "Usage",
@@ -41,6 +86,11 @@
     "options": {
         "page": {
             "title": "RedirectTube"
+        },
+        "categories": {
+            "general": "General",
+            "advanced": "Advanced",
+            "help": "Help"
         },
         "options": {
             "title": "Options"
@@ -53,14 +103,33 @@
         "autoRedirectLinks": {
             "label": "Automatically redirect YouTube links when clicked"
         },
+        "shortcut": {
+            "enable": "Enable keyboard shortcut redirect",
+            "behaviorLabel": "Keyboard shortcut behavior",
+            "replaceTab": "Replace current tab",
+            "newTab": "Open in a new tab",
+            "changeLabel": "Keyboard shortcut key",
+            "change": "Change keyboard shortcut…",
+            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\"."
+        },
         "iframeBehavior": {
             "label": "iFrame behavior",
             "none": "Nothing",
             "replace": "Replace",
-            "enhancedPreview": "Show thumbnail background and video title in iFrame placeholder (may connect to Google servers)"
+            "enhancedPreview": "Show thumbnail background and video title in iFrame placeholder",
+            "enhancedPreviewDescription": "May connect to Google servers."
         },
         "extensionIcon": {
             "label": "Extension icon"
+        },
+        "playerSettings": {
+            "label": "Preferred player",
+            "freetube": "FreeTube",
+            "invidious": "Invidious",
+            "piped": "Piped",
+            "opentubex": "OpenTubeX",
+            "invidiousInstance": "Preferred Invidious instance",
+            "pipedInstance": "Preferred Piped instance"
         },
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
@@ -94,6 +163,11 @@
             "title": "RedirectTube"
         }
     },
+    "optionsplaceholder": {
+        "open": {
+            "button": "Open Options"
+        }
+    },
     "iframePlaceholder": {
         "page": {
             "title": "RedirectTube • Embed Choice"
@@ -107,7 +181,7 @@
             "youtube": "Watch on YouTube"
         },
         "note": {
-            "before_link": "Note: You can disable this prompt in" ,
+            "before_link": "Note: You can disable this prompt in",
             "link": "RedirectTube settings",
             "after_link": " if you prefer to always use the original YouTube frame."
         },
