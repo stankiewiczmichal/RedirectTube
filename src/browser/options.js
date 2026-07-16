@@ -323,8 +323,16 @@ function setPreferredInstanceVisibility(player) {
 
 function setShortcutOptionsVisibility(enabled) {
     const shortcutOptions = document.getElementById("shortcutOptions");
+    const shortcutKeySection = document.getElementById("shortcutKeySection");
+    const shortcutEnabledSection = document.getElementById("shortcutEnabledSection");
     if (shortcutOptions) {
         shortcutOptions.hidden = !enabled;
+    }
+    if (shortcutKeySection) {
+        shortcutKeySection.hidden = !enabled;
+    }
+    if (shortcutEnabledSection) {
+        shortcutEnabledSection.classList.toggle("shortcut-group-connected", enabled);
     }
 }
 
@@ -594,8 +602,9 @@ document.querySelector("#iframeBehavior")?.addEventListener("change", function()
 document
     .querySelector("#iframeEnhancedPreview")
     ?.addEventListener("change", saveOptions);
-document.querySelector("#colorIcon")?.addEventListener("click", saveOptions);
-document.querySelector("#monoIcon")?.addEventListener("click", saveOptions);
+document.querySelectorAll('input[name="extensionIcon"]').forEach((input) => {
+    input.addEventListener("change", saveOptions);
+});
 document.querySelectorAll('input[name="selectedPlayer"]').forEach((input) => {
     input.addEventListener("change", saveOptions);
     input.addEventListener("change", syncPreferredInstanceVisibility);

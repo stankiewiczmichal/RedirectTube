@@ -157,6 +157,27 @@ body {
     margin: 0;
 }
 
+.flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+#shortcutOptions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#shortcutOptions select,
+#shortcutOptions button {
+    width: min(100%, 320px);
+}
+
 .instance-row {
     display: flex;
     flex-wrap: wrap;

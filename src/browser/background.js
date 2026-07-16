@@ -14,6 +14,7 @@ let isDarkThemePreferred = false;
 let currentMenuLang = null;
 let urlRulesConfig = getDefaultUrlRulesConfig();
 let urlRulesConfigLoaded = false;
+const tabAllowedState = new Map();
 
 extensionApi.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -74,25 +75,47 @@ extensionApi.runtime.onStartup.addListener(() => {
     createContextMenu();
 });
 
-extensionApi.runtime.onMessage.addListener((request) => {
+extensionApi.runtime.onMessage.addListener((request, sender) => {
+    const tabId = sender && sender.tab && typeof sender.tab.id === "number"
+        ? sender.tab.id
+        : undefined;
+
     if (request.message === RUNTIME_MESSAGES.currentUrlChanged && request.url) {
         // Ensure urlRulesConfig is loaded before evaluating the URL (avoid race with startup)
         if (!urlRulesConfigLoaded) {
             extensionApi.storage.local.get(STORAGE_KEYS.urlRulesConfig, (result = {}) => {
                 urlRulesConfig = normalizeUrlRulesConfig(result[STORAGE_KEYS.urlRulesConfig]);
                 urlRulesConfigLoaded = true;
-                handleUrlChange(request.url);
+                handleUrlChange(request.url, tabId);
             });
         } else {
-            handleUrlChange(request.url);
+            handleUrlChange(request.url, tabId);
         }
         return;
     }
 
     if (request.message === RUNTIME_MESSAGES.redirecttubeTheme) {
         isDarkThemePreferred = Boolean(request.isDark);
-        updateActionIcon();
+        updateActionIcon(tabId);
     }
+});
+
+extensionApi.tabs.onActivated.addListener(({ tabId }) => {
+    if (tabAllowedState.has(tabId)) {
+        updateActionIcon(tabId);
+        return;
+    }
+    extensionApi.tabs.get(tabId, (tab) => {
+        if (extensionApi.runtime.lastError || !tab || !tab.url) {
+            return;
+        }
+        tabAllowedState.set(tabId, isRedirectableYoutubeUrl(tab.url, urlRulesConfig));
+        updateActionIcon(tabId);
+    });
+});
+
+extensionApi.tabs.onRemoved.addListener((tabId) => {
+    tabAllowedState.delete(tabId);
 });
 
 extensionApi.storage.onChanged.addListener((changes, areaName) => {
@@ -106,6 +129,7 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
     if (changes[STORAGE_KEYS.extensionIcon]) {
         cachedExtensionIcon = changes[STORAGE_KEYS.extensionIcon].newValue || "redirecttube-color";
         updateActionIcon();
+        tabAllowedState.forEach((_isAllowed, tabId) => updateActionIcon(tabId));
     }
 
     if (changes[STORAGE_KEYS.selectedPlayer]) {
@@ -166,18 +190,26 @@ extensionApi.commands.onCommand.addListener((command) => {
     });
 });
 
-function handleUrlChange(url) {
+function handleUrlChange(url, tabId) {
     if (!url) {
         return;
     }
-    lastUrlAllowed = isRedirectableYoutubeUrl(url, urlRulesConfig);
-    updateActionIcon();
+    const isAllowed = isRedirectableYoutubeUrl(url, urlRulesConfig);
+    lastUrlAllowed = isAllowed;
+    if (typeof tabId === "number") {
+        tabAllowedState.set(tabId, isAllowed);
+    }
+    updateActionIcon(tabId);
 }
 
-function updateActionIcon() {
+function updateActionIcon(tabId) {
+    const isAllowed =
+        typeof tabId === "number" && tabAllowedState.has(tabId)
+            ? tabAllowedState.get(tabId)
+            : lastUrlAllowed;
     const path = getIconPath(
         cachedExtensionIcon,
-        lastUrlAllowed,
+        isAllowed,
         isDarkThemePreferred
     );
     try {
@@ -185,9 +217,13 @@ function updateActionIcon() {
             extensionApi && extensionApi.runtime && typeof extensionApi.runtime.getURL === "function"
                 ? extensionApi.runtime.getURL(path)
                 : path;
-        extensionApi.action.setIcon({ path: resolvedPath });
+        const details = { path: resolvedPath };
+        if (typeof tabId === "number") {
+            details.tabId = tabId;
+        }
+        extensionApi.action.setIcon(details);
     } catch (err) {
-        console.error("Failed to set action icon:", err, { path });
+        console.error("Failed to set action icon:", err, { path, tabId });
     }
 }
 
