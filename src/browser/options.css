@@ -298,7 +298,7 @@ h1 {
 .note,
 .muted {
     font-size: 0.9em;
-    color: #c7c7c7;
+    color: var(--note);
 }
 
 .note {

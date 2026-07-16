@@ -14,7 +14,7 @@
         "footer": {
             "kofi": "Als je deze add-on graag gebruikt, overweg dan <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">een donatie (bijv. een kopje thee)</a> 🍵",
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
-            "affiliation": "RedirectTube is niet verbonden aan FreeTube of de makers ervan.<br>FreeTube wordt uitgebracht onder de voorwaarden van de <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0-licentie</a>.<br>De naam ‘FreeTube’ en het FreeTube-logo zijn eigendom van de <a href=\"https://docs.freetubeapp.io/credits/\">makers van FreeTube</a>."
+            "affiliation": "RedirectTube is niet verbonden aan YouTube, FreeTube, OpenTubeX, Invidious of Piped, of hun makers.<br>De namen en logo's van deze apps en websites zijn eigendom van hun respectievelijke makers.<br>Ze kunnen onder hun eigen licenties vallen."
         },
         "page": {
             "title": "RedirectTube"

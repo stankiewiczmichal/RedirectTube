@@ -61,6 +61,7 @@ const CONTROLS = {
     shortcutOptions: document.getElementById("shortcutOptions"),
     changeShortcutButton: document.getElementById("changeShortcutButton"),
     shortcutFirefoxHint: document.getElementById("shortcutFirefoxHint"),
+    shortcutSafariHint: document.getElementById("shortcutSafariHint"),
 };
 
 const radios = Array.from(
@@ -133,26 +134,33 @@ function setPanelVisibility(activePlayer) {
     CONTROLS.opentubexPanel.hidden = activePlayer !== "opentubex";
 }
 
-function isFirefox() {
-    return Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+function getBrowserKind() {
+    const bss = extensionApi.runtime.getManifest().browser_specific_settings || {};
+    if (bss.gecko) return "firefox";
+    if (bss.safari) return "safari";
+    return "chromium";
 }
 
 function openShortcutsSettings() {
-    if (isFirefox()) {
-        // Firefox's tabs API refuses to navigate to privileged about: pages,
-        // so there's no way to deep-link there — the hint text guides the user instead.
+    const kind = getBrowserKind();
+    if (kind !== "chromium") {
+        // Firefox and Safari have no deep-link URL for shortcut settings —
+        // the corresponding hint text guides the user instead.
         return;
     }
     extensionApi.tabs.create({ url: "chrome://extensions/shortcuts" });
 }
 
 function applyShortcutBrowserUI() {
-    const onFirefox = isFirefox();
+    const kind = getBrowserKind();
     if (CONTROLS.changeShortcutButton) {
-        CONTROLS.changeShortcutButton.hidden = onFirefox;
+        CONTROLS.changeShortcutButton.hidden = kind !== "chromium";
     }
     if (CONTROLS.shortcutFirefoxHint) {
-        CONTROLS.shortcutFirefoxHint.hidden = !onFirefox;
+        CONTROLS.shortcutFirefoxHint.hidden = kind !== "firefox";
+    }
+    if (CONTROLS.shortcutSafariHint) {
+        CONTROLS.shortcutSafariHint.hidden = kind !== "safari";
     }
 }
 

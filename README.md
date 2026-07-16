@@ -9,7 +9,7 @@
 
 ## Open YouTube links in FreeTube, OpenTubeX, Invidious or Piped
 
-RedirectTube is a browser extension that redirects YouTube links to the privacy-friendly player of your choice: [FreeTube](https://freetubeapp.io/), [OpenTubeX](https://opentubex.org/), Invidious or Piped. It is available for Firefox and Chromium-based browsers.
+RedirectTube is a browser extension that redirects YouTube links to the privacy-friendly player of your choice: [FreeTube](https://freetubeapp.io/), [OpenTubeX](https://opentubex.com/), Invidious or Piped. It is available for Firefox and Chromium-based browsers, and can be built locally for Safari on macOS.
 
 > [!NOTE]
 > RedirectTube does not yet support Firefox for Android.
@@ -78,6 +78,44 @@ You can install RedirectTube from the Chrome Web Store.
 5. Click **Load unpacked** and select the directory you extracted in step 2.
    The extension will appear in the toolbar once the folder is loaded.
 
+### Safari (macOS, local install only)
+
+> [!NOTE]
+> RedirectTube is not published on the App Store for Safari. This section documents how to build and run it locally on your own Mac using Xcode — there is no signed/notarized package to download.
+
+Prerequisites (either method): Xcode (from the Mac App Store) and an Apple ID signed into Xcode (Xcode → Settings → Accounts). A free personal Apple ID is enough for local use.
+
+#### Method 1: Download the pre-built Xcode project (recommended)
+
+1. Download the latest release archive that ends with `-safari-xcode-unsigned.zip` from the [releases page](https://github.com/stankiewiczmichal/RedirectTube/releases/) and extract it.
+2. Continue from step 4 below.
+
+#### Method 2: Build it yourself
+
+1. Clone the repository and build the Safari bundle:
+   ```
+   node scripts/build.js --browser safari --no-zip
+   ```
+2. Convert it into an Xcode project (one-time step — the generated project references `dist/safari` by path, so later content edits only need step 1 again followed by step 4):
+   ```
+   xcrun safari-web-extension-converter dist/safari \
+     --project-location dist/safari-xcode \
+     --app-name "redirecttube" \
+     --bundle-identifier eu.stankiewiczm.redirecttube \
+     --macos-only --no-open --force
+   ```
+
+#### Finishing up (either method)
+
+4. Open `RedirectTube/RedirectTube.xcodeproj` (inside the extracted zip, or at `dist/safari-xcode/RedirectTube/RedirectTube.xcodeproj` if you built it yourself), set your Team under **Signing & Capabilities** for both the app and extension targets, then press **Cmd+R** to build and run.
+5. In Safari: **Settings → Advanced** → enable "Show features for web developers"; **Settings → Developer** → enable "Allow Unsigned Extensions"; **Settings → Extensions** → enable RedirectTube; then grant it "Always Allow on Every Website" from the toolbar icon or the Extensions settings pane (Safari defaults host permissions to "ask", unlike Chromium/Firefox).
+
+> [!IMPORTANT]
+> Without a paid Apple Developer Program membership, the app's code signature expires 7 days after building — reopen Xcode and press Cmd+R to renew it. "Allow Unsigned Extensions" also resets every time Safari fully quits and must be re-enabled each session.
+
+> [!NOTE]
+> Keep `--app-name` and `--bundle-identifier` all-lowercase, as above — `safari-web-extension-converter` can otherwise derive mismatched casing between the app and extension targets' `PRODUCT_BUNDLE_IDENTIFIER`, causing Xcode build errors like "Embedded binary is not signed with the same certificate as the parent app". If that happens anyway, check both values in `RedirectTube.xcodeproj/project.pbxproj` — the extension's must equal the app's identifier plus `.Extension` — fix any mismatch, then Product → Clean Build Folder (⇧⌘K) before rebuilding.
+
 ## Local builds
 
 RedirectTube keeps a single shared codebase in `src/browser`. Use the provided helper to prepare browser-specific bundles:
@@ -86,9 +124,9 @@ RedirectTube keeps a single shared codebase in `src/browser`. Use the provided h
 node scripts/build.js
 ```
 
-The script requires Node.js 16.7+ (for `fs.cp`) and the `zip` CLI. It produces unpacked bundles at `dist/chromium` and `dist/gecko`, along with ready-to-distribute archives under `dist/packages`. Useful flags:
+The script requires Node.js 16.7+ (for `fs.cp`) and the `zip` CLI. It produces unpacked bundles at `dist/chromium`, `dist/gecko`, and `dist/safari`, along with ready-to-distribute archives under `dist/packages` for chromium and gecko (the `safari` target intentionally skips archive packaging, since Safari needs an Xcode-converted project rather than a zip/xpi — see the Safari installation section above). Useful flags:
 
-- `--browser chromium,gecko` – build only the listed browsers.
+- `--browser chromium,gecko,safari` – build only the listed browsers.
 - `--no-zip` – skip archive creation if you just need the unpacked directory (handy for temporary installs in Firefox/Chromium).
 
 Once built, load the browser-specific folder from `dist/` via your browser's developer mode, or upload the generated archives wherever you distribute the extension.
@@ -135,4 +173,4 @@ Translations are managed via [Weblate](https://hosted.weblate.org/engage/redirec
 RedirectTube is licensed under CC BY-NC-SA 4.0. For details, please refer to the [LICENSE](LICENSE.md).
 
 > [!NOTE]
-> **RedirectTube** is not affiliated with FreeTube, OpenTubeX, Invidious, or Piped, or their creators. FreeTube is licensed under the [AGPL-3.0 license](https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE). The name *FreeTube* and FreeTube logo are the property of the [creators of FreeTube](https://docs.freetubeapp.io/credits/). Neither I nor the extension are associated with them.
+> **RedirectTube** is not affiliated with YouTube, FreeTube, OpenTubeX, Invidious, or Piped, or their creators. The names and logos of these apps and websites are the property of their respective creators. They may be subject to their own licenses.

@@ -336,14 +336,18 @@ function setShortcutOptionsVisibility(enabled) {
     }
 }
 
-function isFirefox() {
-    return Boolean(extensionApi.runtime.getManifest().browser_specific_settings);
+function getBrowserKind() {
+    const bss = extensionApi.runtime.getManifest().browser_specific_settings || {};
+    if (bss.gecko) return "firefox";
+    if (bss.safari) return "safari";
+    return "chromium";
 }
 
 function openShortcutsSettings() {
-    if (isFirefox()) {
-        // Firefox's tabs API refuses to navigate to privileged about: pages,
-        // so there's no way to deep-link there — the hint text guides the user instead.
+    const kind = getBrowserKind();
+    if (kind !== "chromium") {
+        // Firefox and Safari have no deep-link URL for shortcut settings —
+        // the corresponding hint text guides the user instead.
         return;
     }
     extensionApi.tabs.create({ url: "chrome://extensions/shortcuts" });
@@ -351,13 +355,17 @@ function openShortcutsSettings() {
 
 function applyShortcutBrowserUI() {
     const button = document.getElementById("changeShortcutButton");
-    const hint = document.getElementById("shortcutFirefoxHint");
-    const onFirefox = isFirefox();
+    const firefoxHint = document.getElementById("shortcutFirefoxHint");
+    const safariHint = document.getElementById("shortcutSafariHint");
+    const kind = getBrowserKind();
     if (button) {
-        button.hidden = onFirefox;
+        button.hidden = kind !== "chromium";
     }
-    if (hint) {
-        hint.hidden = !onFirefox;
+    if (firefoxHint) {
+        firefoxHint.hidden = kind !== "firefox";
+    }
+    if (safariHint) {
+        safariHint.hidden = kind !== "safari";
     }
 }
 
@@ -470,14 +478,15 @@ function restoreOptions() {
     );
 }
 
+if (opinionButton && getBrowserKind() === "safari") {
+    opinionButton.hidden = true;
+}
+
 opinionButton?.addEventListener("click", function () {
-    if (extensionApi.runtime.getManifest().browser_specific_settings) {
-        var website =
-            "https://addons.mozilla.org/firefox/addon/redirecttube/reviews/";
-    } else {
-        var website =
-            "https://chromewebstore.google.com/detail/redirecttube/jpbaggklodpddjcadlebabhiopjkjfjh/reviews";
-    }
+    var website =
+        getBrowserKind() === "firefox"
+            ? "https://addons.mozilla.org/firefox/addon/redirecttube/reviews/"
+            : "https://chromewebstore.google.com/detail/redirecttube/jpbaggklodpddjcadlebabhiopjkjfjh/reviews";
     openExternalLink(website);
 });
 

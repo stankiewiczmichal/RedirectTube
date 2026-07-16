@@ -14,7 +14,7 @@
         "footer": {
             "kofi": "Jos pidät tästä laajennuksesta, harkitse <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">teen ostamista minulle</a> 🍵",
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
-            "affiliation": "RedirectTube ei ole sidoksissa FreeTubeen tai sen luojiin.<br>FreeTube on lisensoitu <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0-lisenssillä</a>.<br>Nimi \"FreeTube\" ja FreeTube-logo ovat <a href=\"https://docs.freetubeapp.io/credits/\">FreeTuben luojien</a> omaisuutta."
+            "affiliation": "RedirectTube ei ole sidoksissa YouTubeen, FreeTubeen, OpenTubeXiin, Invidiousiin tai Pipediin tai niiden luojiin.<br>Näiden sovellusten ja verkkosivustojen nimet ja logot ovat niiden omien luojiensa omaisuutta.<br>Niillä voi olla omat lisenssinsä."
         },
         "page": {
             "title": "RedirectTube"
