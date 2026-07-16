@@ -48,10 +48,26 @@ body:
         - Windows
     validations:
       required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Choose on which browser the bug occurs.
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Edge
+        - Opera
+        - Vivaldi
+        - Brave
+        - Other
+    validations:
+      required: true
   - type: input
     id: browser-version
     attributes:
-      label: Firefox version
+      label: Browser version
       description: To check, go to [about:support](about:support).
       placeholder: 128.5.2esr
     validations:
@@ -59,9 +75,9 @@ body:
   - type: input
     id: app-version
     attributes:
-      label: FreeTube version
+      label: FreeTube/OpenTubeX version or Invidious/Piped instance
       description: To check, go to "About" section.
-      placeholder: 0.22.1 Beta
+      placeholder: FreeTube 0.22.1 Beta
     validations:
       required: true
   - type: input
@@ -82,9 +98,9 @@ body:
     attributes:
       label: Statements
       options:
-        - label: I use the latest version of RedirectTube.
+        - label: I use the latest version of RedirectTube/OpenTubeX.
           required: true
-        - label: I use the latest version of Mozilla Firefox.
+        - label: I use the latest version of my browser.
           required: true
         - label: I verified that the error has not already been reported on GitHub.
           required: true
