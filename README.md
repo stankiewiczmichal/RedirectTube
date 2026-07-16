@@ -19,7 +19,7 @@ RedirectTube is a browser extension that redirects YouTube links to the privacy-
 | Player | Type | Notes |
 | --- | --- | --- |
 | [FreeTube](https://freetubeapp.io/) | Desktop app | Redirects via the `freetube://` link handler. |
-| [OpenTubeX](https://opentubex.com/) | Desktop app | Redirects via the `opentubex://` link handler. |
+| [OpenTubeX](https://opentubex.org/) | Desktop app | Redirects via the `opentubex://` link handler. |
 | Invidious | Web instance | Redirects to your preferred Invidious instance (defaults to `yewtu.be`). |
 | Piped | Web instance | Redirects to your preferred Piped instance (defaults to `piped.video`). |
 
