@@ -148,8 +148,8 @@
             "behaviorLabel": "Działanie skrótu klawiaturowego",
             "replaceTab": "Zastąp bieżącą kartę",
             "newTab": "Otwórz w nowej karcie",
-            "changeLabel": "Skrót klawiszowy",
-            "change": "Zmień skrót klawiszowy…",
+            "changeLabel": "Skrót klawiaturowy",
+            "change": "Zmień skrót klawiaturowy…",
             "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
         }
     },

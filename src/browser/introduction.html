@@ -123,17 +123,20 @@
         </div>
         <div class="section" id="introduction-step-3" hidden>
             <h1 data-i18n="introduction.step3.title">Keyboard shortcut</h1>
-            <label class="flex-row">
-                <input type="checkbox" id="shortcutEnabled">
-                <span data-i18n="introduction.step3.enable">Enable keyboard shortcut redirect</span>
-            </label>
-            <div id="shortcutOptions">
-                <select id="shortcutBehavior">
-                    <option value="replaceTab" data-i18n="options.shortcut.replaceTab">Replace current tab</option>
-                    <option value="newTab" data-i18n="options.shortcut.newTab">Open in a new tab</option>
-                </select>
-                <button id="changeShortcutButton" type="button" data-i18n="options.shortcut.change">Change keyboard shortcut…</button>
-                <p class="note" id="shortcutFirefoxHint" hidden data-i18n="introduction.step3.firefoxHint">Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose "Manage Extension Shortcuts".</p>
+            <div class="setup-panel" id="shortcutPanel">
+                <label class="flex-row" for="shortcutEnabled">
+                    <input type="checkbox" id="shortcutEnabled">
+                    <span data-i18n="introduction.step3.enable">Enable keyboard shortcut redirect</span>
+                </label>
+                <div id="shortcutOptions">
+                    <label for="shortcutBehavior" data-i18n="options.shortcut.behaviorLabel">Keyboard shortcut behavior</label>
+                    <select id="shortcutBehavior">
+                        <option value="replaceTab" data-i18n="options.shortcut.replaceTab">Replace current tab</option>
+                        <option value="newTab" data-i18n="options.shortcut.newTab">Open in a new tab</option>
+                    </select>
+                    <button id="changeShortcutButton" type="button" data-i18n="options.shortcut.change">Change keyboard shortcut…</button>
+                    <p class="note" id="shortcutFirefoxHint" hidden data-i18n="introduction.step3.firefoxHint">Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose "Manage Extension Shortcuts".</p>
+                </div>
             </div>
             <div class="buttons">
                 <button id="step3Back" type="button" data-i18n="introduction.step2.back">Back</button>

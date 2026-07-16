@@ -391,6 +391,24 @@ h1 {
     margin-top: 0;
 }
 
+.shortcut-group-connected {
+    border-radius: 24px 24px 0 0;
+    margin-bottom: 0;
+}
+
+.shortcut-group-middle {
+    border-top: 1px solid var(--background-element);
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.shortcut-group-bottom {
+    border-top: 1px solid var(--background-element);
+    border-radius: 0 0 24px 24px;
+    margin-top: 0;
+}
+
 .player-choice {
     display: inline-flex;
     align-items: center;
