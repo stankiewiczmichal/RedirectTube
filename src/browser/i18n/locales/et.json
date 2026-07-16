@@ -36,7 +36,7 @@
         "footer": {
             "kofi": "Kui sulle see laiendus meeldib, <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">siis osta mulle teed</a> 🍵",
             "version": "RedirectTube'i versioon <span id=\"version\">X.Y.Z</span>",
-            "affiliation": "RedirectTube pole seotud FreeTube'i ega tema loojatega.<br>FreeTube on litsentseeritud <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">AGPL-3.0 litsentsi alusel</a>.<br>Nimi „FreeTube“ ja FreeTube'i logo on <a href=\"https://docs.freetubeapp.io/credits/\">FreeTube'i loojate</a> omand."
+            "affiliation": "RedirectTube ei ole seotud YouTube'i, FreeTube'i, OpenTubeX'i, Invidious'e ega Pipediga ega nende loojatega.<br>Nende rakenduste ja veebilehtede nimed ja logod kuuluvad nende vastavatele loojatele.<br>Need võivad kuuluda oma litsentside alla."
         },
         "page": {
             "title": "RedirectTube"

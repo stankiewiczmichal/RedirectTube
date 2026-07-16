@@ -2,7 +2,7 @@
 
 <img style="height:48px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:48px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:48px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:48px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt="">
 
-#### Name *FreeTube* and FreeTube logo are the property of the [creators of FreeTube](https://docs.freetubeapp.io/credits/). Neither I nor the extension are associated with them. [FreeTube](https://freetubeapp.io/) is licensed under [AGPL-3.0 license](https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE).
+#### RedirectTube is not affiliated with YouTube, FreeTube, OpenTubeX, Invidious, or Piped, or their creators. The names and logos of these apps and websites are the property of their respective creators. They may be subject to their own licenses.
 
 #### Translations of the extension's user interface are licensed under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The translations are available at /src/browser/i18n/locales/ in the project's repository.
 

@@ -135,4 +135,4 @@ Translations are managed via [Weblate](https://hosted.weblate.org/engage/redirec
 RedirectTube is licensed under CC BY-NC-SA 4.0. For details, please refer to the [LICENSE](LICENSE.md).
 
 > [!NOTE]
-> **RedirectTube** is not affiliated with FreeTube, OpenTubeX, Invidious, or Piped, or their creators. FreeTube is licensed under the [AGPL-3.0 license](https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE). The name *FreeTube* and FreeTube logo are the property of the [creators of FreeTube](https://docs.freetubeapp.io/credits/). Neither I nor the extension are associated with them.
+> **RedirectTube** is not affiliated with YouTube, FreeTube, OpenTubeX, Invidious, or Piped, or their creators. The names and logos of these apps and websites are the property of their respective creators. They may be subject to their own licenses.

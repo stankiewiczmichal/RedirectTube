@@ -1,12 +1,10 @@
-# 2.0.1 (26072)
+# 2.0.2 (26073)
 [bugfix release]
 
 ## Release Notes
 
-- Fixed the toolbar icon to update per tab instead of globally, so switching between YouTube and other tabs now immediately shows the correct allowed/blocked state.
-- Fixed the RedirectTube-branded color icon option in Settings not saving due to a conflicting element ID with the FreeTube color icon.
-- Reorganized the keyboard shortcut settings in Options and the introduction screen into a clearer, connected group with a proper label on the behavior dropdown.
-- Corrected the Polish translation of the keyboard shortcut label.
+- Removed the outdated FreeTube-specific AGPL-3.0 license mention from the "not affiliated" disclaimer and broadened it to cover YouTube, FreeTube, OpenTubeX, Invidious, and Piped.
+- Fixed the muted/note text in Settings using a hardcoded gray color instead of the theme's color variable, so it now renders with proper contrast in both light and dark themes.
 
 > [!WARNING]
 > For Firefox, the `-unsigned.xpi` artifact will most likely not install. Use the signed version (`-signed.xpi`) or download from the [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/redirecttube/). For Chromium-based browsers, download the `-chromium-unsigned.zip` and load it unpacked in Developer Mode or download from the [Chrome Web Store](https://chromewebstore.google.com/detail/jpbaggklodpddjcadlebabhiopjkjfjh/).

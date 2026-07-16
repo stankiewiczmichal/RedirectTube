@@ -115,7 +115,7 @@
         "footer": {
             "version": "RedirectTube v<span id=\"version\">X.Y.Z</span>",
             "kofi": "Jeśli podoba Ci się to rozszerzenie, rozważ <a href=\"https://ko-fi.com/mstankiewicz\" target=\"_blank\">postawienie mi herbaty</a> 🍵",
-            "affiliation": "RedirectTube nie jest powiązany z FreeTube ani jego twórcami. FreeTube jest licencjonowany na <a href=\"https://github.com/FreeTubeApp/FreeTube/blob/master/LICENSE\">licencji AGPL-3.0</a>. Nazwa \"FreeTube\" oraz logo FreeTube są własnością <a href=\"https://docs.freetubeapp.io/credits/\">twórców FreeTube</a>."
+            "affiliation": "RedirectTube nie jest powiązany z YouTube, FreeTube, OpenTubeX, Invidious ani Piped, ani z ich twórcami. Nazwy oraz loga tych aplikacji i stron są własnością ich twórców. Mogą one podlegać własnym licencjom."
         },
         "urlRules": {
             "advancedTitle": "Zaawansowane",
