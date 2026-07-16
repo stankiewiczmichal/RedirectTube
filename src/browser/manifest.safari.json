@@ -1,0 +1,70 @@
+{
+    "name": "__MSG_extension_name__",
+    "description": "__MSG_extension_description__",
+    "author": "Michał Stankiewicz",
+    "version": "2.0.2",
+    "manifest_version": 3,
+    "default_locale": "en",
+    "icons": {
+        "16": "img/icns/redirecttube/color/allow/16.png",
+        "32": "img/icns/redirecttube/color/allow/32.png",
+        "48": "img/icns/redirecttube/color/allow/48.png",
+        "64": "img/icns/redirecttube/color/allow/64.png",
+        "96": "img/icns/redirecttube/color/allow/96.png",
+        "128": "img/icns/redirecttube/color/allow/128.png",
+        "256": "img/icns/redirecttube/color/allow/256.png",
+        "512": "img/icns/redirecttube/color/allow/512.png"
+    },
+    "background": {
+        "scripts": [
+            "shared.js",
+            "background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": ["shared.js", "content.js"],
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "i18n/locales/*.json",
+                "iframe-placeholder.html",
+                "iframe-placeholder.css",
+                "iframe-placeholder.js"
+            ],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "permissions": [
+        "storage",
+        "tabs",
+        "contextMenus"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "__MSG_ui_button_redirect__"
+    },
+    "options_ui": {
+        "page": "options-placeholder.html"
+    },
+    "commands": {
+        "redirect-current-tab": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+F",
+                "mac": "Command+Shift+F"
+            },
+            "description": "__MSG_commands_redirectCurrentTab_description__"
+        }
+    },
+    "browser_specific_settings": {
+        "safari": {
+            "strict_min_version": "17.0"
+        }
+    }
+}

@@ -75,7 +75,8 @@
         "step3": {
             "title": "Skrót klawiaturowy",
             "enable": "Włącz przekierowanie za pomocą skrótów klawiaturowych",
-            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”.",
+            "safariHint": "Otwórz Safari → Ustawienia → Rozszerzenia, wybierz RedirectTube, a następnie ustaw preferowany skrót klawiaturowy."
         }
     },
     "options": {
@@ -150,7 +151,8 @@
             "newTab": "Otwórz w nowej karcie",
             "changeLabel": "Skrót klawiaturowy",
             "change": "Zmień skrót klawiaturowy…",
-            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”."
+            "firefoxHint": "Otwórz menu przeglądarki Firefox (☰) → „Rozszerzenia i motywy”, a następnie kliknij ikonę koła zębatego (⚙) i wybierz opcję „Zarządzaj skrótami rozszerzeń”.",
+            "safariHint": "Otwórz Safari → Ustawienia → Rozszerzenia, wybierz RedirectTube, a następnie ustaw preferowany skrót klawiaturowy."
         }
     },
     "popup": {

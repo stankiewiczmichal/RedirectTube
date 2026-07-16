@@ -75,7 +75,8 @@
         "step3": {
             "title": "Keyboard shortcut",
             "enable": "Enable keyboard shortcut redirect",
-            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\"."
+            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\".",
+            "safariHint": "Open Safari → Settings → Extensions, select RedirectTube, then set your preferred keyboard shortcut."
         },
         "usage": {
             "title": "Usage",
@@ -110,7 +111,8 @@
             "newTab": "Open in a new tab",
             "changeLabel": "Keyboard shortcut key",
             "change": "Change keyboard shortcut…",
-            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\"."
+            "firefoxHint": "Open the Firefox menu (☰) → Add-ons and Themes, then click the gear icon (⚙) and choose \"Manage Extension Shortcuts\".",
+            "safariHint": "Open Safari → Settings → Extensions, select RedirectTube, then set your preferred keyboard shortcut."
         },
         "iframeBehavior": {
             "label": "iFrame behavior",

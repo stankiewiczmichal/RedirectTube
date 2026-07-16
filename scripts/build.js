@@ -10,8 +10,9 @@ const SRC_DIR = path.join(ROOT_DIR, 'src', 'browser');
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 
 const BROWSERS = [
-  { key: 'chromium', manifest: 'manifest.chromium.json', archiveExt: 'zip' },
-  { key: 'gecko', manifest: 'manifest.gecko.json', archiveExt: 'xpi' }
+  { key: 'chromium', manifest: 'manifest.chromium.json', archiveExt: 'zip', packageable: true },
+  { key: 'gecko', manifest: 'manifest.gecko.json', archiveExt: 'xpi', packageable: true },
+  { key: 'safari', manifest: 'manifest.safari.json', archiveExt: null, packageable: false }
 ];
 const MANIFEST_FILES = BROWSERS.map((browser) => browser.manifest);
 const DEFAULT_LOCALE = 'en';
@@ -100,7 +101,7 @@ async function buildBrowser(browser, options) {
   const archiveBaseName = `${safeName}-${manifestData.version}-${browser.key}-unsigned`;
 
   let archivePath = null;
-  if (!options.skipArchive) {
+  if (!options.skipArchive && browser.packageable !== false) {
     const packagesDir = path.join(DIST_DIR, 'packages');
     await fs.mkdir(packagesDir, { recursive: true });
     archivePath = path.join(packagesDir, `${archiveBaseName}.${browser.archiveExt}`);
