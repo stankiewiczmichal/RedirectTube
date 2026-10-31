@@ -613,10 +613,12 @@ document.addEventListener("DOMContentLoaded", () => {
 document
     .querySelector("#popupBehavior")
     ?.addEventListener("change", saveOptions);
-document.querySelector("#autoRedirectLinks")?.addEventListener("change", function() {
-    updateTimestampLinksVisibility();
-    saveOptions();
-});
+document
+    .querySelector("#autoRedirectLinks")
+    ?.addEventListener("change", function () {
+        updateTimestampLinksVisibility();
+        saveOptions();
+    });
 document
     .querySelector("#timestampLinks")
     ?.addEventListener("change", saveOptions);
