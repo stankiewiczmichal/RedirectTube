@@ -77,8 +77,7 @@ function updateRedirectButtonLabel(selectedPlayer) {
 }
 
 function getBlockedMessage(selectedPlayer) {
-    const perPlayerKey = "ui.error.e404_" + selectedPlayer;
-    let message = getMessageByKey(perPlayerKey) || getMessageByKey("ui.error.e404");
+    let message = getMessageByKey("ui.error.e404");
     if (!message) {
         message = "Cannot open this page in FreeTube.";
     }

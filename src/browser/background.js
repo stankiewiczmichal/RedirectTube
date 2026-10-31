@@ -397,20 +397,11 @@ function createContextMenu() {
         return;
     }
     currentMenuLang = lang;
-    // Prefer a player-specific context menu title when possible
-    const playerKey = (cachedSelectedPlayer || "freetube");
-    const perPlayerKey = "ui.contextMenu.redirect_" + playerKey;
-    // Allow i18n strings to include a placeholder like {player} or %PLAYER%.
-    let title =
-        getMessageByKey(perPlayerKey) || getMessageByKey("ui.contextMenu.redirect") || "Open in {player}";
-    const playerLabel =
-        getMessageByKey("options.playerSettings." + playerKey) ||
-        (playerKey === "freetube" ? "FreeTube" : playerKey);
-    // Replace common placeholder formats and any literal "FreeTube"
-    title = title
-        .replace(/\{player\}/g, playerLabel)
-        .replace(/%PLAYER%/g, playerLabel)
-        .replace(/FreeTube/g, playerLabel);
+    // ui.contextMenu.redirect names the extension rather than the selected
+    // player, so the title depends only on the UI language and the guard above
+    // keeps it current on its own.
+    const title =
+        getMessageByKey("ui.contextMenu.redirect") || "Open with RedirectTube";
 
     extensionApi.contextMenus.removeAll(() => {
         extensionApi.contextMenus.create({
