@@ -615,7 +615,7 @@ document
     ?.addEventListener("change", saveOptions);
 document
     .querySelector("#autoRedirectLinks")
-    ?.addEventListener("change", function () {
+    ?.addEventListener("change", () => {
         updateTimestampLinksVisibility();
         saveOptions();
     });
