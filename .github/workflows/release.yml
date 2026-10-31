@@ -10,6 +10,10 @@ on:
 
 jobs:
   build-unsigned:
+    # workflow_dispatch lets a run be started from any branch, and everything
+    # this job produces ships: a public GitHub release, and a signed XPI on the
+    # listed channel once publish-amo.yml picks the run up. Only main releases.
+    if: github.ref == 'refs/heads/main'
     runs-on: macos-latest
 
     steps:
