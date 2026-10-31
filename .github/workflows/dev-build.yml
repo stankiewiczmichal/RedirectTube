@@ -1,0 +1,68 @@
+name: Build Dev Artifacts
+
+# Deliberately not named "Build Unsigned Release": publish-amo.yml keys its
+# workflow_run trigger on that name, so reusing it here would sign a dev build
+# and push it to the listed channel on Mozilla Add-ons. This workflow creates
+# no tag and no GitHub release either - it only leaves the three unsigned
+# packages attached to the run, to download and install for testing.
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dev-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-dev:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build browser bundles
+      run: node scripts/build.js
+
+    - name: Convert Safari bundle to an Xcode project
+      run: |
+        xcrun safari-web-extension-converter dist/safari \
+          --project-location dist/safari-xcode \
+          --app-name "redirecttube" \
+          --bundle-identifier eu.stankiewiczm.redirecttube \
+          --macos-only --no-open --force
+
+    - name: Extract data from manifest.json
+      run: |
+        VERSION=$(jq -r '.version' src/browser/manifest.gecko.json)
+        GECKO_PACKAGE=$(find dist/packages -maxdepth 1 -type f -name "*-${VERSION}-gecko-unsigned.xpi" -print -quit)
+        if [ -z "$GECKO_PACKAGE" ]; then
+          echo "Unable to locate gecko package for version ${VERSION}" >&2
+          exit 1
+        fi
+        BASENAME=$(basename "$GECKO_PACKAGE")
+        SAFE_NAME="${BASENAME%-${VERSION}-gecko-unsigned.xpi}"
+        echo "EXT_NAME=${SAFE_NAME}" >> $GITHUB_ENV
+        echo "EXT_VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+    - name: Collect the unsigned packages
+      run: |
+        mkdir -p artifacts/unsigned
+        cp dist/packages/${EXT_NAME}-${EXT_VERSION}-gecko-unsigned.xpi artifacts/unsigned/
+        cp dist/packages/${EXT_NAME}-${EXT_VERSION}-chromium-unsigned.zip artifacts/unsigned/
+        (cd dist/safari-xcode && zip -qr "../../artifacts/unsigned/${EXT_NAME}-${EXT_VERSION}-safari-xcode-unsigned.zip" .)
+
+    - name: Upload the unsigned packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: dev-unsigned-${{ env.EXT_VERSION }}-${{ env.SHORT_SHA }}
+        path: artifacts/unsigned
