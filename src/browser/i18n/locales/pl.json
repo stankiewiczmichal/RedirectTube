@@ -7,6 +7,7 @@
             "redirect_freetube": "Otwórz we FreeTube",
             "redirect_invidious": "Otwórz w Invidious",
             "redirect_piped": "Otwórz w Piped",
+            "redirect_opentubex": "Otwórz w OpenTubeX",
             "options": "Opcje",
             "opinion": "Wyraź opinię",
             "suggestion": "Napisz sugestię",
@@ -93,6 +94,17 @@
         },
         "autoRedirectLinks": {
             "label": "Automatycznie przekierowuj linki YouTube po kliknięciu"
+        },
+        "timestampLinks": {
+            "label": "Pomijaj linki prowadzące do znacznika czasu",
+            "note": "Link ze znacznikiem czasu do filmu, który właśnie oglądasz, YouTube obsługuje przewinięciem, więc jego przekierowanie odtwarza film od początku.",
+            "sameVideo": "Tylko dla już otwartego filmu",
+            "all": "Dla każdego linku ze znacznikiem czasu",
+            "redirect": "Nigdy, zawsze przekierowuj"
+        },
+        "closeRedirectTab": {
+            "label": "Zamykaj kartę otwartą dla aplikacji desktopowej",
+            "note": "Dotyczy tylko FreeTube i OpenTubeX, ponieważ Invidious i Piped otwierają zwykłą stronę. Jeśli przeglądarka nadal pyta o zgodę na otwarcie aplikacji, pozostaw tę opcję wyłączoną — zamknięcie karty anuluje to pytanie."
         },
         "iframeBehavior": {
             "label": "Zachowanie ramek iFrame",

@@ -9,6 +9,8 @@ var preferredInvidiousInstance = "https://yewtu.be";
 var preferredPipedInstance = "https://piped.video";
 var shortcutEnabled = true;
 var shortcutBehavior = "replaceTab";
+var timestampLinks = DEFAULT_TIMESTAMP_LINKS;
+var closeRedirectTab = DEFAULT_CLOSE_REDIRECT_TAB;
 
 const CATEGORY_PREFIXES = {
     watch: ["/watch", "/playlist"],
@@ -411,6 +413,8 @@ function saveOptions(e) {
         urlRulesConfig: urlRulesResult.config,
         shortcutEnabled: document.getElementById("shortcutEnabled").checked,
         shortcutBehavior: document.getElementById("shortcutBehavior").value,
+        timestampLinks: document.getElementById("timestampLinks").value,
+        closeRedirectTab: document.getElementById("closeRedirectTab").checked,
     });
 }
 
@@ -448,6 +452,12 @@ function restoreOptions() {
         document.getElementById("shortcutBehavior").value =
             result.shortcutBehavior || shortcutBehavior;
         setShortcutOptionsVisibility(document.getElementById("shortcutEnabled").checked);
+
+        document.getElementById("timestampLinks").value =
+            result.timestampLinks || timestampLinks;
+        document.getElementById("closeRedirectTab").checked =
+            result.closeRedirectTab ?? closeRedirectTab;
+        updateTimestampLinksVisibility();
     }
 
     function onError(error) {
@@ -467,6 +477,8 @@ function restoreOptions() {
             "urlRulesConfig",
             "shortcutEnabled",
             "shortcutBehavior",
+            "timestampLinks",
+            "closeRedirectTab",
         ],
         function (result) {
             if (extensionApi.runtime.lastError) {
@@ -603,6 +615,12 @@ document
     ?.addEventListener("change", saveOptions);
 document
     .querySelector("#autoRedirectLinks")
+    ?.addEventListener("change", () => {
+        updateTimestampLinksVisibility();
+        saveOptions();
+    });
+document
+    .querySelector("#timestampLinks")
     ?.addEventListener("change", saveOptions);
 document.querySelector("#iframeBehavior")?.addEventListener("change", function() {
     updateIframeEnhancedPreviewVisibility();
@@ -630,6 +648,9 @@ document.querySelector("#shortcutEnabled")?.addEventListener("change", (event) =
 });
 document
     .querySelector("#shortcutBehavior")
+    ?.addEventListener("change", saveOptions);
+document
+    .querySelector("#closeRedirectTab")
     ?.addEventListener("change", saveOptions);
 document
     .querySelector("#changeShortcutButton")
@@ -678,6 +699,18 @@ if (urlRulesResetBtn) {
         showUrlRulesError("");
         saveOptions(event);
     });
+}
+
+// The exemption only takes effect while links are redirected on click, so the
+// choice is hidden when that is off.
+function updateTimestampLinksVisibility() {
+    const autoRedirectValue = document.getElementById("autoRedirectLinks").value;
+    const timestampLinksSection = document.getElementById("timestampLinksSection");
+
+    if (timestampLinksSection) {
+        timestampLinksSection.hidden =
+            autoRedirectValue !== "autoRedirectLinksYes";
+    }
 }
 
 function updateIframeEnhancedPreviewVisibility() {

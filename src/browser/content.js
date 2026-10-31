@@ -11,6 +11,7 @@ let redirecttubeUrlRulesConfig = getDefaultUrlRulesConfig();
 let redirecttubeSelectedPlayer = "freetube";
 let redirecttubePreferredInvidiousInstance = "https://yewtu.be";
 let redirecttubePreferredPipedInstance = "https://piped.video";
+let redirecttubeTimestampLinks = DEFAULT_TIMESTAMP_LINKS;
 
 const iframeMetadata = new WeakMap();
 const iframePlaceholderUrl = extensionApi.runtime.getURL(
@@ -316,6 +317,7 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
         changes.iframeButton ||
         changes.iframeEnhancedPreview ||
         changes.autoRedirectLinks ||
+        changes.timestampLinks ||
         changes.urlRulesConfig
     ) {
         loadRuntimeSettings(shouldNotifyCurrentUrl);
@@ -333,6 +335,7 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
             STORAGE_KEYS.selectedPlayer,
             STORAGE_KEYS.preferredInvidiousInstance,
             STORAGE_KEYS.preferredPipedInstance,
+            STORAGE_KEYS.timestampLinks,
         ],
         (result = {}) => {
             const previousBehavior = redirecttubeIframeBehavior;
@@ -357,6 +360,8 @@ function loadRuntimeSettings(shouldNotifyCurrentUrl = false) {
                 result[STORAGE_KEYS.preferredInvidiousInstance] || "https://yewtu.be";
             redirecttubePreferredPipedInstance =
                 result[STORAGE_KEYS.preferredPipedInstance] || "https://piped.video";
+            redirecttubeTimestampLinks =
+                result[STORAGE_KEYS.timestampLinks] || DEFAULT_TIMESTAMP_LINKS;
 
             const shouldRefresh =
                 !iframeSettingsReady ||
@@ -455,6 +460,18 @@ function handleDocumentClick(event) {
 
     const resolvedUrl = resolveAbsoluteUrl(anchor.getAttribute("href"));
     if (!resolvedUrl || !shouldRedirectUrl(resolvedUrl)) {
+        return;
+    }
+
+    // Leave the click to YouTube so it can seek in place instead of handing the
+    // video to the player from the start.
+    if (
+        shouldSkipTimestampLink(
+            resolvedUrl,
+            window.location.href,
+            redirecttubeTimestampLinks
+        )
+    ) {
         return;
     }
 

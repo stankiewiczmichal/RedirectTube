@@ -13,7 +13,10 @@ permissions:
 
 jobs:
   publish-amo:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # The workflow_run trigger above carries no branch of its own, so the
+    # branch the build ran on is checked here as well. Signing and listing an
+    # add-on cannot be undone by deleting a tag.
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
 
     steps:

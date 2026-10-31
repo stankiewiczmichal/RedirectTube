@@ -16,6 +16,8 @@ const STORAGE_KEYS = Object.freeze({
     introductionComplete: "introductionComplete",
     shortcutEnabled: "shortcutEnabled",
     shortcutBehavior: "shortcutBehavior",
+    timestampLinks: "timestampLinks",
+    closeRedirectTab: "closeRedirectTab",
 });
 
 const DEFAULT_ALLOW_PREFIXES = [
@@ -68,6 +70,19 @@ const PLAYERS = Object.freeze({
 
 const DEFAULT_SHORTCUT_ENABLED = true;
 const DEFAULT_SHORTCUT_BEHAVIOR = "replaceTab";
+
+const TIMESTAMP_LINKS = Object.freeze({
+    sameVideo: "timestampLinksSameVideo",
+    all: "timestampLinksAll",
+    redirect: "timestampLinksRedirect",
+});
+
+const DEFAULT_TIMESTAMP_LINKS = TIMESTAMP_LINKS.sameVideo;
+const DEFAULT_CLOSE_REDIRECT_TAB = false;
+
+// YouTube accepts the playback offset under several names, and also as a #t=
+// fragment on older links.
+const TIMESTAMP_PARAMS = ["t", "start", "time_continue"];
 
 const DEFAULT_PREFERRED_INVIDIOUS_INSTANCE = "https://yewtu.be";
 const DEFAULT_PREFERRED_PIPED_INSTANCE = "https://piped.video";
@@ -170,11 +185,84 @@ function isRedirectableYoutubeUrl(url, config = getDefaultUrlRulesConfig()) {
     }
 }
 
+function getYoutubeVideoId(url) {
+    try {
+        const parsedUrl = new URL(url);
+        const host = parsedUrl.hostname.toLowerCase();
+
+        if (host === "youtu.be") {
+            return parsedUrl.pathname.substring(1).split("/")[0] || null;
+        }
+
+        if (!isSameOrSubdomain(host, "youtube.com")) {
+            return null;
+        }
+
+        if (parsedUrl.searchParams.has("v")) {
+            return parsedUrl.searchParams.get("v") || null;
+        }
+
+        const pathMatch = (parsedUrl.pathname || "").match(
+            /^\/(?:shorts|live|embed)\/([^/?#]+)/i
+        );
+        return pathMatch ? pathMatch[1] : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function getYoutubeTimestamp(url) {
+    try {
+        const parsedUrl = new URL(url);
+
+        for (const param of TIMESTAMP_PARAMS) {
+            const value = parsedUrl.searchParams.get(param);
+            if (value) {
+                return value;
+            }
+        }
+
+        const fragmentMatch = (parsedUrl.hash || "").match(
+            /(?:^#|&)t=([^&]+)/
+        );
+        return fragmentMatch ? fragmentMatch[1] : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function isSameYoutubeVideo(firstUrl, secondUrl) {
+    const firstId = getYoutubeVideoId(firstUrl);
+    return Boolean(firstId) && firstId === getYoutubeVideoId(secondUrl);
+}
+
+// A timestamp link on the page the user is already watching is handled by
+// YouTube itself by seeking, without a reload. Redirecting it instead throws
+// the player away and starts the video over, so such links are left alone by
+// default.
+function shouldSkipTimestampLink(linkUrl, currentUrl, mode) {
+    const normalizedMode = mode || DEFAULT_TIMESTAMP_LINKS;
+
+    if (normalizedMode === TIMESTAMP_LINKS.redirect) {
+        return false;
+    }
+    if (!getYoutubeTimestamp(linkUrl)) {
+        return false;
+    }
+    if (normalizedMode === TIMESTAMP_LINKS.all) {
+        return true;
+    }
+    return isSameYoutubeVideo(linkUrl, currentUrl);
+}
+
 function convertYouTubeToInstance(youtubeUrl, instanceUrl) {
     const instanceBase = new URL(instanceUrl).origin;
 
     const url = new URL(youtubeUrl);
     const params = url.searchParams;
+    // Rebuilding the URL drops every parameter that is not copied over, so the
+    // playback offset has to be carried explicitly.
+    const timestamp = getYoutubeTimestamp(youtubeUrl);
 
     if (url.pathname.includes("/watch") && params.has("v")) {
         const videoId = params.get("v");
@@ -183,6 +271,9 @@ function convertYouTubeToInstance(youtubeUrl, instanceUrl) {
         let targetUrl = instanceBase + "/watch?v=" + videoId;
         if (listId) {
             targetUrl += "&list=" + listId;
+        }
+        if (timestamp) {
+            targetUrl += "&t=" + encodeURIComponent(timestamp);
         }
         return targetUrl;
     }
@@ -198,6 +289,9 @@ function convertYouTubeToInstance(youtubeUrl, instanceUrl) {
             let targetUrl = instanceBase + "/watch?v=" + videoId;
             if (params.has("list")) {
                 targetUrl += "&list=" + params.get("list");
+            }
+            if (timestamp) {
+                targetUrl += "&t=" + encodeURIComponent(timestamp);
             }
             return targetUrl;
         }
