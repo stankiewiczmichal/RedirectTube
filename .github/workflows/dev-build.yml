@@ -12,6 +12,15 @@ on:
       - dev
     paths:
       - 'src/**'
+  # A pull request into main is a release PR, and release.yml only runs once
+  # that PR is merged, so without this the first run of the extension code on a
+  # runner would be the one that publishes it. Building here puts that run
+  # before the merge instead, and leaves the packages to install and test.
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
   workflow_dispatch:
 
 permissions:
@@ -52,7 +61,10 @@ jobs:
         SAFE_NAME="${BASENAME%-${VERSION}-gecko-unsigned.xpi}"
         echo "EXT_NAME=${SAFE_NAME}" >> $GITHUB_ENV
         echo "EXT_VERSION=${VERSION}" >> $GITHUB_ENV
-        echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        # On a pull request GITHUB_SHA is the ephemeral merge commit, which is
+        # on no branch, so name the artifact after the commit that is.
+        SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+        echo "SHORT_SHA=${SHA:0:7}" >> $GITHUB_ENV
 
     - name: Collect the unsigned packages
       run: |
