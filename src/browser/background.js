@@ -13,8 +13,83 @@ let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
 let urlRulesConfig = getDefaultUrlRulesConfig();
-let urlRulesConfigLoaded = false;
+let settingsLoaded = false;
+let settingsLoadPromise = null;
 const tabAllowedState = new Map();
+
+const SETTINGS_KEYS = [
+    STORAGE_KEYS.extensionIcon,
+    STORAGE_KEYS.selectedPlayer,
+    STORAGE_KEYS.preferredInvidiousInstance,
+    STORAGE_KEYS.preferredPipedInstance,
+    STORAGE_KEYS.shortcutEnabled,
+    STORAGE_KEYS.shortcutBehavior,
+    STORAGE_KEYS.urlRulesConfig,
+];
+
+// This background context is not persistent: a service worker on Chromium, an
+// event page on Firefox and Safari. Either one is torn down after a short idle
+// period and re-evaluated on the next event, which resets every cached value
+// above to its default. runtime.onStartup only fires when the browser starts
+// and storage.onChanged only fires when a value actually changes, so neither
+// one runs after such a restart. The cache therefore has to be refilled from
+// storage on every script load, and every listener has to wait for that read
+// before acting on it — otherwise a redirect silently uses the default player
+// instead of the one the user picked.
+function ensureSettingsLoaded() {
+    if (settingsLoaded) {
+        return Promise.resolve();
+    }
+    if (!settingsLoadPromise) {
+        settingsLoadPromise = new Promise((resolve) => {
+            extensionApi.storage.local.get(SETTINGS_KEYS, (result = {}) => {
+                settingsLoadPromise = null;
+                if (extensionApi.runtime.lastError) {
+                    // Keep the defaults out of the cache so the next listener
+                    // retries instead of pinning them over the stored values.
+                    resolve();
+                    return;
+                }
+                applyLoadedSettings(result);
+                settingsLoaded = true;
+                resolve();
+            });
+        });
+    }
+    return settingsLoadPromise;
+}
+
+function applyLoadedSettings(result) {
+    cachedExtensionIcon =
+        result[STORAGE_KEYS.extensionIcon] || "redirecttube-color";
+    cachedSelectedPlayer = result[STORAGE_KEYS.selectedPlayer] || "freetube";
+    cachedPreferredInvidiousInstance =
+        result[STORAGE_KEYS.preferredInvidiousInstance] ||
+        DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
+    cachedPreferredPipedInstance =
+        result[STORAGE_KEYS.preferredPipedInstance] ||
+        DEFAULT_PREFERRED_PIPED_INSTANCE;
+    cachedShortcutEnabled =
+        result[STORAGE_KEYS.shortcutEnabled] !== undefined
+            ? Boolean(result[STORAGE_KEYS.shortcutEnabled])
+            : DEFAULT_SHORTCUT_ENABLED;
+    cachedShortcutBehavior =
+        result[STORAGE_KEYS.shortcutBehavior] || DEFAULT_SHORTCUT_BEHAVIOR;
+    urlRulesConfig = normalizeUrlRulesConfig(
+        result[STORAGE_KEYS.urlRulesConfig]
+    );
+}
+
+function safeCreateContextMenu() {
+    try {
+        createContextMenu();
+    } catch (error) {
+        // ignore: avoid breaking startup if i18n isn't ready yet
+    }
+}
+
+// Warm the cache as early as possible on every script load.
+ensureSettingsLoaded();
 
 extensionApi.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -30,49 +105,15 @@ extensionApi.runtime.onInstalled.addListener((details) => {
         });
     }
 
-    loadUrlRulesConfig();
-    createContextMenu();
+    ensureSettingsLoaded().then(safeCreateContextMenu);
 });
 
 extensionApi.runtime.onStartup.addListener(() => {
-    extensionApi.storage.local.get(
-        [
-            STORAGE_KEYS.extensionIcon,
-            STORAGE_KEYS.selectedPlayer,
-            STORAGE_KEYS.preferredInvidiousInstance,
-            STORAGE_KEYS.preferredPipedInstance,
-            STORAGE_KEYS.shortcutEnabled,
-            STORAGE_KEYS.shortcutBehavior,
-        ],
-        (result = {}) => {
-            cachedExtensionIcon =
-                result[STORAGE_KEYS.extensionIcon] || "redirecttube-color";
-            cachedSelectedPlayer =
-                result[STORAGE_KEYS.selectedPlayer] || "freetube";
-            cachedPreferredInvidiousInstance =
-                result[STORAGE_KEYS.preferredInvidiousInstance] ||
-                DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
-            cachedPreferredPipedInstance =
-                result[STORAGE_KEYS.preferredPipedInstance] ||
-                DEFAULT_PREFERRED_PIPED_INSTANCE;
-            cachedShortcutEnabled =
-                result[STORAGE_KEYS.shortcutEnabled] !== undefined
-                    ? Boolean(result[STORAGE_KEYS.shortcutEnabled])
-                    : DEFAULT_SHORTCUT_ENABLED;
-            cachedShortcutBehavior =
-                result[STORAGE_KEYS.shortcutBehavior] || DEFAULT_SHORTCUT_BEHAVIOR;
-            updateActionIcon();
-            // Ensure context menu reflects the loaded selected player
-            try {
-                createContextMenu();
-            } catch (e) {
-                // ignore: avoid breaking startup if i18n isn't ready yet
-            }
-        }
-    );
-
-    loadUrlRulesConfig();
-    createContextMenu();
+    ensureSettingsLoaded().then(() => {
+        updateActionIcon();
+        // Ensure context menu reflects the loaded selected player
+        safeCreateContextMenu();
+    });
 });
 
 extensionApi.runtime.onMessage.addListener((request, sender) => {
@@ -81,36 +122,33 @@ extensionApi.runtime.onMessage.addListener((request, sender) => {
         : undefined;
 
     if (request.message === RUNTIME_MESSAGES.currentUrlChanged && request.url) {
-        // Ensure urlRulesConfig is loaded before evaluating the URL (avoid race with startup)
-        if (!urlRulesConfigLoaded) {
-            extensionApi.storage.local.get(STORAGE_KEYS.urlRulesConfig, (result = {}) => {
-                urlRulesConfig = normalizeUrlRulesConfig(result[STORAGE_KEYS.urlRulesConfig]);
-                urlRulesConfigLoaded = true;
-                handleUrlChange(request.url, tabId);
-            });
-        } else {
-            handleUrlChange(request.url, tabId);
-        }
+        // Ensure urlRulesConfig is loaded before evaluating the URL
+        ensureSettingsLoaded().then(() => handleUrlChange(request.url, tabId));
         return;
     }
 
     if (request.message === RUNTIME_MESSAGES.redirecttubeTheme) {
         isDarkThemePreferred = Boolean(request.isDark);
-        updateActionIcon(tabId);
+        ensureSettingsLoaded().then(() => updateActionIcon(tabId));
     }
 });
 
 extensionApi.tabs.onActivated.addListener(({ tabId }) => {
-    if (tabAllowedState.has(tabId)) {
-        updateActionIcon(tabId);
-        return;
-    }
-    extensionApi.tabs.get(tabId, (tab) => {
-        if (extensionApi.runtime.lastError || !tab || !tab.url) {
+    ensureSettingsLoaded().then(() => {
+        if (tabAllowedState.has(tabId)) {
+            updateActionIcon(tabId);
             return;
         }
-        tabAllowedState.set(tabId, isRedirectableYoutubeUrl(tab.url, urlRulesConfig));
-        updateActionIcon(tabId);
+        extensionApi.tabs.get(tabId, (tab) => {
+            if (extensionApi.runtime.lastError || !tab || !tab.url) {
+                return;
+            }
+            tabAllowedState.set(
+                tabId,
+                isRedirectableYoutubeUrl(tab.url, urlRulesConfig)
+            );
+            updateActionIcon(tabId);
+        });
     });
 });
 
@@ -123,7 +161,9 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
         return;
     }
     if (changes[STORAGE_KEYS.urlRulesConfig]) {
-        loadUrlRulesConfig();
+        urlRulesConfig = normalizeUrlRulesConfig(
+            changes[STORAGE_KEYS.urlRulesConfig].newValue
+        );
     }
 
     if (changes[STORAGE_KEYS.extensionIcon]) {
@@ -136,11 +176,7 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
         cachedSelectedPlayer =
             changes[STORAGE_KEYS.selectedPlayer].newValue || "freetube";
         // Refresh context menu so title reflects the newly selected player
-        try {
-            createContextMenu();
-        } catch (e) {
-            // ignore
-        }
+        safeCreateContextMenu();
     }
     if (changes[STORAGE_KEYS.preferredInvidiousInstance]) {
         cachedPreferredInvidiousInstance =
@@ -165,28 +201,30 @@ extensionApi.commands.onCommand.addListener((command) => {
     if (command !== "redirect-current-tab") {
         return;
     }
-    if (!cachedShortcutEnabled) {
-        return;
-    }
-    extensionApi.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tab = tabs && tabs[0];
-        if (!tab || !tab.url) {
+    ensureSettingsLoaded().then(() => {
+        if (!cachedShortcutEnabled) {
             return;
         }
-        if (!isRedirectableYoutubeUrl(tab.url, urlRulesConfig)) {
-            return;
-        }
-        const newUrl = buildRedirectUrl(
-            tab.url,
-            cachedSelectedPlayer,
-            cachedPreferredInvidiousInstance,
-            cachedPreferredPipedInstance
-        );
-        if (cachedShortcutBehavior === "newTab") {
-            extensionApi.tabs.create({ url: newUrl });
-        } else {
-            extensionApi.tabs.update(tab.id, { url: newUrl });
-        }
+        extensionApi.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const tab = tabs && tabs[0];
+            if (!tab || !tab.url) {
+                return;
+            }
+            if (!isRedirectableYoutubeUrl(tab.url, urlRulesConfig)) {
+                return;
+            }
+            const newUrl = buildRedirectUrl(
+                tab.url,
+                cachedSelectedPlayer,
+                cachedPreferredInvidiousInstance,
+                cachedPreferredPipedInstance
+            );
+            if (cachedShortcutBehavior === "newTab") {
+                extensionApi.tabs.create({ url: newUrl });
+            } else {
+                extensionApi.tabs.update(tab.id, { url: newUrl });
+            }
+        });
     });
 });
 
@@ -248,17 +286,12 @@ function getIconPath(preference, isAllowed, isDarkMode) {
         : "img/icns/freetube/color/disallow/64.png";
 }
 
-function loadUrlRulesConfig() {
-    extensionApi.storage.local.get(STORAGE_KEYS.urlRulesConfig, (result = {}) => {
-        urlRulesConfig = normalizeUrlRulesConfig(
-            result[STORAGE_KEYS.urlRulesConfig]
-        );
-        urlRulesConfigLoaded = true;
-    });
-}
-
 extensionApi.contextMenus.onClicked.addListener((info) => {
-    if (info.menuItemId === "openInFreeTube" && info.linkUrl) {
+    if (info.menuItemId !== "openInFreeTube" || !info.linkUrl) {
+        return;
+    }
+
+    ensureSettingsLoaded().then(() => {
         const newUrl = buildRedirectUrl(
             info.linkUrl,
             cachedSelectedPlayer,
@@ -283,7 +316,7 @@ extensionApi.contextMenus.onClicked.addListener((info) => {
                 console.error("Failed to open redirect URL from context menu", err2, { newUrl });
             }
         }
-    }
+    });
 });
 
 function createContextMenu() {
