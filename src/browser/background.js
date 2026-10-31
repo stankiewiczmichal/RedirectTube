@@ -9,6 +9,7 @@ let cachedPreferredInvidiousInstance = DEFAULT_PREFERRED_INVIDIOUS_INSTANCE;
 let cachedPreferredPipedInstance = DEFAULT_PREFERRED_PIPED_INSTANCE;
 let cachedShortcutEnabled = DEFAULT_SHORTCUT_ENABLED;
 let cachedShortcutBehavior = DEFAULT_SHORTCUT_BEHAVIOR;
+let cachedCloseRedirectTab = DEFAULT_CLOSE_REDIRECT_TAB;
 let lastUrlAllowed = false;
 let isDarkThemePreferred = false;
 let currentMenuLang = null;
@@ -24,8 +25,18 @@ const SETTINGS_KEYS = [
     STORAGE_KEYS.preferredPipedInstance,
     STORAGE_KEYS.shortcutEnabled,
     STORAGE_KEYS.shortcutBehavior,
+    STORAGE_KEYS.closeRedirectTab,
     STORAGE_KEYS.urlRulesConfig,
 ];
+
+// buildRedirectUrl hands these two players off to a desktop app through a
+// custom scheme, which leaves the tab behind empty. Invidious and Piped get an
+// ordinary web page that the user wants to keep.
+const APP_SCHEME_PREFIXES = [
+    PLAYERS.freetube + "://",
+    PLAYERS.opentubex + "://",
+];
+const REDIRECT_TAB_CLOSE_DELAY_MS = 1500;
 
 // This background context is not persistent: a service worker on Chromium, an
 // event page on Firefox and Safari. Either one is torn down after a short idle
@@ -75,6 +86,10 @@ function applyLoadedSettings(result) {
             : DEFAULT_SHORTCUT_ENABLED;
     cachedShortcutBehavior =
         result[STORAGE_KEYS.shortcutBehavior] || DEFAULT_SHORTCUT_BEHAVIOR;
+    cachedCloseRedirectTab =
+        result[STORAGE_KEYS.closeRedirectTab] !== undefined
+            ? Boolean(result[STORAGE_KEYS.closeRedirectTab])
+            : DEFAULT_CLOSE_REDIRECT_TAB;
     urlRulesConfig = normalizeUrlRulesConfig(
         result[STORAGE_KEYS.urlRulesConfig]
     );
@@ -102,6 +117,8 @@ extensionApi.runtime.onInstalled.addListener((details) => {
             urlRulesConfig: getDefaultUrlRulesConfig(),
             shortcutEnabled: DEFAULT_SHORTCUT_ENABLED,
             shortcutBehavior: DEFAULT_SHORTCUT_BEHAVIOR,
+            timestampLinks: DEFAULT_TIMESTAMP_LINKS,
+            closeRedirectTab: DEFAULT_CLOSE_REDIRECT_TAB,
         });
     }
 
@@ -195,6 +212,11 @@ extensionApi.storage.onChanged.addListener((changes, areaName) => {
         cachedShortcutBehavior =
             changes[STORAGE_KEYS.shortcutBehavior].newValue || DEFAULT_SHORTCUT_BEHAVIOR;
     }
+    if (changes[STORAGE_KEYS.closeRedirectTab]) {
+        cachedCloseRedirectTab = Boolean(
+            changes[STORAGE_KEYS.closeRedirectTab].newValue
+        );
+    }
 });
 
 extensionApi.commands.onCommand.addListener((command) => {
@@ -220,13 +242,63 @@ extensionApi.commands.onCommand.addListener((command) => {
                 cachedPreferredPipedInstance
             );
             if (cachedShortcutBehavior === "newTab") {
-                extensionApi.tabs.create({ url: newUrl });
+                openRedirectTab(newUrl);
             } else {
                 extensionApi.tabs.update(tab.id, { url: newUrl });
             }
         });
     });
 });
+
+// A custom-scheme navigation hands the link to the desktop app without ever
+// committing a document, so the tab RedirectTube opened for it stays behind
+// empty. No API reports the app window opening, so the tab is closed after a
+// short delay instead — and only when the user asked for it, because on Firefox
+// the external-protocol confirmation dialog belongs to this tab and closing it
+// would cancel the launch.
+function openRedirectTab(url) {
+    if (!cachedCloseRedirectTab || !isAppHandoffUrl(url)) {
+        extensionApi.tabs.create({ url });
+        return;
+    }
+
+    extensionApi.tabs.create({ url }, (tab) => {
+        if (
+            extensionApi.runtime.lastError ||
+            !tab ||
+            typeof tab.id !== "number"
+        ) {
+            return;
+        }
+        setTimeout(
+            () => closeRedirectTab(tab.id, url),
+            REDIRECT_TAB_CLOSE_DELAY_MS
+        );
+    });
+}
+
+function closeRedirectTab(tabId, redirectUrl) {
+    extensionApi.tabs.get(tabId, (tab) => {
+        if (extensionApi.runtime.lastError || !tab) {
+            return;
+        }
+        // Anything other than a blank tab means the user navigated it
+        // somewhere, so it is no longer ours to close.
+        const currentUrl = tab.url || "";
+        if (
+            currentUrl &&
+            currentUrl !== "about:blank" &&
+            currentUrl !== redirectUrl
+        ) {
+            return;
+        }
+        extensionApi.tabs.remove(tabId);
+    });
+}
+
+function isAppHandoffUrl(url) {
+    return APP_SCHEME_PREFIXES.some((prefix) => url.startsWith(prefix));
+}
 
 function handleUrlChange(url, tabId) {
     if (!url) {
@@ -303,7 +375,7 @@ extensionApi.contextMenus.onClicked.addListener((info) => {
         // Using tabs.create avoids potential failures when updating the originating tab
         // to a custom scheme (eg. freetube://) which some browsers may ignore.
         try {
-            extensionApi.tabs.create({ url: newUrl });
+            openRedirectTab(newUrl);
         } catch (err) {
             // Fallback: try updating the current tab if create failed
             try {

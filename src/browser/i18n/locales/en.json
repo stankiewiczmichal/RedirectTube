@@ -104,6 +104,17 @@
         "autoRedirectLinks": {
             "label": "Automatically redirect YouTube links when clicked"
         },
+        "timestampLinks": {
+            "label": "Skip links that point to a timestamp",
+            "note": "A timestamp link to the video you are already watching is handled by YouTube by seeking, so redirecting it restarts the video instead.",
+            "sameVideo": "Only for the video already open",
+            "all": "For every link with a timestamp",
+            "redirect": "Never, always redirect"
+        },
+        "closeRedirectTab": {
+            "label": "Close the tab opened for the desktop app",
+            "note": "Applies to FreeTube and OpenTubeX only, since Invidious and Piped open a normal page. If your browser still asks for permission to open the app, leave this off — closing the tab cancels that prompt."
+        },
         "shortcut": {
             "enable": "Enable keyboard shortcut redirect",
             "behaviorLabel": "Keyboard shortcut behavior",

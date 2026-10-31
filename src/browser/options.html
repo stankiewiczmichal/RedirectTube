@@ -109,6 +109,16 @@
                 </div>
                 <button id="changeShortcutButton" type="button" data-i18n="options.shortcut.change">Change keyboard shortcut…</button>
             </div>
+            <div class="section flex-row" id="closeRedirectTabSection">
+                <div class="section-label">
+                    <label for="closeRedirectTab" data-i18n="options.closeRedirectTab.label">Close the tab opened for the
+                        desktop app</label>
+                    <p class="note" data-i18n="options.closeRedirectTab.note">Applies to FreeTube and OpenTubeX only, since
+                        Invidious and Piped open a normal page. If your browser still asks for permission to open the app,
+                        leave this off — closing the tab cancels that prompt.</p>
+                </div>
+                <input type="checkbox" id="closeRedirectTab">
+            </div>
             <div class="section flex-row" id="playerPrefferedSection">
                 <div class="section-label">
                     <label data-i18n="options.playerSettings.label">Preferred player setup</label>
@@ -151,6 +161,22 @@
                 <select name="autoRedirectLinks" id="autoRedirectLinks">
                     <option value="autoRedirectLinksNo" data-i18n="ui.no">No</option>
                     <option value="autoRedirectLinksYes" data-i18n="ui.yes">Yes</option>
+                </select>
+            </div>
+            <div class="section flex-row" id="timestampLinksSection">
+                <div class="section-label">
+                    <label for="timestampLinks" data-i18n="options.timestampLinks.label">Skip links that point to a
+                        timestamp</label>
+                    <p class="note" data-i18n="options.timestampLinks.note">A timestamp link to the video you are already
+                        watching is handled by YouTube by seeking, so redirecting it restarts the video instead.</p>
+                </div>
+                <select name="timestampLinks" id="timestampLinks">
+                    <option value="timestampLinksSameVideo" data-i18n="options.timestampLinks.sameVideo">Only for the video
+                        already open</option>
+                    <option value="timestampLinksAll" data-i18n="options.timestampLinks.all">For every link with a
+                        timestamp</option>
+                    <option value="timestampLinksRedirect" data-i18n="options.timestampLinks.redirect">Never, always
+                        redirect</option>
                 </select>
             </div>
             <div class="section flex-row">
